@@ -36,6 +36,20 @@
 - คิวงาน: แสดง pending สูงสุด 8 รายการ, scroll ในกรอบ, ลิงก์ "ดูทั้งหมด" → filter pending
 - ปฏิทิน: selected day ใช้ **inset border** ภายใน cell (ไม่ใช้ ring offset) และเว้นช่อง `gap-1` เพื่อไม่ให้เลขวันทับกัน
 
+### Report Insight Strip (2026-07-07)
+
+- ทุก **ReportCard** และ **ResultCard** แสดง 3 สัญญาณเสมอ: ความเสี่ยง | ความเร่งด่วน | พยากรณ์ฝน
+- พยากรณ์ฝนใช้ `RainForecastChip` + micro-label `Weather API · Demo` — สื่อว่า Phase 2 จะดึง API จริง
+- ความเร่งด่วนแสดง caption `+{n} จากฝน` เมื่อมี rain bonus
+- Status pill อยู่มุมขวาบนการ์ด — สีตามสถานะ (slate / blue / green)
+
+### Detail Sheet Sticky Footer (2026-07-07)
+
+- Mobile `DetailSheet` + desktop `ReportDetailPanel`: **StatusSegmented + Save** อยู่ footer คงที่ ไม่ scroll
+- Header chip สะท้อน status ที่เลือก (live update)
+- Metrics 3 การ์ด: Risk ring | Urgency ring | Rain chip (`DetailMetricCards`)
+- AI card: `border-l-4 border-brand-blue` + gradient พื้นอ่อน
+
 ---
 
 ## เอกสารเวอร์ชันก่อน (v1/v2)

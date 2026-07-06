@@ -6,9 +6,9 @@ import {
   ReportDetailContent,
   type ReportDetailLabels,
 } from "@/components/ReportDetailContent";
+import { StatusActionBar } from "@/components/report/StatusActionBar";
 import { useApp } from "@/lib/app-context";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 
 interface ReportDetailPanelProps {
   report: Report | null;
@@ -64,18 +64,19 @@ export function ReportDetailPanel({
             onViewOnMap={onViewOnMap}
             compact
             showSaveButton={false}
+            showStatusSection={false}
             status={status}
             onStatusChange={setStatus}
           />
         </div>
         <div className="shrink-0 border-t border-slate-100 bg-white px-5 py-4">
-          <Button
-            variant="primary"
-            className="w-full"
-            onClick={() => onSave(report.id, status)}
-          >
-            {labels.save}
-          </Button>
+          <StatusActionBar
+            status={status}
+            onStatusChange={setStatus}
+            onSave={() => onSave(report.id, status)}
+            changeStatusLabel={labels.changeStatus}
+            saveLabel={labels.save}
+          />
         </div>
       </Card>
     </div>

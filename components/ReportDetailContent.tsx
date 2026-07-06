@@ -4,16 +4,12 @@ import { useEffect, useState } from "react";
 import type { Report, ReportStatus } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { useApp } from "@/lib/app-context";
-import { getRainLabel, getStatusLabel } from "@/lib/labels";
-import { RiskBadge } from "./RiskBadge";
+import { getStatusLabel } from "@/lib/labels";
+import { computeUrgencyScore, resolveRainForecast } from "@/lib/mock-weather";
+import { STATUS_PILL } from "@/lib/status-colors";
+import { DetailMetricCards } from "./report/DetailMetricCards";
 import { StatusSegmented } from "./StatusSegmented";
-import { ScoreRing } from "./ui/ScoreRing";
 import { Button } from "./ui/Button";
-import {
-  RISK_METRIC_BG,
-  RISK_RING,
-  urgencyRingColor,
-} from "@/lib/risk-colors";
 
 export interface ReportDetailLabels {
   location: string;
@@ -32,6 +28,7 @@ interface ReportDetailContentProps {
   onViewOnMap?: (report: Report) => void;
   compact?: boolean;
   showSaveButton?: boolean;
+  showStatusSection?: boolean;
   status?: ReportStatus;
   onStatusChange?: (status: ReportStatus) => void;
 }
@@ -44,6 +41,7 @@ export function ReportDetailContent({
   onViewOnMap,
   compact = false,
   showSaveButton = true,
+  showStatusSection = true,
   status: controlledStatus,
   onStatusChange,
 }: ReportDetailContentProps) {
@@ -61,8 +59,9 @@ export function ReportDetailContent({
     else setInternalStatus(report.status);
   }, [report.id, report.status, onStatusChange]);
 
-  const ringSize = compact ? 64 : 96;
-  const urgencyScore = report.urgencyScore ?? null;
+  const rainForecast = resolveRainForecast(report.rainForecast);
+  const urgencyScore =
+    report.urgencyScore ?? computeUrgencyScore(report.riskScore, rainForecast);
 
   return (
     <div className={compact ? "space-y-3" : "space-y-4"}>
@@ -85,8 +84,10 @@ export function ReportDetailContent({
             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] text-slate-500">
               {formatTimeAgo(report.createdAt, locale)}
             </span>
-            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] font-medium text-slate-600">
-              {getStatusLabel(report.status, locale)}
+            <span
+              className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ring-1 ring-inset ${STATUS_PILL[status]}`}
+            >
+              {getStatusLabel(status, locale)}
             </span>
           </div>
           {onViewOnMap && (
@@ -142,59 +143,16 @@ export function ReportDetailContent({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5">
-        <div
-          className={`flex flex-col items-center rounded-[14px] border border-slate-100 p-3 ${RISK_METRIC_BG[report.riskLevel]}`}
-        >
-          <p className="w-full text-[12px] font-semibold text-slate-700">
-            {labels.score}
-          </p>
-          <div className="mt-2 flex flex-col items-center">
-            <ScoreRing
-              value={report.riskScore}
-              size={ringSize}
-              strokeColor={RISK_RING[report.riskLevel]}
-            />
-            <div className="mt-2">
-              <RiskBadge level={report.riskLevel} compact />
-            </div>
-          </div>
-        </div>
+      <DetailMetricCards
+        riskScore={report.riskScore}
+        riskLevel={report.riskLevel}
+        urgencyScore={urgencyScore}
+        rainForecast={rainForecast}
+        scoreLabel={labels.score}
+        compact={compact}
+      />
 
-        <div
-          className={`flex flex-col items-center rounded-[14px] border border-slate-100 p-3 ${
-            urgencyScore != null && urgencyScore >= 70
-              ? "bg-brand-orange-soft"
-              : "bg-brand-blue-soft"
-          }`}
-        >
-          <p className="w-full text-[12px] font-semibold text-slate-700">
-            {t("report.urgencyScore")}
-          </p>
-          {urgencyScore != null ? (
-            <div className="mt-2 flex flex-col items-center">
-              <ScoreRing
-                value={urgencyScore}
-                size={ringSize}
-                strokeColor={urgencyRingColor(urgencyScore)}
-              />
-              {report.rainForecast && (
-                <p className="mt-2 max-w-full truncate rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-700">
-                  {t("report.rainForecast")}: {getRainLabel(report.rainForecast, locale)}
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="mt-2 flex items-center justify-center py-4 text-center">
-              <p className="text-[13px] text-slate-500">
-                {t("report.urgencyScore")} ?
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[16px] border border-slate-200/80 border-l-4 border-l-brand-blue bg-gradient-to-br from-brand-blue-soft/40 to-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between gap-2">
           <p
             className={`font-semibold tracking-tight text-slate-900 ${compact ? "text-[13px]" : "text-[14px]"}`}
@@ -212,12 +170,14 @@ export function ReportDetailContent({
         </p>
       </div>
 
-      <div className="rounded-[14px] border border-slate-100 bg-slate-50/80 p-3.5">
-        <p className="mb-3 text-[13px] font-semibold text-slate-700">
-          {labels.changeStatus}
-        </p>
-        <StatusSegmented value={status} onChange={setStatus} />
-      </div>
+      {showStatusSection && (
+        <div className="rounded-[14px] border border-slate-100 bg-slate-50/80 p-3.5">
+          <p className="mb-3 text-[13px] font-semibold text-slate-700">
+            {labels.changeStatus}
+          </p>
+          <StatusSegmented value={status} onChange={setStatus} />
+        </div>
+      )}
 
       {showSaveButton && (
         <Button

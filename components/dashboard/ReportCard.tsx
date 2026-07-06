@@ -1,12 +1,12 @@
 ﻿"use client";
 
 import { forwardRef } from "react";
-import type { Report } from "@/lib/types";
+import type { Report, ReportStatus } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
-import { getRainLabel, getStatusLabel } from "@/lib/labels";
+import { getStatusLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";
-import { RiskBadge } from "@/components/RiskBadge";
-import { MetricTile } from "@/components/ui/MetricTile";
+import { STATUS_PILL, THUMB_RING } from "@/lib/status-colors";
+import { ReportInsightStrip } from "@/components/dashboard/ReportInsightStrip";
 
 interface ReportCardProps {
   report: Report;
@@ -22,19 +22,10 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
     ref
   ) {
     const { locale, t } = useApp();
-    const urgency = report.urgencyScore ?? null;
-    const showUrgency = urgency != null && urgency >= 70;
 
     const meta = [report.district, formatTimeAgo(report.createdAt, locale)]
       .filter(Boolean)
       .join(" · ");
-
-    const riskTone =
-      report.riskLevel === "อุดตันหนัก"
-        ? "risk"
-        : report.riskLevel === "เริ่มอุดตัน"
-          ? "urgency"
-          : "neutral";
 
     return (
       <button
@@ -47,65 +38,68 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
             : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/70 hover:bg-slate-50/80 dark:bg-[var(--color-surface)]"
         }`}
       >
-        <div className="flex gap-3">
+        <div className="flex items-start gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={report.imageUrl}
             alt={report.location}
-            className="h-14 w-14 shrink-0 rounded-xl object-cover"
+            className={`h-[72px] w-[72px] shrink-0 rounded-xl object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
           />
 
           <div className="min-w-0 flex-1">
-            <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-              {queueRank != null && (
-                <span className="shrink-0 text-[11px] font-semibold tabular-nums text-slate-400">
-                  #{queueRank}
-                </span>
-              )}
-              {isPriority && (
-                <span className="shrink-0 rounded-md bg-brand-orange-soft px-1.5 py-0.5 text-[10px] font-semibold text-brand-orange-dark">
-                  {t("dashboard.priority")}
-                </span>
-              )}
-              <p className="min-w-0 flex-1 truncate text-[15px] font-semibold leading-tight tracking-tight text-slate-900">
-                {report.location}
-              </p>
-            </div>
-            {meta && (
-              <p className="mt-0.5 truncate text-[12px] text-slate-500">{meta}</p>
-            )}
-
-            <div className="mt-2.5 flex gap-2">
-              <MetricTile
-                label={t("dashboard.cardRiskLabel")}
-                value={report.riskScore}
-                tone={riskTone}
-              >
-                <RiskBadge level={report.riskLevel} compact />
-              </MetricTile>
-              {showUrgency && (
-                <MetricTile
-                  label={t("dashboard.cardUrgencyLabel")}
-                  value={urgency}
-                  tone="urgency"
-                >
-                  {report.rainForecast && (
-                    <p className="truncate text-[10px] font-medium text-slate-600">
-                      {t("report.rainForecast")}:{" "}
-                      {getRainLabel(report.rainForecast, locale)}
-                    </p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                  {queueRank != null && (
+                    <span className="shrink-0 text-[11px] font-semibold tabular-nums text-slate-400">
+                      #{queueRank}
+                    </span>
                   )}
-                </MetricTile>
-              )}
-            </div>
+                  {isPriority && (
+                    <span className="shrink-0 rounded-md bg-brand-orange-soft px-1.5 py-0.5 text-[10px] font-semibold text-brand-orange-dark">
+                      {t("dashboard.priority")}
+                    </span>
+                  )}
+                  <p className="min-w-0 truncate text-[15px] font-semibold leading-tight tracking-tight text-slate-900">
+                    {report.location}
+                  </p>
+                </div>
+                {meta && (
+                  <p className="mt-0.5 truncate text-[12px] text-slate-500">{meta}</p>
+                )}
+              </div>
 
-            <div className="mt-2">
-              <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
-                {getStatusLabel(report.status, locale)}
-              </span>
+              <div className="flex shrink-0 items-center gap-1">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${STATUS_PILL[report.status]}`}
+                >
+                  {getStatusLabel(report.status, locale)}
+                </span>
+                {isSelected && (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-brand-blue"
+                    aria-hidden
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                )}
+              </div>
             </div>
           </div>
         </div>
+
+        <ReportInsightStrip
+          riskScore={report.riskScore}
+          riskLevel={report.riskLevel}
+          urgencyScore={report.urgencyScore}
+          rainForecast={report.rainForecast}
+        />
       </button>
     );
   }
