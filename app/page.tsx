@@ -6,7 +6,7 @@ export default function HomePage() {
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-12">
       <div className="text-center">
         <Image
-          src="/Logo.svg"
+          src="/logo.svg"
           alt="เฝ้าท่อ"
           width={96}
           height={96}
