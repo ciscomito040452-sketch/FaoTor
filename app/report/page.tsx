@@ -1,14 +1,15 @@
-import { AppHeader } from "@/components/AppHeader";
+"use client";
+
+import { AppShell } from "@/components/layout/AppShell";
 import { UploadForm } from "@/components/UploadForm";
+import { useApp } from "@/lib/app-context";
 
 export default function ReportPage() {
+  const { t } = useApp();
+
   return (
-    <main className="mx-auto min-h-screen max-w-[480px] px-6 py-8">
-      <AppHeader />
-      <h1 className="mb-8 text-[34px] font-bold leading-[1.35] tracking-[-0.02em] text-slate-900">
-        รายงานท่อระบายน้ำ
-      </h1>
+    <AppShell title={t("report.title")} showBack largeTitle variant="report">
       <UploadForm />
-    </main>
+    </AppShell>
   );
 }

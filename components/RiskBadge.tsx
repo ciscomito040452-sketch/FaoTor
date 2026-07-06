@@ -1,4 +1,8 @@
+"use client";
+
 import type { RiskLevel } from "@/lib/types";
+import { getRiskLabel } from "@/lib/labels";
+import { useApp } from "@/lib/app-context";
 import { ShieldDropletIcon } from "./ShieldDropletIcon";
 
 const STYLES: Record<RiskLevel, { bg: string; text: string }> = {
@@ -8,13 +12,14 @@ const STYLES: Record<RiskLevel, { bg: string; text: string }> = {
 };
 
 export function RiskBadge({ level }: { level: RiskLevel }) {
+  const { locale } = useApp();
   const style = STYLES[level];
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[15px] font-semibold leading-none ${style.bg} ${style.text}`}
     >
       <ShieldDropletIcon className="shrink-0" />
-      {level}
+      {getRiskLabel(level, locale)}
     </span>
   );
 }

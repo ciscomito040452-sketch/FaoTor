@@ -1,62 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { Report, ReportStatus } from "@/lib/types";
-import { RiskBadge } from "./RiskBadge";
-import { StatusSegmented } from "./StatusSegmented";
+import {
+  ReportDetailContent,
+  type ReportDetailLabels,
+} from "@/components/ReportDetailContent";
 
 interface DetailSheetProps {
   report: Report | null;
   onClose: () => void;
   onSave: (id: string, status: ReportStatus) => void;
+  labels: ReportDetailLabels;
 }
 
-export function DetailSheet({ report, onClose, onSave }: DetailSheetProps) {
-  const [status, setStatus] = useState<ReportStatus>("รอดำเนินการ");
-
+export function DetailSheet({
+  report,
+  onClose,
+  onSave,
+  labels,
+}: DetailSheetProps) {
   useEffect(() => {
-    if (report) setStatus(report.status);
+    if (!report) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [report]);
 
   if (!report) return null;
 
+  function handleSave(id: string, status: ReportStatus) {
+    onSave(id, status);
+    onClose();
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+    <div className="fixed inset-0 z-[1200] flex items-end justify-center lg:items-center">
       <button
         type="button"
-        className="absolute inset-0 bg-black/30"
-        aria-label="ปิด"
+        className="absolute inset-0 bg-black/40"
+        aria-label={labels.close ?? "Close"}
         onClick={onClose}
       />
-      <div className="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-[16px] bg-white p-6 sm:rounded-[16px]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={report.imageUrl}
-          alt={report.location}
-          className="mb-4 w-full rounded-[12px] object-cover"
-        />
-        <p className="text-[13px] text-slate-600">ตำแหน่ง</p>
-        <p className="mt-1 text-[17px] font-semibold text-slate-900">
-          {report.location}
-        </p>
-        <div className="mt-4">
-          <RiskBadge level={report.riskLevel} />
+      <div className="relative z-10 max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-[16px] bg-white shadow-xl dark:bg-[var(--color-surface)] lg:rounded-[16px]">
+        <div className="p-6">
+          <ReportDetailContent
+            report={report}
+            labels={labels}
+            onSave={handleSave}
+          />
         </div>
-        <p className="mt-4 text-[15px] text-slate-600">{report.reason}</p>
-
-        <p className="mb-3 mt-6 text-[13px] text-slate-600">เปลี่ยนสถานะ</p>
-        <StatusSegmented value={status} onChange={setStatus} />
-
-        <button
-          type="button"
-          onClick={() => {
-            onSave(report.id, status);
-            onClose();
-          }}
-          className="mt-6 h-[50px] w-full rounded-[12px] bg-blue-500 text-[17px] font-semibold text-white hover:bg-blue-700"
-        >
-          บันทึก
-        </button>
       </div>
     </div>
   );

@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-blue-50: #eaf2fe;
@@ -18,14 +21,65 @@
   --color-risk-red-bg: #fde7e7;
   --color-risk-red-text: #b3261e;
 
-  --radius-card: 16px;
-  --radius-button: 12px;
-  --radius-thumbnail: 8px;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f7f9;
+  --color-text-primary: #1b2130;
+  --color-text-secondary: #4e5768;
+  --color-border: #e9ebef;
+}
+
+.dark {
+  --color-slate-50: #14161b;
+  --color-slate-100: #2c3038;
+  --color-slate-400: #a6adbb;
+  --color-slate-600: #a6adbb;
+  --color-slate-900: #f1f2f5;
+  --color-blue-500: #5b92f5;
+  --color-surface: #1e2128;
+  --color-surface-muted: #14161b;
+  --color-text-primary: #f1f2f5;
+  --color-text-secondary: #a6adbb;
+  --color-border: #2c3038;
 }
 
 body {
-  background-color: var(--color-slate-50);
-  color: var(--color-slate-900);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
   font-family: "IBM Plex Sans Thai", "Inter", -apple-system, sans-serif;
   line-height: 1.35;
+}
+
+.hero-gradient {
+  background: linear-gradient(165deg, #eaf2fe 0%, #f6f7f9 45%, #ffffff 100%);
+}
+
+.dark .hero-gradient {
+  background: linear-gradient(165deg, #123b8f 0%, #14161b 50%, #1e2128 100%);
+}
+
+.pb-safe-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Keep Leaflet map contained inside its card — popups use z-index up to ~700 */
+.faotor-leaflet-map {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.faotor-leaflet-map .leaflet-pane,
+.faotor-leaflet-map .leaflet-top,
+.faotor-leaflet-map .leaflet-bottom {
+  z-index: auto;
+}
+
+.faotor-map-pin,
+.faotor-map-pin--selected {
+  background: transparent !important;
+  border: none !important;
 }

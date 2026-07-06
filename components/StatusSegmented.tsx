@@ -1,10 +1,8 @@
-import type { ReportStatus } from "@/lib/types";
+"use client";
 
-const OPTIONS: ReportStatus[] = [
-  "รอดำเนินการ",
-  "กำลังแก้ไข",
-  "แก้ไขแล้ว",
-];
+import type { ReportStatus } from "@/lib/types";
+import { getStatusLabel, STATUS_OPTIONS } from "@/lib/labels";
+import { useApp } from "@/lib/app-context";
 
 interface StatusSegmentedProps {
   value: ReportStatus;
@@ -12,9 +10,11 @@ interface StatusSegmentedProps {
 }
 
 export function StatusSegmented({ value, onChange }: StatusSegmentedProps) {
+  const { locale } = useApp();
+
   return (
     <div className="flex rounded-[12px] bg-slate-100 p-1">
-      {OPTIONS.map((option) => {
+      {STATUS_OPTIONS.map((option) => {
         const selected = value === option;
         return (
           <button
@@ -27,7 +27,7 @@ export function StatusSegmented({ value, onChange }: StatusSegmentedProps) {
                 : "text-slate-600"
             }`}
           >
-            {option}
+            {getStatusLabel(option, locale)}
           </button>
         );
       })}

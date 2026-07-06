@@ -1,47 +1,71 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
+import { useApp } from "@/lib/app-context";
+import { HeroSection } from "@/components/landing/HeroSection";
+import { LiveStatsTeaser } from "@/components/landing/LiveStatsTeaser";
+import { ProblemSection } from "@/components/landing/ProblemSection";
+import { RoleCard } from "@/components/landing/RoleCard";
+import { HowItWorks } from "@/components/landing/HowItWorks";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { SideNav } from "@/components/layout/SideNav";
 
 export default function HomePage() {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-12">
-      <div className="text-center">
-        <Image
-          src="/logo.svg"
-          alt="เฝ้าท่อ"
-          width={96}
-          height={96}
-          className="mx-auto"
-          priority
-        />
-        <h1
-          className="mt-6 text-[34px] font-bold leading-[1.35] tracking-[-0.02em] text-slate-900"
-        >
-          เฝ้าท่อ
-        </h1>
-        <p className="mt-4 text-[17px] text-slate-600">
-          ระบบให้ชุมชนรายงานสภาพท่อระบายน้ำ
-          <br />
-          AI วิเคราะห์ความเสี่ยง เจ้าหน้าที่จัดลำดับลอกท่อ
-        </p>
-        <p className="mt-2 text-[13px] text-slate-400">
-          เวอร์ชัน Demo สำหรับนำเสนอ — ข้อมูลจำลอง
-        </p>
-      </div>
+  const { t } = useApp();
 
-      <div className="mt-12 space-y-4">
-        <Link
-          href="/report"
-          className="flex h-[50px] items-center justify-center rounded-[12px] bg-blue-500 text-[17px] font-semibold text-white hover:bg-blue-700"
-        >
-          รายงานท่อ (ชุมชน)
-        </Link>
-        <Link
-          href="/dashboard"
-          className="flex h-[50px] items-center justify-center rounded-[12px] border border-slate-100 bg-white text-[17px] font-semibold text-slate-900 hover:bg-slate-50"
-        >
-          แดชบอร์ด (เจ้าหน้าที่)
-        </Link>
+  return (
+    <div className="flex min-h-screen w-full lg:flex-row">
+      <SideNav />
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col pb-safe-nav lg:pb-8">
+        <HeroSection />
+        <div className="px-6 xl:px-10">
+        <LiveStatsTeaser />
+        <ProblemSection />
+
+        <div className="mb-8 space-y-4">
+          <RoleCard
+            href="/report"
+            variant="primary"
+            title={t("landing.role.reporter.title")}
+            description={t("landing.role.reporter.desc")}
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="3" y="7" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                <circle cx="12" cy="14" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            }
+          />
+          <RoleCard
+            href="/dashboard"
+            variant="secondary"
+            title={t("landing.role.officer.title")}
+            description={t("landing.role.officer.desc")}
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            }
+          />
+        </div>
+
+        <HowItWorks />
+
+        <footer className="mt-10 border-t border-slate-100 pt-6 pb-4">
+          <Link
+            href="/about"
+            className="text-[15px] font-semibold text-blue-500 hover:text-blue-700"
+          >
+            {t("landing.footer.about")} →
+          </Link>
+        </footer>
+        </div>
+        <div className="lg:hidden">
+          <BottomNav />
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

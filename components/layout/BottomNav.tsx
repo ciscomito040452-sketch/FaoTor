@@ -1,0 +1,65 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useApp } from "@/lib/app-context";
+
+const TABS = [
+  { href: "/", key: "nav.home" as const },
+  { href: "/report", key: "nav.report" as const },
+  { href: "/dashboard", key: "nav.dashboard" as const },
+];
+
+export function BottomNav() {
+  const pathname = usePathname();
+  const { t } = useApp();
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-100 bg-white/95 pb-safe backdrop-blur dark:border-slate-100 dark:bg-[var(--color-surface)]/95 lg:hidden">
+      <div className="mx-auto flex max-w-[1024px]">
+        {TABS.map(({ href, key }) => {
+          const active = pathname === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex min-h-[56px] flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
+                active ? "text-blue-500" : "text-slate-400"
+              }`}
+            >
+              <NavIcon name={key} active={active} />
+              {t(key)}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+function NavIcon({ name, active }: { name: string; active: boolean }) {
+  const stroke = active ? 2 : 1.5;
+  if (name === "nav.home") {
+    return (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+        <path d="M3 9.5L11 3l8 6.5V18a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V9.5z" stroke="currentColor" strokeWidth={stroke} strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (name === "nav.report") {
+    return (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+        <rect x="2" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth={stroke} />
+        <circle cx="11" cy="12.5" r="3" stroke="currentColor" strokeWidth={stroke} />
+      </svg>
+    );
+  }
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+      <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth={stroke} />
+      <rect x="12" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth={stroke} />
+      <rect x="3" y="12" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth={stroke} />
+      <rect x="12" y="12" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth={stroke} />
+    </svg>
+  );
+}

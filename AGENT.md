@@ -14,7 +14,13 @@
 
 ## **2\. Scope ที่ทำอยู่ตอนนี้ (สำคัญที่สุด)**
 
-กำลังทำ **Phase 1 (MVP)** เท่านั้น ตาม FR-101 ถึง FR-106 ใน SRS
+**โหมดปัจจุบัน: Mock-up Demo** — อ่าน `Docs/MOCKUP_SCOPE.md` ก่อนเสมอ
+
+กำลังทำ **Prototype สำหรับอัดวิดีโอ** — UI/flow ครบตาม FR-101 ถึง FR-106 ในมุมผู้ใช้ แต่ใช้ `mock-analyze.ts` + `localStorage` แทน Gemini/Firestore จริง
+
+**ห้าม** สร้าง Firebase, Gemini API routes, หรือ `.env` setup จนกว่าจะออกจากโหมด Mock-up
+
+เมื่อ upgrade เป็น Full Stack จริง ค่อยกลับมาทำ **Phase 1 (MVP)** ตาม `Docs/TASKS.md` Task 0–6
 
 **ห้ามทำสิ่งต่อไปนี้ในตอนนี้** (เป็นของ Phase 2 ยังไม่ต้องทำ):
 

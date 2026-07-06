@@ -10,18 +10,30 @@ import {
   type ReactNode,
 } from "react";
 import { SEED_REPORTS } from "./mock-data";
+import { coordsFromLegacyMapXY, randomBangkokCoords } from "./map-utils";
 import type { Report, ReportStatus } from "./types";
 
-const STORAGE_KEY = "faotor-mock-reports";
+export const STORAGE_KEY = "faotor-mock-reports-v5";
 
 interface ReportsContextValue {
   reports: Report[];
   addReport: (report: Omit<Report, "id" | "createdAt" | "status">) => Report;
   updateStatus: (id: string, status: ReportStatus) => void;
+  resetReports: () => void;
   isReady: boolean;
 }
 
 const ReportsContext = createContext<ReportsContextValue | null>(null);
+
+function normalizeReport(report: Report): Report {
+  if (report.lat != null && report.lng != null) return report;
+  if (report.mapX != null && report.mapY != null) {
+    const { lat, lng } = coordsFromLegacyMapXY(report.mapX, report.mapY);
+    return { ...report, lat, lng };
+  }
+  const { lat, lng } = randomBangkokCoords();
+  return { ...report, lat, lng };
+}
 
 function loadReports(): Report[] {
   if (typeof window === "undefined") return SEED_REPORTS;
@@ -29,7 +41,8 @@ function loadReports(): Report[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return SEED_REPORTS;
     const parsed = JSON.parse(raw) as Report[];
-    return parsed.length > 0 ? parsed : SEED_REPORTS;
+    const list = parsed.length > 0 ? parsed : SEED_REPORTS;
+    return list.map(normalizeReport);
   } catch {
     return SEED_REPORTS;
   }
@@ -54,8 +67,13 @@ export function ReportsProvider({ children }: { children: ReactNode }) {
 
   const addReport = useCallback(
     (data: Omit<Report, "id" | "createdAt" | "status">) => {
+      const coords =
+        data.lat != null && data.lng != null
+          ? { lat: data.lat, lng: data.lng }
+          : randomBangkokCoords();
       const newReport: Report = {
         ...data,
+        ...coords,
         id: `report-${Date.now()}`,
         status: "รอดำเนินการ",
         createdAt: new Date().toISOString(),
@@ -74,9 +92,14 @@ export function ReportsProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const resetReports = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY);
+    setReports(SEED_REPORTS);
+  }, []);
+
   const value = useMemo(
-    () => ({ reports, addReport, updateStatus, isReady }),
-    [reports, addReport, updateStatus, isReady]
+    () => ({ reports, addReport, updateStatus, resetReports, isReady }),
+    [reports, addReport, updateStatus, resetReports, isReady]
   );
 
   return (
@@ -90,13 +113,19 @@ export function useReports() {
   return ctx;
 }
 
-export function formatTimeAgo(iso: string): string {
+export function formatTimeAgo(iso: string, locale: "th" | "en" = "th"): string {
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60000);
-  if (minutes < 1) return "เมื่อสักครู่";
-  if (minutes < 60) return `${minutes} นาทีที่แล้ว`;
+  if (minutes < 1) return locale === "th" ? "เมื่อสักครู่" : "Just now";
+  if (minutes < 60) {
+    return locale === "th"
+      ? `${minutes} นาทีที่แล้ว`
+      : `${minutes} min ago`;
+  }
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} ชม.ที่แล้ว`;
+  if (hours < 24) {
+    return locale === "th" ? `${hours} ชม.ที่แล้ว` : `${hours} hr ago`;
+  }
   const days = Math.floor(hours / 24);
-  return `${days} วันที่แล้ว`;
+  return locale === "th" ? `${days} วันที่แล้ว` : `${days} days ago`;
 }
