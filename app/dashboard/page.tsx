@@ -304,9 +304,9 @@ export default function DashboardPage() {
       </div>
 
       <section id="report-workspace" ref={workspaceRef}>
-        <Card padding="lg" className="hidden xl:block">
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(380px,520px)]">
-            <div className="flex min-h-0 flex-col">
+        <Card padding="lg" className="hidden overflow-hidden xl:block">
+          <div className="grid max-h-[min(640px,calc(100vh-17rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] xl:items-stretch">
+            <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
               <h2 className="text-[20px] font-semibold text-slate-900">
                 {t("dashboard.listTitle")}
               </h2>
@@ -357,7 +357,7 @@ export default function DashboardPage() {
               ) : (
                 <div
                   ref={listRef}
-                  className="mt-4 max-h-[min(520px,55vh)] space-y-3 overflow-y-auto pr-1"
+                  className="mt-4 min-h-0 flex-1 space-y-2.5 overflow-x-hidden overflow-y-auto px-1 py-1 [scrollbar-gutter:stable]"
                 >
                   {filtered.map((report) => (
                     <ReportCard
@@ -376,13 +376,15 @@ export default function DashboardPage() {
               )}
             </div>
 
-            <ReportDetailPanel
+            <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+              <ReportDetailPanel
               report={selected}
               onClose={() => setSelected(null)}
               onSave={handleSave}
               labels={detailLabels}
               onViewOnMap={handleViewOnMap}
-            />
+              />
+            </div>
           </div>
         </Card>
 

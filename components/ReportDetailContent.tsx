@@ -48,18 +48,18 @@ export function ReportDetailContent({
     setStatus(report.status);
   }, [report]);
 
-  const ringSize = compact ? 86 : 96;
+  const ringSize = compact ? 64 : 96;
   const urgencyScore = report.urgencyScore ?? null;
 
   return (
-    <div className="space-y-4">
+    <div className={compact ? "space-y-3" : "space-y-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[13px] font-semibold text-brand-blue">
             {t("dashboard.detailTitle")}
           </p>
           <p
-            className={`mt-1 font-bold text-slate-900 ${compact ? "text-[22px]" : "text-[24px]"}`}
+            className={`mt-1 font-bold text-slate-900 ${compact ? "text-[18px] leading-snug" : "text-[24px]"}`}
           >
             {report.location}
           </p>
@@ -80,9 +80,20 @@ export function ReportDetailContent({
             <button
               type="button"
               onClick={() => onViewOnMap(report)}
-              className="mt-3 inline-flex items-center gap-2 rounded-full border border-brand-blue/30 bg-brand-blue-soft px-3 py-1 text-[12px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+              className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-brand-blue/30 bg-brand-blue-soft px-3 py-1 text-[12px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
             >
-              <span aria-hidden>??</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden
+              >
+                <path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z" />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
               {t("detail.viewOnMap")}
             </button>
           )}
@@ -114,22 +125,22 @@ export function ReportDetailContent({
         <img
           src={report.imageUrl}
           alt={report.location}
-          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[210px]" : "aspect-[16/10] max-h-[270px]"}`}
+          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[150px]" : "aspect-[16/10] max-h-[270px]"}`}
         />
       </div>
 
-      <div className={`grid gap-3 ${compact ? "grid-cols-1" : "grid-cols-2"}`}>
+      <div className="grid grid-cols-2 gap-2.5">
         <div
-          className={`rounded-[16px] border border-slate-100 p-4 ${RISK_METRIC_BG[report.riskLevel]}`}
+          className={`rounded-[14px] border border-slate-100 p-3 ${RISK_METRIC_BG[report.riskLevel]}`}
         >
-          <p className="text-[13px] font-semibold text-slate-700">{labels.score}</p>
-          <div className="mt-3 flex items-center justify-between gap-4">
-            <div className="text-left">
-              <p className="text-[32px] font-bold leading-none text-slate-900">
+          <p className="text-[12px] font-semibold text-slate-700">{labels.score}</p>
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <div className="min-w-0 text-left">
+              <p className={`font-bold leading-none text-slate-900 ${compact ? "text-[26px]" : "text-[32px]"}`}>
                 {report.riskScore}
               </p>
-              <div className="mt-2">
-                <RiskBadge level={report.riskLevel} />
+              <div className="mt-1.5">
+                <RiskBadge level={report.riskLevel} compact />
               </div>
             </div>
             <ScoreRing
@@ -141,23 +152,23 @@ export function ReportDetailContent({
         </div>
 
         <div
-          className={`rounded-[16px] border border-slate-100 p-4 ${
+          className={`rounded-[14px] border border-slate-100 p-3 ${
             urgencyScore != null && urgencyScore >= 70
               ? "bg-brand-orange-soft"
               : "bg-brand-blue-soft"
           }`}
         >
-          <p className="text-[13px] font-semibold text-slate-700">
+          <p className="text-[12px] font-semibold text-slate-700">
             {t("report.urgencyScore")}
           </p>
           {urgencyScore != null ? (
-            <div className="mt-3 flex items-center justify-between gap-4">
-              <div className="text-left">
-                <p className="text-[32px] font-bold leading-none text-slate-900">
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <div className="min-w-0 text-left">
+                <p className={`font-bold leading-none text-slate-900 ${compact ? "text-[26px]" : "text-[32px]"}`}>
                   {urgencyScore}
                 </p>
                 {report.rainForecast && (
-                  <p className="mt-2 rounded-full bg-white/80 px-2.5 py-1 text-[12px] font-medium text-slate-700">
+                  <p className="mt-1.5 max-w-full truncate rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-700">
                     {t("report.rainForecast")}: {getRainLabel(report.rainForecast, locale)}
                   </p>
                 )}
@@ -169,19 +180,28 @@ export function ReportDetailContent({
               />
             </div>
           ) : (
-            <div className="mt-3 flex items-center justify-center py-6 text-center">
-              <p className="text-[14px] text-slate-500">{t("report.urgencyScore")} —</p>
+            <div className="mt-2 flex items-center justify-center py-4 text-center">
+              <p className="text-[13px] text-slate-500">{t("report.urgencyScore")} ?</p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="rounded-[16px] border-l-4 border-brand-blue bg-gradient-to-br from-brand-blue-soft to-white p-4">
-        <p className="text-[15px] font-bold text-brand-blue">{labels.aiReason}</p>
-        <p className="mt-2 text-[15px] leading-relaxed text-slate-700">{report.reason}</p>
+      <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between gap-2">
+          <p className={`font-semibold tracking-tight text-slate-900 ${compact ? "text-[13px]" : "text-[14px]"}`}>
+            {labels.aiReason}
+          </p>
+          <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+            AI
+          </span>
+        </div>
+        <p className={`mt-2.5 leading-[1.5] text-slate-600 ${compact ? "text-[13px]" : "text-[15px]"}`}>
+          {report.reason}
+        </p>
       </div>
 
-      <div className="rounded-[16px] border border-slate-100 bg-slate-50/80 p-4">
+      <div className="rounded-[14px] border border-slate-100 bg-slate-50/80 p-3.5">
         <p className="mb-3 text-[13px] font-semibold text-slate-700">
           {labels.changeStatus}
         </p>

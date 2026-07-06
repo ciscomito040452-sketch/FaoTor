@@ -31,7 +31,10 @@ export function ReportDetailPanel({
 
   if (!report) {
     return (
-      <Card padding="lg" className="flex min-h-[280px] items-center justify-center text-center">
+      <Card
+        padding="lg"
+        className="flex h-full min-h-[280px] items-center justify-center text-center"
+      >
         <div>
           <p className="text-[15px] font-semibold text-slate-600">
             {t("dashboard.selectReport")}
@@ -45,20 +48,19 @@ export function ReportDetailPanel({
   }
 
   return (
-    <div className="sticky top-20 max-h-[calc(100vh-6rem)] self-start overflow-y-auto">
-      <Card padding="lg">
-        <ReportDetailContent
-          report={report}
-          labels={labels}
-          onSave={handleSave}
-          onClose={onClose}
-          onViewOnMap={onViewOnMap}
-          compact
-        />
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <Card padding="none" className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto px-5 py-5">
+          <ReportDetailContent
+            report={report}
+            labels={labels}
+            onSave={handleSave}
+            onClose={onClose}
+            onViewOnMap={onViewOnMap}
+            compact
+          />
+        </div>
       </Card>
     </div>
   );
 }
-
-
-
