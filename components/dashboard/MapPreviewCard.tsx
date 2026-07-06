@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import dynamic from "next/dynamic";
-import type { Report, RiskLevel } from "@/lib/types";
+import type { Report } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
 
 const LeafletMap = dynamic(
@@ -9,18 +9,14 @@ const LeafletMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[360px] items-center justify-center bg-slate-50 text-[13px] text-slate-600 dark:bg-slate-100/10 lg:h-[min(72vh,640px)]">
+      <div className="flex h-[320px] items-center justify-center bg-slate-50 text-[13px] text-slate-600 dark:bg-slate-100/10 lg:h-[min(42vh,400px)]">
         …
       </div>
     ),
   }
 );
 
-const PIN_COLORS: Record<RiskLevel, string> = {
-  ปกติ: "#4E5768",
-  เริ่มอุดตัน: "#8A5A00",
-  อุดตันหนัก: "#B3261E",
-};
+const LEGEND_COLORS = ["#4E5768", "#8A5A00", "#B3261E"] as const;
 
 interface MapPreviewCardProps {
   title: string;
@@ -29,6 +25,7 @@ interface MapPreviewCardProps {
   selectedId?: string | null;
   pinCount?: number;
   onPinClick: (report: Report) => void;
+  onViewSelectedDetail?: () => void;
 }
 
 export function MapPreviewCard({
@@ -38,16 +35,35 @@ export function MapPreviewCard({
   selectedId,
   pinCount,
   onPinClick,
+  onViewSelectedDetail,
 }: MapPreviewCardProps) {
   const { t } = useApp();
+  const selectedReport = reports.find((r) => r.id === selectedId) ?? null;
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]">
+    <div
+      id="dashboard-map"
+      className="flex h-full w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]"
+    >
       <div className="border-b border-slate-100 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[17px] font-semibold text-slate-900">{title}</p>
             <p className="mt-1 text-[13px] text-slate-600">{caption}</p>
+            {selectedReport && (
+              <p className="mt-2 text-[12px] font-medium text-brand-blue">
+                {t("dashboard.mapSelectedHint").replace("{location}", selectedReport.location)}
+                {onViewSelectedDetail && (
+                  <button
+                    type="button"
+                    onClick={onViewSelectedDetail}
+                    className="ml-2 font-semibold underline underline-offset-2 hover:text-brand-blue-dark"
+                  >
+                    {t("dashboard.mapViewDetail")}
+                  </button>
+                )}
+              </p>
+            )}
           </div>
           {pinCount != null && (
             <span className="shrink-0 rounded-full bg-brand-blue-soft px-3 py-1 text-[13px] font-semibold text-brand-blue">
@@ -61,21 +77,19 @@ export function MapPreviewCard({
           reports={reports}
           selectedId={selectedId}
           onPinClick={onPinClick}
-          className="h-[360px] w-full lg:h-[min(72vh,640px)]"
+          className="h-[320px] w-full lg:h-[min(42vh,400px)]"
         />
       </div>
       <div className="flex flex-wrap gap-4 border-t border-slate-100 px-5 py-3">
-        {(
-          [
-            ["ปกติ", t("dashboard.mapLegendNormal")],
-            ["เริ่มอุดตัน", t("dashboard.mapLegendPartial")],
-            ["อุดตันหนัก", t("dashboard.mapLegendSevere")],
-          ] as const
-        ).map(([level, label]) => (
-          <span key={level} className="flex items-center gap-2 text-[13px] text-slate-600">
+        {([
+          t("dashboard.mapLegendNormal"),
+          t("dashboard.mapLegendPartial"),
+          t("dashboard.mapLegendSevere"),
+        ] as const).map((label, idx) => (
+          <span key={label} className="flex items-center gap-2 text-[13px] text-slate-600">
             <span
               className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: PIN_COLORS[level] }}
+              style={{ backgroundColor: LEGEND_COLORS[idx] }}
             />
             {label}
           </span>

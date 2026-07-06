@@ -63,7 +63,7 @@ export function trendFromDaySeries(
   reports: Report[],
   windowDays: number,
   predicate: (r: Report) => boolean
-): number {
+): number | null {
   const series = reportsByDayWhere(reports, windowDays * 2, predicate);
   const current = sumSeries(series.slice(-windowDays));
   const previous = sumSeries(series.slice(0, windowDays));
@@ -76,8 +76,11 @@ export function resolutionRate(reports: Report[]): number {
   return Math.round((fixed / reports.length) * 100);
 }
 
-export function trendPercent(current: number, previous: number): number {
-  if (previous === 0) return current > 0 ? 100 : 0;
+export function trendPercent(
+  current: number,
+  previous: number
+): number | null {
+  if (previous === 0) return null;
   return ((current - previous) / previous) * 100;
 }
 

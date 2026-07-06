@@ -14,7 +14,7 @@ export function TrendBadge({ value, label }: TrendBadgeProps) {
       }`}
     >
       {positive ? "+" : ""}
-      {value.toFixed(1)}%
+      {Math.round(value)}%
       {label && <span className="ml-1 font-normal text-slate-600">{label}</span>}
     </span>
   );

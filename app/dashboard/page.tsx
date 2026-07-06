@@ -65,9 +65,9 @@ export default function DashboardPage() {
   const stats = useMemo(
     () => ({
       total: reports.length,
-      pending: reports.filter((r) => r.status === "รอดำเนินการ").length,
-      inProgress: reports.filter((r) => r.status === "กำลังแก้ไข").length,
-      severe: reports.filter((r) => r.riskLevel === "อุดตันหนัก").length,
+      pending: reports.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23").length,
+      inProgress: reports.filter((r) => r.status === "\u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02").length,
+      severe: reports.filter((r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01").length,
     }),
     [reports]
   );
@@ -83,7 +83,7 @@ export default function DashboardPage() {
   );
 
   const pendingSorted = useMemo(() => {
-    const pending = reports.filter((r) => r.status === "รอดำเนินการ");
+    const pending = reports.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23");
     return sortReports(pending, "urgencyDesc");
   }, [reports]);
 
@@ -107,24 +107,24 @@ export default function DashboardPage() {
     [reports]
   );
   const pendingTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.status === "รอดำเนินการ"),
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23"),
     [reports]
   );
   const severeTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.riskLevel === "อุดตันหนัก"),
+    () => trendFromDaySeries(reports, 7, (r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01"),
     [reports]
   );
   const resolvedTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.status === "แก้ไขแล้ว"),
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "\u0e41\u0e01\u0e49\u0e44\u0e02\u0e41\u0e25\u0e49\u0e27"),
     [reports]
   );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = [...reports];
-    if (filter === "pending") list = list.filter((r) => r.status === "รอดำเนินการ");
-    else if (filter === "inProgress") list = list.filter((r) => r.status === "กำลังแก้ไข");
-    else if (filter === "severe") list = list.filter((r) => r.riskLevel === "อุดตันหนัก");
+    if (filter === "pending") list = list.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23");
+    else if (filter === "inProgress") list = list.filter((r) => r.status === "\u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02");
+    else if (filter === "severe") list = list.filter((r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01");
     if (q) {
       list = list.filter(
         (r) =>
@@ -152,8 +152,11 @@ export default function DashboardPage() {
         const offset = el.offsetTop - container.offsetTop;
         container.scrollTo({ top: Math.max(0, offset - 16), behavior: "smooth" });
       }
-      if (selectSource === "queue") {
-        workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (selectSource === "queue" || selectSource === "map") {
+        const delay = selectSource === "map" ? 500 : 0;
+        window.setTimeout(() => {
+          workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, delay);
       }
     }
 
@@ -182,6 +185,17 @@ export default function DashboardPage() {
   function handleDayInsightSelect(report: Report) {
     selectReport(report, "map");
     workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleMapViewSelectedDetail() {
+    workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleViewOnMap(report: Report) {
+    setSelected(report);
+    setSelectSource("list");
+    const mapEl = document.getElementById("dashboard-map");
+    mapEl?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const calendarNow = new Date();
@@ -284,6 +298,7 @@ export default function DashboardPage() {
             selectedId={selected?.id ?? null}
             pinCount={reports.length}
             onPinClick={(report) => selectReport(report, "map")}
+            onViewSelectedDetail={handleMapViewSelectedDetail}
           />
         </div>
       </div>
@@ -366,6 +381,7 @@ export default function DashboardPage() {
               onClose={() => setSelected(null)}
               onSave={handleSave}
               labels={detailLabels}
+              onViewOnMap={handleViewOnMap}
             />
           </div>
         </Card>
@@ -442,9 +458,17 @@ export default function DashboardPage() {
             onClose={() => setSelected(null)}
             onSave={handleSave}
             labels={detailLabels}
+            onViewOnMap={handleViewOnMap}
           />
         </div>
       )}
     </AppShell>
   );
 }
+
+
+
+
+
+
+

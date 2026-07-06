@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export type Filter = "all" | "pending" | "inProgress" | "severe";
 
@@ -31,6 +31,7 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
     <div className="mb-4 flex flex-wrap gap-2">
       {options.map((option) => {
         const active = value === option.key;
+        const severeActive = active && option.key === "severe";
         return (
           <button
             key={option.key}
@@ -38,7 +39,7 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
             onClick={() => onChange(option.key)}
             className={`inline-flex min-h-[40px] items-center gap-2 rounded-full px-4 text-[14px] font-semibold transition ${
                 active
-                  ? "bg-brand-blue text-white"
+                  ? severeActive ? "bg-brand-orange text-white" : "bg-brand-blue text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
@@ -56,3 +57,6 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
     </div>
   );
 }
+
+
+

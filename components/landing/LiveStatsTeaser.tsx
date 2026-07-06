@@ -3,7 +3,11 @@
 import { useMemo } from "react";
 import { useApp } from "@/lib/app-context";
 import { useReports } from "@/lib/reports-store";
-import { reportsByDay } from "@/lib/dashboard-analytics";
+import {
+  reportsByDay,
+  reportsByDayPending,
+  reportsByDaySevere,
+} from "@/lib/dashboard-analytics";
 import { KpiCard } from "@/components/ui/KpiCard";
 
 export function LiveStatsTeaser() {
@@ -19,7 +23,9 @@ export function LiveStatsTeaser() {
     [reports]
   );
 
-  const bars = useMemo(() => reportsByDay(reports, 7), [reports]);
+  const totalBars = useMemo(() => reportsByDay(reports, 7), [reports]);
+  const pendingBars = useMemo(() => reportsByDayPending(reports, 7), [reports]);
+  const severeBars = useMemo(() => reportsByDaySevere(reports, 7), [reports]);
 
   return (
     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -27,19 +33,20 @@ export function LiveStatsTeaser() {
         label={t("landing.stats.reports")}
         value={stats.total}
         chartType="bar"
-        chartData={bars}
+        chartData={totalBars}
       />
       <KpiCard
         label={t("landing.stats.pending")}
         value={stats.pending}
         chartType="bar"
-        chartData={bars}
+        chartData={pendingBars}
       />
       <KpiCard
         label={t("landing.stats.severe")}
         value={stats.severe}
-        chartType="sparkline"
-        chartData={bars}
+        chartType="bar"
+        chartData={severeBars}
+        barVariant="severe"
       />
     </div>
   );

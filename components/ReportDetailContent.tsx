@@ -29,6 +29,7 @@ interface ReportDetailContentProps {
   labels: ReportDetailLabels;
   onSave: (id: string, status: ReportStatus) => void;
   onClose?: () => void;
+  onViewOnMap?: (report: Report) => void;
   compact?: boolean;
 }
 
@@ -37,16 +38,17 @@ export function ReportDetailContent({
   labels,
   onSave,
   onClose,
+  onViewOnMap,
   compact = false,
 }: ReportDetailContentProps) {
   const { locale, t } = useApp();
-  const [status, setStatus] = useState<ReportStatus>("รอดำเนินการ");
+  const [status, setStatus] = useState<ReportStatus>(report.status);
 
   useEffect(() => {
     setStatus(report.status);
   }, [report]);
 
-  const ringSize = compact ? 72 : 88;
+  const ringSize = compact ? 86 : 96;
   const urgencyScore = report.urgencyScore ?? null;
 
   return (
@@ -57,7 +59,7 @@ export function ReportDetailContent({
             {t("dashboard.detailTitle")}
           </p>
           <p
-            className={`mt-1 font-semibold text-slate-900 ${compact ? "text-[18px]" : "text-[22px]"}`}
+            className={`mt-1 font-bold text-slate-900 ${compact ? "text-[22px]" : "text-[24px]"}`}
           >
             {report.location}
           </p>
@@ -74,6 +76,16 @@ export function ReportDetailContent({
               {getStatusLabel(report.status, locale)}
             </span>
           </div>
+          {onViewOnMap && (
+            <button
+              type="button"
+              onClick={() => onViewOnMap(report)}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-brand-blue/30 bg-brand-blue-soft px-3 py-1 text-[12px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+            >
+              <span aria-hidden>??</span>
+              {t("detail.viewOnMap")}
+            </button>
+          )}
         </div>
         {onClose && (
           <button
@@ -102,62 +114,71 @@ export function ReportDetailContent({
         <img
           src={report.imageUrl}
           alt={report.location}
-          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[200px]" : "aspect-[16/10] max-h-[260px]"}`}
+          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[210px]" : "aspect-[16/10] max-h-[270px]"}`}
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className={`grid gap-3 ${compact ? "grid-cols-1" : "grid-cols-2"}`}>
         <div
-          className={`flex flex-col items-center rounded-[16px] border border-slate-100 p-4 ${RISK_METRIC_BG[report.riskLevel]}`}
+          className={`rounded-[16px] border border-slate-100 p-4 ${RISK_METRIC_BG[report.riskLevel]}`}
         >
-          <ScoreRing
-            value={report.riskScore}
-            size={ringSize}
-            strokeColor={RISK_RING[report.riskLevel]}
-            label={labels.score}
-          />
-          <div className="mt-3">
-            <RiskBadge level={report.riskLevel} />
+          <p className="text-[13px] font-semibold text-slate-700">{labels.score}</p>
+          <div className="mt-3 flex items-center justify-between gap-4">
+            <div className="text-left">
+              <p className="text-[32px] font-bold leading-none text-slate-900">
+                {report.riskScore}
+              </p>
+              <div className="mt-2">
+                <RiskBadge level={report.riskLevel} />
+              </div>
+            </div>
+            <ScoreRing
+              value={report.riskScore}
+              size={ringSize}
+              strokeColor={RISK_RING[report.riskLevel]}
+            />
           </div>
         </div>
 
         <div
-          className={`flex flex-col items-center justify-center rounded-[16px] border border-slate-100 p-4 ${
+          className={`rounded-[16px] border border-slate-100 p-4 ${
             urgencyScore != null && urgencyScore >= 70
               ? "bg-brand-orange-soft"
               : "bg-brand-blue-soft"
           }`}
         >
+          <p className="text-[13px] font-semibold text-slate-700">
+            {t("report.urgencyScore")}
+          </p>
           {urgencyScore != null ? (
-            <ScoreRing
-              value={urgencyScore}
-              size={ringSize}
-              strokeColor={urgencyRingColor(urgencyScore)}
-              label={t("report.urgencyScore")}
-              sublabel={
-                report.rainForecast
-                  ? `${t("report.rainForecast")}: ${getRainLabel(report.rainForecast, locale)}`
-                  : undefined
-              }
-            />
+            <div className="mt-3 flex items-center justify-between gap-4">
+              <div className="text-left">
+                <p className="text-[32px] font-bold leading-none text-slate-900">
+                  {urgencyScore}
+                </p>
+                {report.rainForecast && (
+                  <p className="mt-2 rounded-full bg-white/80 px-2.5 py-1 text-[12px] font-medium text-slate-700">
+                    {t("report.rainForecast")}: {getRainLabel(report.rainForecast, locale)}
+                  </p>
+                )}
+              </div>
+              <ScoreRing
+                value={urgencyScore}
+                size={ringSize}
+                strokeColor={urgencyRingColor(urgencyScore)}
+              />
+            </div>
           ) : (
-            <div className="flex h-full flex-col items-center justify-center py-4 text-center">
-              <p className="text-[28px] font-bold text-slate-300">—</p>
-              <p className="mt-2 text-[12px] text-slate-500">
-                {t("report.urgencyScore")}
-              </p>
+            <div className="mt-3 flex items-center justify-center py-6 text-center">
+              <p className="text-[14px] text-slate-500">{t("report.urgencyScore")} —</p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="rounded-[16px] bg-brand-blue-soft p-4">
-        <p className="text-[13px] font-semibold text-brand-blue">
-          {labels.aiReason}
-        </p>
-        <p className="mt-2 text-[14px] leading-relaxed text-slate-700">
-          {report.reason}
-        </p>
+      <div className="rounded-[16px] border-l-4 border-brand-blue bg-gradient-to-br from-brand-blue-soft to-white p-4">
+        <p className="text-[15px] font-bold text-brand-blue">{labels.aiReason}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-slate-700">{report.reason}</p>
       </div>
 
       <div className="rounded-[16px] border border-slate-100 bg-slate-50/80 p-4">
@@ -177,3 +198,4 @@ export function ReportDetailContent({
     </div>
   );
 }
+

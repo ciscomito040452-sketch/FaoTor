@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { Report, ReportStatus } from "@/lib/types";
 import {
@@ -13,6 +13,7 @@ interface ReportDetailPanelProps {
   labels: ReportDetailLabels;
   onClose: () => void;
   onSave: (id: string, status: ReportStatus) => void;
+  onViewOnMap?: (report: Report) => void;
 }
 
 export function ReportDetailPanel({
@@ -20,6 +21,7 @@ export function ReportDetailPanel({
   labels,
   onClose,
   onSave,
+  onViewOnMap,
 }: ReportDetailPanelProps) {
   const { t } = useApp();
 
@@ -43,16 +45,20 @@ export function ReportDetailPanel({
   }
 
   return (
-    <div className="sticky top-20 self-start">
+    <div className="sticky top-20 max-h-[calc(100vh-6rem)] self-start overflow-y-auto">
       <Card padding="lg">
         <ReportDetailContent
           report={report}
           labels={labels}
           onSave={handleSave}
           onClose={onClose}
+          onViewOnMap={onViewOnMap}
           compact
         />
       </Card>
     </div>
   );
 }
+
+
+

@@ -65,7 +65,7 @@
   "dashboard.statInProgress": "กำลังแก้ไข",
   "dashboard.statSevere": "อุดตันหนัก",
   "dashboard.statResolved": "แก้ไขแล้ว",
-  "dashboard.kpiRowHint": "กราฟ = จำนวนต่อวัน (7 วันล่าสุด) · % = เทียบ 7 วันก่อนหน้า",
+  "dashboard.kpiRowHint": "กราฟ = จำนวนต่อวัน (7 วันล่าสุด) · % เทียบ 7 วันก่อนหน้า",
   "dashboard.kpiCaptionTotal": "รายงานใหม่ต่อวัน",
   "dashboard.kpiCaptionPending": "รอดำเนินการต่อวัน",
   "dashboard.kpiCaptionSevere": "อุดตันหนักต่อวัน",
@@ -148,5 +148,13 @@
   "line.botDashboard": "ดูรายละเอียดในแดชบอร์ดได้ที่ลิงก์ด้านล่าง",
   "line.openDashboard": "เปิดแดชบอร์ด",
   "common.loading": "กำลังโหลด...",
-  "common.close": "ปิด"
+  "common.close": "ปิด",
+  "report.uploadPhoto": "ถ่ายรูป / เลือกจากเครื่อง",
+  "report.changePhoto": "แตะเพื่อเปลี่ยนรูป",
+  "report.sampleSection": "ลองดูตัวอย่าง (ไม่บังคับ)",
+  "report.sampleBadge": "ตัวอย่าง demo",
+  "dashboard.cardUrgent": "เร่งด่วน {score}",
+  "dashboard.mapViewDetail": "ดูรายละเอียดด้านล่าง",
+  "dashboard.mapSelectedHint": "เลือก {location} - เลื่อนลงเพื่อดูรายละเอียด",
+  "detail.viewOnMap": "ดูบนแผนที่"
 }

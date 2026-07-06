@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export type SortOption = "riskDesc" | "newest" | "urgencyDesc";
 
@@ -28,7 +28,7 @@ export function DashboardToolbar({
   labels,
 }: DashboardToolbarProps) {
   return (
-    <div className="mb-4 space-y-3">
+    <div className="space-y-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="min-w-0 flex-1">
           <label className="sr-only" htmlFor="dashboard-search">
@@ -65,3 +65,5 @@ export function DashboardToolbar({
     </div>
   );
 }
+
+

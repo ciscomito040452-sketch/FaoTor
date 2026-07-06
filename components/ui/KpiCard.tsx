@@ -10,7 +10,7 @@ interface KpiCardProps {
   label: string;
   value: string | number;
   caption?: string;
-  trend?: number;
+  trend?: number | null;
   chartType?: ChartType;
   chartData?: number[];
   donutPercent?: number;

@@ -8,6 +8,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "เฝ้าท่อ (FaoTor)",
   description: "ระบบรายงานและวิเคราะห์ความเสี่ยงท่อระบายน้ำด้วย AI",
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+  },
 };
 
 export const viewport: Viewport = {

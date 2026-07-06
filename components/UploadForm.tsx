@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
@@ -28,6 +28,7 @@ const LocationMapPicker = dynamic(
 );
 
 type Step = 1 | 2 | 3 | 4;
+type PreviewSource = "none" | "file" | "sample";
 
 export function UploadForm() {
   const { t } = useApp();
@@ -39,6 +40,7 @@ export function UploadForm() {
   );
   const [mapKey, setMapKey] = useState(0);
   const [preview, setPreview] = useState<string | null>(null);
+  const [previewSource, setPreviewSource] = useState<PreviewSource>("none");
   const [step, setStep] = useState<Step>(1);
   const [result, setResult] = useState<AnalyzeResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -81,8 +83,17 @@ export function UploadForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result as string);
+    reader.onload = () => {
+      setPreview(reader.result as string);
+      setPreviewSource("file");
+    };
     reader.readAsDataURL(file);
+  }
+
+  function handleSampleSelect(url: string) {
+    setPreview(url);
+    setPreviewSource("sample");
+    if (fileRef.current) fileRef.current.value = "";
   }
 
   useEffect(() => {
@@ -137,6 +148,7 @@ export function UploadForm() {
     setStep(1);
     setResult(null);
     setPreview(null);
+    setPreviewSource("none");
     setLocationNote("");
     setCoords(null);
     setMapKey((k) => k + 1);
@@ -193,12 +205,17 @@ export function UploadForm() {
           />
           <PhotoUploadZone
             preview={preview}
+            previewSource={previewSource}
             hint={t("report.photoHint")}
             tips={t("report.photoTips")}
             samples={SAMPLE_IMAGES}
             sampleLabels={sampleLabels}
+            uploadLabel={t("report.uploadPhoto")}
+            changeLabel={t("report.changePhoto")}
+            sampleSectionLabel={t("report.sampleSection")}
+            sampleBadgeLabel={t("report.sampleBadge")}
             onSelect={() => fileRef.current?.click()}
-            onSampleSelect={setPreview}
+            onSampleSelect={handleSampleSelect}
           />
 
           <div>
@@ -248,3 +265,4 @@ export function UploadForm() {
     </div>
   );
 }
+

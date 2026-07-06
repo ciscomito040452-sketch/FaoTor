@@ -148,5 +148,13 @@
   "line.botDashboard": "See details in the dashboard via the link below",
   "line.openDashboard": "Open dashboard",
   "common.loading": "Loading...",
-  "common.close": "Close"
+  "common.close": "Close",
+  "report.uploadPhoto": "Take / choose photo",
+  "report.changePhoto": "Tap to change photo",
+  "report.sampleSection": "Try samples (optional)",
+  "report.sampleBadge": "Demo sample",
+  "dashboard.cardUrgent": "Urgent {score}",
+  "dashboard.mapViewDetail": "View details below",
+  "dashboard.mapSelectedHint": "Selected {location} - scroll down for details",
+  "detail.viewOnMap": "View on map"
 }
