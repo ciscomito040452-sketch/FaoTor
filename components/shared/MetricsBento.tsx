@@ -2,10 +2,21 @@
 
 import type { RainForecast, RiskLevel } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
-import { computeUrgencyScore, getRainBonus, resolveRainForecast } from "@/lib/mock-weather";
+import {
+  computeUrgencyScore,
+  getRainBonus,
+  resolveRainChancePercent,
+  resolveRainForecast,
+} from "@/lib/mock-weather";
 import { getRainLabel } from "@/lib/labels";
 import { RiskBadge } from "@/components/RiskBadge";
-import { BENTO_HERO, BENTO_SURFACE } from "@/lib/risk-colors";
+import {
+  BENTO_CELL_RAIN,
+  BENTO_CELL_RISK,
+  BENTO_CELL_URGENCY,
+  BENTO_HERO,
+  BENTO_TRAY,
+} from "@/lib/risk-colors";
 
 export type MetricsBentoVariant = "compact" | "panel" | "inline";
 
@@ -14,6 +25,7 @@ interface MetricsBentoProps {
   riskLevel: RiskLevel;
   urgencyScore?: number;
   rainForecast?: RainForecast;
+  rainChancePercent?: number;
   scoreLabel: string;
   variant?: MetricsBentoVariant;
   className?: string;
@@ -28,7 +40,7 @@ function urgencyAccent(score: number): string {
 function RainCloudIcon({ level, size = 14 }: { level: RainForecast; size?: number }) {
   const iconClass =
     level === "สูง"
-      ? "text-brand-orange"
+      ? "text-sky-600"
       : level === "ปานกลาง"
         ? "text-slate-500"
         : "text-slate-400";
@@ -63,7 +75,7 @@ function UrgencyCell({
 }: {
   score: number;
   rainBonus: number;
-  layout: "hero" | "horizontal" | "inline";
+  layout: "hero" | "stack";
 }) {
   const { t } = useApp();
   const accent = urgencyAccent(score);
@@ -71,7 +83,7 @@ function UrgencyCell({
   if (layout === "hero") {
     return (
       <div className={`${BENTO_HERO} col-span-2 px-3 py-2.5`}>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-3">
           <p className="text-[12px] font-semibold text-slate-700">
             {t("report.urgencyScore")}
           </p>
@@ -91,37 +103,15 @@ function UrgencyCell({
     );
   }
 
-  if (layout === "horizontal") {
-    return (
-      <div className={`${BENTO_SURFACE} px-3 py-2.5`}>
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[11px] font-semibold text-slate-600">
-              {t("report.urgencyScore")}
-            </p>
-            <p className="mt-0.5 truncate text-[9px] text-slate-500">
-              {rainBonus > 0
-                ? t("weather.rainBonus").replace("{n}", String(rainBonus))
-                : t("detail.urgencyFormula")}
-            </p>
-          </div>
-          <p className={`text-[26px] font-bold leading-none tabular-nums ${accent}`}>
-            {score}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`${BENTO_SURFACE} min-w-0 px-2 py-2`}>
-      <p className={`text-[18px] font-bold leading-none tabular-nums ${accent}`}>
-        {score}
-      </p>
-      <p className="mt-1 text-[10px] font-semibold text-slate-600">
+    <div className={`${BENTO_CELL_URGENCY} flex min-h-[76px] min-w-0 flex-col p-2.5`}>
+      <p className="text-[10px] font-semibold text-slate-500">
         {t("dashboard.cardUrgencyLabel")}
       </p>
-      <p className="mt-0.5 truncate text-[9px] text-slate-500">
+      <p className={`mt-1 text-[22px] font-bold leading-none tabular-nums ${accent}`}>
+        {score}
+      </p>
+      <p className="mt-auto pt-1 text-[9px] leading-snug text-slate-500">
         {rainBonus > 0
           ? t("weather.rainBonus").replace("{n}", String(rainBonus))
           : t("detail.urgencyFormula")}
@@ -139,37 +129,18 @@ function RiskCell({
   score: number;
   riskLevel: RiskLevel;
   scoreLabel: string;
-  layout: "compact" | "horizontal" | "inline";
+  layout: "stack" | "compact";
 }) {
   const { t } = useApp();
-
-  if (layout === "horizontal") {
-    return (
-      <div className={`${BENTO_SURFACE} px-3 py-2.5`}>
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[11px] font-semibold text-slate-600">{scoreLabel}</p>
-            <div className="mt-1">
-              <RiskBadge level={riskLevel} compact />
-            </div>
-          </div>
-          <p className="text-[26px] font-bold leading-none tabular-nums text-slate-900">
-            {score}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const label = layout === "stack" ? t("dashboard.cardRiskLabel") : scoreLabel;
 
   return (
-    <div className={`${BENTO_SURFACE} min-w-0 px-2.5 py-2`}>
-      <p className="text-[22px] font-bold leading-none tabular-nums text-slate-900">
+    <div className={`${BENTO_CELL_RISK} flex min-h-[76px] min-w-0 flex-col p-2.5`}>
+      <p className="text-[10px] font-semibold text-slate-500">{label}</p>
+      <p className="mt-1 text-[22px] font-bold leading-none tabular-nums text-slate-900">
         {score}
       </p>
-      <p className="mt-1 text-[10px] font-semibold text-slate-600">
-        {layout === "inline" ? t("dashboard.cardRiskLabel") : scoreLabel}
-      </p>
-      <div className="mt-1">
+      <div className="mt-auto pt-1">
         <RiskBadge level={riskLevel} compact />
       </div>
     </div>
@@ -178,49 +149,58 @@ function RiskCell({
 
 function RainCell({
   level,
-  layout,
+  percent,
 }: {
   level: RainForecast;
-  layout: "compact" | "horizontal" | "inline";
+  percent: number;
 }) {
   const { locale, t } = useApp();
-  const label = getRainLabel(level, locale);
-
-  if (layout === "horizontal") {
-    return (
-      <div className={`${BENTO_SURFACE} px-3 py-2.5`}>
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-[11px] font-semibold text-slate-600">
-              {t("report.rainForecast")}
-            </p>
-            <p className="mt-0.5 truncate text-[9px] text-slate-400">
-              {t("weather.apiSource")}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-1">
-            <RainCloudIcon level={level} size={16} />
-            <span className="text-[22px] font-bold leading-none text-slate-900">
-              {label}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const levelLabel = getRainLabel(level, locale);
 
   return (
-    <div className={`${BENTO_SURFACE} min-w-0 px-2.5 py-2`}>
-      <div className="flex items-center gap-1">
-        <RainCloudIcon level={level} size={14} />
-        <p className="text-[18px] font-bold leading-none text-slate-900">{label}</p>
+    <div className={`${BENTO_CELL_RAIN} flex min-h-[76px] min-w-0 flex-col p-2.5`}>
+      <p className="text-[10px] font-semibold text-slate-500">
+        {t("weather.rainChance")}
+      </p>
+      <div className="mt-1 flex items-baseline gap-0.5">
+        <p className="text-[22px] font-bold leading-none tabular-nums text-slate-900">
+          {percent}
+        </p>
+        <span className="text-[13px] font-semibold text-slate-500">%</span>
       </div>
-      <p className="mt-1 text-[10px] font-semibold text-slate-600">
-        {t("report.rainForecast")}
-      </p>
-      <p className="mt-0.5 truncate text-[9px] text-slate-400">
-        {t("weather.apiSource")}
-      </p>
+      <div className="mt-auto flex flex-wrap items-center gap-1 pt-1">
+        <span className="inline-flex items-center gap-0.5 rounded-md bg-white/80 px-1.5 py-0.5 text-[9px] font-semibold text-slate-600 ring-1 ring-slate-200/80">
+          <RainCloudIcon level={level} size={10} />
+          {levelLabel}
+        </span>
+        <span className="text-[9px] text-slate-400">{t("weather.apiSource")}</span>
+      </div>
+    </div>
+  );
+}
+
+function StackedBentoGrid({
+  urgency,
+  rainBonus,
+  riskScore,
+  riskLevel,
+  scoreLabel,
+  rain,
+  rainPercent,
+}: {
+  urgency: number;
+  rainBonus: number;
+  riskScore: number;
+  riskLevel: RiskLevel;
+  scoreLabel: string;
+  rain: RainForecast;
+  rainPercent: number;
+}) {
+  return (
+    <div className={`${BENTO_TRAY} grid grid-cols-2 gap-2`}>
+      <UrgencyCell score={urgency} rainBonus={rainBonus} layout="hero" />
+      <RiskCell score={riskScore} riskLevel={riskLevel} scoreLabel={scoreLabel} layout="compact" />
+      <RainCell level={rain} percent={rainPercent} />
     </div>
   );
 }
@@ -230,6 +210,7 @@ export function MetricsBento({
   riskLevel,
   urgencyScore,
   rainForecast,
+  rainChancePercent,
   scoreLabel,
   variant = "compact",
   className = "",
@@ -237,32 +218,29 @@ export function MetricsBento({
   const rain = resolveRainForecast(rainForecast);
   const urgency = urgencyScore ?? computeUrgencyScore(riskScore, rain);
   const rainBonus = getRainBonus(rain);
+  const rainPercent = resolveRainChancePercent(rain, rainChancePercent);
 
   if (variant === "inline") {
     return (
-      <div className={`mt-2.5 grid grid-cols-3 gap-1.5 ${className}`}>
-        <UrgencyCell score={urgency} rainBonus={rainBonus} layout="inline" />
-        <RiskCell score={riskScore} riskLevel={riskLevel} scoreLabel={scoreLabel} layout="inline" />
-        <RainCell level={rain} layout="inline" />
-      </div>
-    );
-  }
-
-  if (variant === "panel") {
-    return (
-      <div className={`grid grid-cols-3 gap-2 ${className}`}>
-        <UrgencyCell score={urgency} rainBonus={rainBonus} layout="horizontal" />
-        <RiskCell score={riskScore} riskLevel={riskLevel} scoreLabel={scoreLabel} layout="horizontal" />
-        <RainCell level={rain} layout="horizontal" />
+      <div className={`${BENTO_TRAY} grid grid-cols-3 gap-2 ${className}`}>
+        <UrgencyCell score={urgency} rainBonus={rainBonus} layout="stack" />
+        <RiskCell score={riskScore} riskLevel={riskLevel} scoreLabel={scoreLabel} layout="stack" />
+        <RainCell level={rain} percent={rainPercent} />
       </div>
     );
   }
 
   return (
-    <div className={`grid grid-cols-2 gap-2 ${className}`}>
-      <UrgencyCell score={urgency} rainBonus={rainBonus} layout="hero" />
-      <RiskCell score={riskScore} riskLevel={riskLevel} scoreLabel={scoreLabel} layout="compact" />
-      <RainCell level={rain} layout="compact" />
+    <div className={className}>
+      <StackedBentoGrid
+        urgency={urgency}
+        rainBonus={rainBonus}
+        riskScore={riskScore}
+        riskLevel={riskLevel}
+        scoreLabel={scoreLabel}
+        rain={rain}
+        rainPercent={rainPercent}
+      />
     </div>
   );
 }

@@ -18,6 +18,7 @@ export interface Report {
   riskScore: number;
   urgencyScore?: number;
   rainForecast?: RainForecast;
+  rainChancePercent?: number;
   reason: string;
   status: ReportStatus;
   createdAt: string;
@@ -28,5 +29,6 @@ export interface AnalyzeResult {
   riskScore: number;
   urgencyScore: number;
   rainForecast: RainForecast;
+  rainChancePercent?: number;
   reason: string;
 }

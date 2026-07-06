@@ -14,6 +14,20 @@ export function getRainForecast(): RainForecast {
   return "ต่ำ";
 }
 
+/** โอกาสฝนตก mock (%) — Phase 2 จะดึงจาก Weather API จริง */
+export function getRainChancePercent(rain: RainForecast): number {
+  if (rain === "สูง") return 85;
+  if (rain === "ปานกลาง") return 55;
+  return 25;
+}
+
+export function resolveRainChancePercent(
+  rain: RainForecast,
+  override?: number
+): number {
+  return override ?? getRainChancePercent(rain);
+}
+
 /** โบนัสคะแนนจากระดับฝน — ใช้แสดงใน UI ว่า urgency รวมข้อมูล Weather API */
 export function getRainBonus(rain: RainForecast): number {
   if (rain === "สูง") return 25;

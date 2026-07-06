@@ -46,11 +46,16 @@
 ### Metrics Bento v3.1 (2026-07-07)
 
 - **ลำดับ:** Urgency (hero บน mobile) → Risk → Rain
-- **พื้น:** ขาว + `ring-slate-200/70` — ไม่ทาสีส้ม/ฟ้าทั้งการ์ด
-- **Compact (mobile sheet):** hero urgency แถวเต็ม + risk/rain 2 คอลัมน์ล่าง (~120px รวม)
-- **Panel (desktop detail):** 3 คอลัมน์แนวนอน label | ตัวเลข
-- **Inline (list card):** 3 คอลัมน์แถบเดียว
-- **AI card:** ไม่ใช้ `border-l-4` ฟ้า — พื้นขาว border กลาง
+- **พื้น:** `BENTO_TRAY` slate-100 + cell ขาว แยก accent ด้วย `border-t-2`
+- **Rain:** แสดง **% โอกาสฝนตก** เป็นตัวเลขหลัก + chip ระดับ (สูง/ปานกลาง/ต่ำ) + Weather API hint
+- **Panel:** hero + 2-col (ไม่ใช้ 3-col แนวนอนแคบ)
+- **AI card:** ไม่ใช้ `border-l-4` ฟ้า
+
+### Metrics Bento v3.2 (2026-07-07)
+
+- Rain cell: `85%` + chip ระดับ + `weather.rainChance` label
+- Typed cells: urgency (orange top), risk (slate top), rain (sky top + sky-50/40 bg)
+- List card: metrics ใน tray + `border-t` คั่นจาก header
 
 ### Detail Sheet Sticky Footer (2026-07-07)
 

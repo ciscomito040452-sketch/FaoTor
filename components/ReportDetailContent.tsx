@@ -155,6 +155,7 @@ export function ReportDetailContent({
         riskLevel={report.riskLevel}
         urgencyScore={urgencyScore}
         rainForecast={rainForecast}
+        rainChancePercent={report.rainChancePercent}
         scoreLabel={labels.score}
         variant={bentoVariant}
       />

@@ -25,8 +25,15 @@ export function urgencyRingColor(score: number): string {
   return "#94A3B8";
 }
 
-/** Bento metric surfaces — white/neutral, accent on numbers only */
+/** Bento metric surfaces — tray + typed cells */
+export const BENTO_TRAY = "rounded-[16px] bg-slate-100/80 p-2.5";
+export const BENTO_CELL_URGENCY =
+  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-brand-orange/70";
+export const BENTO_CELL_RISK =
+  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-slate-300";
+export const BENTO_CELL_RAIN =
+  "rounded-[12px] bg-sky-50/40 shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-sky-400/70";
+export const BENTO_HERO =
+  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-brand-orange/80";
 export const BENTO_SURFACE =
   "rounded-[14px] bg-white ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)]";
-export const BENTO_HERO =
-  "rounded-[14px] bg-slate-50/90 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)]";

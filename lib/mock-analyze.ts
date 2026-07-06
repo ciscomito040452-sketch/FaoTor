@@ -1,5 +1,5 @@
 import type { AnalyzeResult, RiskLevel } from "./types";
-import { computeUrgencyScore, getRainForecast } from "./mock-weather";
+import { computeUrgencyScore, getRainChancePercent, getRainForecast } from "./mock-weather";
 
 const ANALYSIS_POOL: Record<
   RiskLevel,
@@ -67,6 +67,7 @@ export async function mockAnalyzeImage(
     riskScore,
     urgencyScore,
     rainForecast,
+    rainChancePercent: getRainChancePercent(rainForecast),
     reason: base.reason,
   };
 }

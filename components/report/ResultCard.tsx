@@ -32,6 +32,7 @@ export function ResultCard({
           riskLevel={result.riskLevel}
           urgencyScore={result.urgencyScore}
           rainForecast={result.rainForecast}
+          rainChancePercent={result.rainChancePercent}
           scoreLabel={scoreLabel}
           variant="compact"
           className="!mt-0"

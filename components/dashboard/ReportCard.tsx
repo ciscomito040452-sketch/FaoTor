@@ -94,14 +94,17 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           </div>
         </div>
 
-        <MetricsBento
-          riskScore={report.riskScore}
-          riskLevel={report.riskLevel}
-          urgencyScore={report.urgencyScore}
-          rainForecast={report.rainForecast}
-          scoreLabel={t("dashboard.cardRiskLabel")}
-          variant="inline"
-        />
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          <MetricsBento
+            riskScore={report.riskScore}
+            riskLevel={report.riskLevel}
+            urgencyScore={report.urgencyScore}
+            rainForecast={report.rainForecast}
+            rainChancePercent={report.rainChancePercent}
+            scoreLabel={t("dashboard.cardRiskLabel")}
+            variant="inline"
+          />
+        </div>
       </button>
     );
   }

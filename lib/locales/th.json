@@ -123,6 +123,7 @@
   "detail.rain": "พยากรณ์ฝน",
   "detail.urgencyFormula": "รวม AI + พยากรณ์ฝน",
   "weather.apiSource": "Weather API · Demo",
+  "weather.rainChance": "โอกาสฝนตก",
   "weather.rainBonus": "+{n} จากฝน",
   "weather.fetchedAt": "อัปเดตล่าสุด · Demo",
   "report.urgencyExplain": "คะแนนเร่งด่วนรวมพยากรณ์ฝนในพื้นที่ (Mock Weather API)",

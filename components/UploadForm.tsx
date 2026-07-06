@@ -122,6 +122,7 @@ export function UploadForm() {
         riskScore: analysis.riskScore,
         urgencyScore: analysis.urgencyScore,
         rainForecast: analysis.rainForecast,
+        rainChancePercent: analysis.rainChancePercent,
         reason: analysis.reason,
         lat: coords.lat,
         lng: coords.lng,
