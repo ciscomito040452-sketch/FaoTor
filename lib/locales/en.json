@@ -154,6 +154,8 @@
   "report.sampleSection": "Try samples (optional)",
   "report.sampleBadge": "Demo sample",
   "dashboard.cardUrgent": "Urgent {score}",
+  "dashboard.cardRiskLabel": "Risk",
+  "dashboard.cardUrgencyLabel": "Urgency",
   "dashboard.mapViewDetail": "View details below",
   "dashboard.mapSelectedHint": "Selected {location} - scroll down for details",
   "detail.viewOnMap": "View on map"

@@ -154,6 +154,8 @@
   "report.sampleSection": "ลองดูตัวอย่าง (ไม่บังคับ)",
   "report.sampleBadge": "ตัวอย่าง demo",
   "dashboard.cardUrgent": "เร่งด่วน {score}",
+  "dashboard.cardRiskLabel": "ความเสี่ยง",
+  "dashboard.cardUrgencyLabel": "เร่งด่วน",
   "dashboard.mapViewDetail": "ดูรายละเอียดด้านล่าง",
   "dashboard.mapSelectedHint": "เลือก {location} - เลื่อนลงเพื่อดูรายละเอียด",
   "detail.viewOnMap": "ดูบนแผนที่"

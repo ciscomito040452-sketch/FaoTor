@@ -31,6 +31,9 @@ interface ReportDetailContentProps {
   onClose?: () => void;
   onViewOnMap?: (report: Report) => void;
   compact?: boolean;
+  showSaveButton?: boolean;
+  status?: ReportStatus;
+  onStatusChange?: (status: ReportStatus) => void;
 }
 
 export function ReportDetailContent({
@@ -40,13 +43,23 @@ export function ReportDetailContent({
   onClose,
   onViewOnMap,
   compact = false,
+  showSaveButton = true,
+  status: controlledStatus,
+  onStatusChange,
 }: ReportDetailContentProps) {
   const { locale, t } = useApp();
-  const [status, setStatus] = useState<ReportStatus>(report.status);
+  const [internalStatus, setInternalStatus] = useState<ReportStatus>(report.status);
+  const status = controlledStatus ?? internalStatus;
+
+  function setStatus(next: ReportStatus) {
+    if (onStatusChange) onStatusChange(next);
+    else setInternalStatus(next);
+  }
 
   useEffect(() => {
-    setStatus(report.status);
-  }, [report]);
+    if (onStatusChange) onStatusChange(report.status);
+    else setInternalStatus(report.status);
+  }, [report.id, report.status, onStatusChange]);
 
   const ringSize = compact ? 64 : 96;
   const urgencyScore = report.urgencyScore ?? null;
@@ -131,57 +144,51 @@ export function ReportDetailContent({
 
       <div className="grid grid-cols-2 gap-2.5">
         <div
-          className={`rounded-[14px] border border-slate-100 p-3 ${RISK_METRIC_BG[report.riskLevel]}`}
+          className={`flex flex-col items-center rounded-[14px] border border-slate-100 p-3 ${RISK_METRIC_BG[report.riskLevel]}`}
         >
-          <p className="text-[12px] font-semibold text-slate-700">{labels.score}</p>
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <div className="min-w-0 text-left">
-              <p className={`font-bold leading-none text-slate-900 ${compact ? "text-[26px]" : "text-[32px]"}`}>
-                {report.riskScore}
-              </p>
-              <div className="mt-1.5">
-                <RiskBadge level={report.riskLevel} compact />
-              </div>
-            </div>
+          <p className="w-full text-[12px] font-semibold text-slate-700">
+            {labels.score}
+          </p>
+          <div className="mt-2 flex flex-col items-center">
             <ScoreRing
               value={report.riskScore}
               size={ringSize}
               strokeColor={RISK_RING[report.riskLevel]}
             />
+            <div className="mt-2">
+              <RiskBadge level={report.riskLevel} compact />
+            </div>
           </div>
         </div>
 
         <div
-          className={`rounded-[14px] border border-slate-100 p-3 ${
+          className={`flex flex-col items-center rounded-[14px] border border-slate-100 p-3 ${
             urgencyScore != null && urgencyScore >= 70
               ? "bg-brand-orange-soft"
               : "bg-brand-blue-soft"
           }`}
         >
-          <p className="text-[12px] font-semibold text-slate-700">
+          <p className="w-full text-[12px] font-semibold text-slate-700">
             {t("report.urgencyScore")}
           </p>
           {urgencyScore != null ? (
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <div className="min-w-0 text-left">
-                <p className={`font-bold leading-none text-slate-900 ${compact ? "text-[26px]" : "text-[32px]"}`}>
-                  {urgencyScore}
-                </p>
-                {report.rainForecast && (
-                  <p className="mt-1.5 max-w-full truncate rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-700">
-                    {t("report.rainForecast")}: {getRainLabel(report.rainForecast, locale)}
-                  </p>
-                )}
-              </div>
+            <div className="mt-2 flex flex-col items-center">
               <ScoreRing
                 value={urgencyScore}
                 size={ringSize}
                 strokeColor={urgencyRingColor(urgencyScore)}
               />
+              {report.rainForecast && (
+                <p className="mt-2 max-w-full truncate rounded-full bg-white/80 px-2 py-0.5 text-[10px] font-medium text-slate-700">
+                  {t("report.rainForecast")}: {getRainLabel(report.rainForecast, locale)}
+                </p>
+              )}
             </div>
           ) : (
             <div className="mt-2 flex items-center justify-center py-4 text-center">
-              <p className="text-[13px] text-slate-500">{t("report.urgencyScore")} ?</p>
+              <p className="text-[13px] text-slate-500">
+                {t("report.urgencyScore")} ?
+              </p>
             </div>
           )}
         </div>
@@ -189,14 +196,18 @@ export function ReportDetailContent({
 
       <div className="rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between gap-2">
-          <p className={`font-semibold tracking-tight text-slate-900 ${compact ? "text-[13px]" : "text-[14px]"}`}>
+          <p
+            className={`font-semibold tracking-tight text-slate-900 ${compact ? "text-[13px]" : "text-[14px]"}`}
+          >
             {labels.aiReason}
           </p>
           <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
             AI
           </span>
         </div>
-        <p className={`mt-2.5 leading-[1.5] text-slate-600 ${compact ? "text-[13px]" : "text-[15px]"}`}>
+        <p
+          className={`mt-2.5 leading-[1.5] text-slate-600 ${compact ? "text-[13px]" : "text-[15px]"}`}
+        >
           {report.reason}
         </p>
       </div>
@@ -208,14 +219,15 @@ export function ReportDetailContent({
         <StatusSegmented value={status} onChange={setStatus} />
       </div>
 
-      <Button
-        variant="primary"
-        className="w-full"
-        onClick={() => onSave(report.id, status)}
-      >
-        {labels.save}
-      </Button>
+      {showSaveButton && (
+        <Button
+          variant="primary"
+          className="w-full"
+          onClick={() => onSave(report.id, status)}
+        >
+          {labels.save}
+        </Button>
+      )}
     </div>
   );
 }
-

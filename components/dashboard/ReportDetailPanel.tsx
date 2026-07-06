@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { useEffect, useState } from "react";
 import type { Report, ReportStatus } from "@/lib/types";
 import {
   ReportDetailContent,
@@ -7,6 +8,7 @@ import {
 } from "@/components/ReportDetailContent";
 import { useApp } from "@/lib/app-context";
 import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 interface ReportDetailPanelProps {
   report: Report | null;
@@ -24,10 +26,13 @@ export function ReportDetailPanel({
   onViewOnMap,
 }: ReportDetailPanelProps) {
   const { t } = useApp();
+  const [status, setStatus] = useState<ReportStatus>(
+    report?.status ?? "รอดำเนินการ"
+  );
 
-  function handleSave(id: string, status: ReportStatus) {
-    onSave(id, status);
-  }
+  useEffect(() => {
+    if (report) setStatus(report.status);
+  }, [report]);
 
   if (!report) {
     return (
@@ -54,11 +59,23 @@ export function ReportDetailPanel({
           <ReportDetailContent
             report={report}
             labels={labels}
-            onSave={handleSave}
+            onSave={onSave}
             onClose={onClose}
             onViewOnMap={onViewOnMap}
             compact
+            showSaveButton={false}
+            status={status}
+            onStatusChange={setStatus}
           />
+        </div>
+        <div className="shrink-0 border-t border-slate-100 bg-white px-5 py-4">
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={() => onSave(report.id, status)}
+          >
+            {labels.save}
+          </Button>
         </div>
       </Card>
     </div>

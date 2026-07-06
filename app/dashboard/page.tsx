@@ -27,6 +27,7 @@ import {
   trendFromDaySeries,
 } from "@/lib/dashboard-analytics";
 import type { Report, ReportStatus } from "@/lib/types";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 type SelectSource = "list" | "map" | "queue";
 
@@ -52,6 +53,7 @@ function sortReports(list: Report[], sort: SortOption): Report[] {
 export default function DashboardPage() {
   const { t, showToast } = useApp();
   const { reports, updateStatus, isReady } = useReports();
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
   const [selected, setSelected] = useState<Report | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<SortOption>("riskDesc");
@@ -305,7 +307,7 @@ export default function DashboardPage() {
 
       <section id="report-workspace" ref={workspaceRef}>
         <Card padding="lg" className="hidden overflow-hidden xl:block">
-          <div className="grid max-h-[min(640px,calc(100vh-17rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] xl:items-stretch">
+          <div className="grid max-h-[min(72vh,calc(100vh-14rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] xl:grid-rows-[minmax(0,1fr)] xl:items-stretch">
             <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
               <h2 className="text-[20px] font-semibold text-slate-900">
                 {t("dashboard.listTitle")}
@@ -437,7 +439,7 @@ export default function DashboardPage() {
               }}
             />
           ) : (
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 max-h-[min(60vh,520px)] space-y-2.5 overflow-y-auto pr-1">
               {filtered.map((report) => (
                 <ReportCard
                   key={report.id}
@@ -453,16 +455,14 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {selected && (
-        <div className="xl:hidden">
-          <DetailSheet
-            report={selected}
-            onClose={() => setSelected(null)}
-            onSave={handleSave}
-            labels={detailLabels}
-            onViewOnMap={handleViewOnMap}
-          />
-        </div>
+      {selected && !isDesktop && (
+        <DetailSheet
+          report={selected}
+          onClose={() => setSelected(null)}
+          onSave={handleSave}
+          labels={detailLabels}
+          onViewOnMap={handleViewOnMap}
+        />
       )}
     </AppShell>
   );
