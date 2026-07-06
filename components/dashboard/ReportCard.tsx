@@ -6,7 +6,7 @@ import { formatTimeAgo } from "@/lib/reports-store";
 import { getStatusLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";
 import { STATUS_PILL, THUMB_RING } from "@/lib/status-colors";
-import { ReportInsightStrip } from "@/components/dashboard/ReportInsightStrip";
+import { MetricsBento } from "@/components/shared/MetricsBento";
 
 interface ReportCardProps {
   report: Report;
@@ -94,11 +94,13 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           </div>
         </div>
 
-        <ReportInsightStrip
+        <MetricsBento
           riskScore={report.riskScore}
           riskLevel={report.riskLevel}
           urgencyScore={report.urgencyScore}
           rainForecast={report.rainForecast}
+          scoreLabel={t("dashboard.cardRiskLabel")}
+          variant="inline"
         />
       </button>
     );

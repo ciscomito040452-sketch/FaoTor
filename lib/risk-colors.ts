@@ -22,5 +22,11 @@ export const RISK_BADGE: Record<RiskLevel, { bg: string; text: string }> = {
 export function urgencyRingColor(score: number): string {
   if (score >= 85) return "#EA580C";
   if (score >= 70) return "#F97316";
-  return "#3B82F6";
+  return "#94A3B8";
 }
+
+/** Bento metric surfaces — white/neutral, accent on numbers only */
+export const BENTO_SURFACE =
+  "rounded-[14px] bg-white ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)]";
+export const BENTO_HERO =
+  "rounded-[14px] bg-slate-50/90 ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)]";

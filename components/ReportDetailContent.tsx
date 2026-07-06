@@ -7,7 +7,10 @@ import { useApp } from "@/lib/app-context";
 import { getStatusLabel } from "@/lib/labels";
 import { computeUrgencyScore, resolveRainForecast } from "@/lib/mock-weather";
 import { STATUS_PILL } from "@/lib/status-colors";
-import { DetailMetricCards } from "./report/DetailMetricCards";
+import {
+  MetricsBento,
+  type MetricsBentoVariant,
+} from "@/components/shared/MetricsBento";
 import { StatusSegmented } from "./StatusSegmented";
 import { Button } from "./ui/Button";
 
@@ -27,6 +30,7 @@ interface ReportDetailContentProps {
   onClose?: () => void;
   onViewOnMap?: (report: Report) => void;
   compact?: boolean;
+  metricsVariant?: MetricsBentoVariant;
   showSaveButton?: boolean;
   showStatusSection?: boolean;
   status?: ReportStatus;
@@ -40,6 +44,7 @@ export function ReportDetailContent({
   onClose,
   onViewOnMap,
   compact = false,
+  metricsVariant,
   showSaveButton = true,
   showStatusSection = true,
   status: controlledStatus,
@@ -62,9 +67,11 @@ export function ReportDetailContent({
   const rainForecast = resolveRainForecast(report.rainForecast);
   const urgencyScore =
     report.urgencyScore ?? computeUrgencyScore(report.riskScore, rainForecast);
+  const bentoVariant: MetricsBentoVariant =
+    metricsVariant ?? (compact ? "compact" : "panel");
 
   return (
-    <div className={compact ? "space-y-3" : "space-y-4"}>
+    <div className={compact ? "space-y-2.5" : "space-y-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-[13px] font-semibold text-brand-blue">
@@ -75,17 +82,17 @@ export function ReportDetailContent({
           >
             {report.location}
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             {report.district && (
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] font-medium text-slate-600">
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
                 {report.district}
               </span>
             )}
-            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] text-slate-500">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
               {formatTimeAgo(report.createdAt, locale)}
             </span>
             <span
-              className={`rounded-full px-2.5 py-1 text-[12px] font-semibold ring-1 ring-inset ${STATUS_PILL[status]}`}
+              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${STATUS_PILL[status]}`}
             >
               {getStatusLabel(status, locale)}
             </span>
@@ -94,11 +101,11 @@ export function ReportDetailContent({
             <button
               type="button"
               onClick={() => onViewOnMap(report)}
-              className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-brand-blue/30 bg-brand-blue-soft px-3 py-1 text-[12px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+              className="mt-1.5 inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] font-semibold text-brand-blue hover:bg-slate-50"
             >
               <svg
-                width="14"
-                height="14"
+                width="12"
+                height="12"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -134,25 +141,25 @@ export function ReportDetailContent({
         )}
       </div>
 
-      <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-slate-50">
+      <div className="overflow-hidden rounded-[14px] border border-slate-100 bg-slate-50">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={report.imageUrl}
           alt={report.location}
-          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[150px]" : "aspect-[16/10] max-h-[270px]"}`}
+          className={`w-full object-cover ${compact ? "aspect-[16/9] max-h-[120px]" : "aspect-[16/10] max-h-[270px]"}`}
         />
       </div>
 
-      <DetailMetricCards
+      <MetricsBento
         riskScore={report.riskScore}
         riskLevel={report.riskLevel}
         urgencyScore={urgencyScore}
         rainForecast={rainForecast}
         scoreLabel={labels.score}
-        compact={compact}
+        variant={bentoVariant}
       />
 
-      <div className="rounded-[16px] border border-slate-200/80 border-l-4 border-l-brand-blue bg-gradient-to-br from-brand-blue-soft/40 to-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[14px] border border-slate-200/80 bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between gap-2">
           <p
             className={`font-semibold tracking-tight text-slate-900 ${compact ? "text-[13px]" : "text-[14px]"}`}
@@ -164,7 +171,7 @@ export function ReportDetailContent({
           </span>
         </div>
         <p
-          className={`mt-2.5 leading-[1.5] text-slate-600 ${compact ? "text-[13px]" : "text-[15px]"}`}
+          className={`mt-2 leading-[1.5] text-slate-600 ${compact ? "text-[13px]" : "text-[15px]"}`}
         >
           {report.reason}
         </p>

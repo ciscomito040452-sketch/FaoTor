@@ -63,6 +63,7 @@ export function ReportDetailPanel({
             onClose={onClose}
             onViewOnMap={onViewOnMap}
             compact
+            metricsVariant="panel"
             showSaveButton={false}
             showStatusSection={false}
             status={status}

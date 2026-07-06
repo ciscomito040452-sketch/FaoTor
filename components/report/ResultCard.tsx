@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { AnalyzeResult } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
-import { ReportInsightStrip } from "@/components/dashboard/ReportInsightStrip";
+import { MetricsBento } from "@/components/shared/MetricsBento";
 
 interface ResultCardProps {
   result: AnalyzeResult;
@@ -26,24 +26,33 @@ export function ResultCard({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-[16px] border border-slate-100 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
-        <p className="text-[13px] font-semibold text-slate-500">{scoreLabel}</p>
-
-        <ReportInsightStrip
+      <div className="rounded-[16px] border border-slate-100 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
+        <MetricsBento
           riskScore={result.riskScore}
           riskLevel={result.riskLevel}
           urgencyScore={result.urgencyScore}
           rainForecast={result.rainForecast}
+          scoreLabel={scoreLabel}
+          variant="compact"
+          className="!mt-0"
         />
 
-        <p className="mt-3 text-[12px] font-medium text-slate-500">
+        <p className="mt-2.5 text-[12px] font-medium text-slate-500">
           {t("report.urgencyExplain")}
         </p>
 
-        <p className="mt-5 border-l-4 border-brand-blue pl-4 text-[15px] leading-[1.5] text-slate-600">
-          {result.reason}
-        </p>
-        <p className="mt-4 text-[13px] text-slate-400">{location}</p>
+        <div className="mt-4 rounded-[14px] border border-slate-200/80 bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[13px] font-semibold tracking-tight text-slate-900">
+              {t("detail.aiReason")}
+            </p>
+            <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+              AI
+            </span>
+          </div>
+          <p className="mt-2 text-[13px] leading-[1.5] text-slate-600">{result.reason}</p>
+        </div>
+        <p className="mt-3 text-[13px] text-slate-400">{location}</p>
       </div>
 
       <button

@@ -38,17 +38,25 @@
 
 ### Report Insight Strip (2026-07-07)
 
-- ทุก **ReportCard** และ **ResultCard** แสดง 3 สัญญาณเสมอ: ความเสี่ยง | ความเร่งด่วน | พยากรณ์ฝน
-- พยากรณ์ฝนใช้ `RainForecastChip` + micro-label `Weather API · Demo` — สื่อว่า Phase 2 จะดึง API จริง
+- ทุก **ReportCard** และ **ResultCard** แสดง 3 สัญญาณเสมอผ่าน `MetricsBento`: **ความเร่งด่วน | ความเสี่ยง | พยากรณ์ฝน**
+- พยากรณ์ฝนแสดง micro-label `Weather API · Demo`
 - ความเร่งด่วนแสดง caption `+{n} จากฝน` เมื่อมี rain bonus
 - Status pill อยู่มุมขวาบนการ์ด — สีตามสถานะ (slate / blue / green)
+
+### Metrics Bento v3.1 (2026-07-07)
+
+- **ลำดับ:** Urgency (hero บน mobile) → Risk → Rain
+- **พื้น:** ขาว + `ring-slate-200/70` — ไม่ทาสีส้ม/ฟ้าทั้งการ์ด
+- **Compact (mobile sheet):** hero urgency แถวเต็ม + risk/rain 2 คอลัมน์ล่าง (~120px รวม)
+- **Panel (desktop detail):** 3 คอลัมน์แนวนอน label | ตัวเลข
+- **Inline (list card):** 3 คอลัมน์แถบเดียว
+- **AI card:** ไม่ใช้ `border-l-4` ฟ้า — พื้นขาว border กลาง
 
 ### Detail Sheet Sticky Footer (2026-07-07)
 
 - Mobile `DetailSheet` + desktop `ReportDetailPanel`: **StatusSegmented + Save** อยู่ footer คงที่ ไม่ scroll
 - Header chip สะท้อน status ที่เลือก (live update)
-- Metrics 3 การ์ด: Risk ring | Urgency ring | Rain chip (`DetailMetricCards`)
-- AI card: `border-l-4 border-brand-blue` + gradient พื้นอ่อน
+- Metrics ผ่าน `MetricsBento` (ไม่ใช้ ScoreRing ใหญ่ใน compact)
 
 ---
 

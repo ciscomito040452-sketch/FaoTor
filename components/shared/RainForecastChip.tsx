@@ -23,9 +23,9 @@ const levelStyles: Record<RainForecast, { bg: string; text: string; icon: string
     icon: "text-slate-500",
   },
   ต่ำ: {
-    bg: "bg-brand-blue-soft/60 border-brand-blue/20",
-    text: "text-brand-blue",
-    icon: "text-brand-blue/70",
+    bg: "bg-slate-50 border-slate-200/80",
+    text: "text-slate-600",
+    icon: "text-slate-400",
   },
 };
 
