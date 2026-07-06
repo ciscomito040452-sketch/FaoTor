@@ -93,7 +93,7 @@ export function ReportDetailContent({
       <img
         src={report.imageUrl}
         alt={report.location}
-        className={`mt-4 w-full rounded-[12px] object-cover ${compact ? "max-h-[140px]" : "max-h-[240px]"}`}
+        className={`mt-4 w-full rounded-[12px] object-cover ${compact ? "max-h-[200px]" : "max-h-[240px]"}`}
       />
 
       <div className={`flex items-start justify-between gap-4 ${compact ? "mt-4" : "mt-6"}`}>

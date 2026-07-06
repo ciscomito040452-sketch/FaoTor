@@ -27,6 +27,14 @@
 4. **Risk แดง** — เฉพาะ badge/pin ไม่ทาพื้นทั้งการ์ด
 5. ฟอนต์และ spacing เดิม (IBM Plex Sans Thai, 8pt grid)
 
+### Dashboard Officer Workspace
+
+- **ไม่มี** ปุ่มรายงานใหม่ / ส่งออก CSV (เป็นหน้าที่ผู้รายงาน)
+- List + Detail อยู่ใน **Card เดียว** — grid `1fr / minmax(340px,480px)` บน desktop
+- Detail panel: `sticky top-20`, `max-h-[calc(100vh-6rem)]`, scroll ภายใน panel เท่านั้น
+- List scroll แยกใน `max-h-[min(520px,55vh)]` — ไม่ scroll ทั้งหน้าเมื่อเลือกจาก list
+- คิวงาน: แสดง pending สูงสุด 8 รายการ, scroll ในกรอบ, ลิงก์ "ดูทั้งหมด" → filter pending
+
 ---
 
 ## เอกสารเวอร์ชันก่อน (v1/v2)

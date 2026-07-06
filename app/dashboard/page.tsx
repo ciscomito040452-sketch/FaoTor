@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DetailSheet } from "@/components/DetailSheet";
@@ -16,7 +15,6 @@ import {
   type SortOption,
 } from "@/components/dashboard/DashboardToolbar";
 import { KpiCard } from "@/components/ui/KpiCard";
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useApp } from "@/lib/app-context";
 import { useReports } from "@/lib/reports-store";
@@ -27,6 +25,8 @@ import {
   trendPercent,
 } from "@/lib/dashboard-analytics";
 import type { Report, ReportStatus } from "@/lib/types";
+
+type SelectSource = "list" | "map" | "queue";
 
 function sortReports(list: Report[], sort: SortOption): Report[] {
   const copy = [...list];
@@ -54,7 +54,10 @@ export default function DashboardPage() {
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<SortOption>("riskDesc");
   const [search, setSearch] = useState("");
+  const [selectSource, setSelectSource] = useState<SelectSource | null>(null);
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const listRef = useRef<HTMLDivElement>(null);
+  const workspaceRef = useRef<HTMLElement>(null);
 
   const stats = useMemo(
     () => ({
@@ -76,18 +79,20 @@ export default function DashboardPage() {
     [reports.length, stats.pending, stats.inProgress, stats.severe]
   );
 
-  const todayQueue = useMemo(() => {
+  const pendingSorted = useMemo(() => {
     const pending = reports.filter((r) => r.status === "รอดำเนินการ");
-    return sortReports(pending, "urgencyDesc").slice(0, 3);
+    return sortReports(pending, "urgencyDesc");
   }, [reports]);
+
+  const todayQueue = useMemo(() => pendingSorted.slice(0, 8), [pendingSorted]);
 
   const queueRankById = useMemo(() => {
     const map = new Map<string, number>();
-    todayQueue.forEach((r, i) => map.set(r.id, i + 1));
+    pendingSorted.forEach((r, i) => map.set(r.id, i + 1));
     return map;
-  }, [todayQueue]);
+  }, [pendingSorted]);
 
-  const topUrgentId = todayQueue[0]?.id ?? null;
+  const topUrgentId = pendingSorted[0]?.id ?? null;
   const weeklyBars = useMemo(() => reportsByDay(reports, 7), [reports]);
   const resolvedPct = useMemo(() => resolutionRate(reports), [reports]);
   const severeSpark = useMemo(
@@ -114,10 +119,28 @@ export default function DashboardPage() {
 
   const isFilteredEmpty = filtered.length === 0 && reports.length > 0;
 
+  function selectReport(report: Report, source: SelectSource) {
+    setSelected(report);
+    setSelectSource(source);
+  }
+
   useEffect(() => {
-    if (!selected?.id) return;
-    cardRefs.current[selected.id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [selected?.id]);
+    if (!selected?.id || !selectSource) return;
+
+    if (selectSource === "map" || selectSource === "queue") {
+      const el = cardRefs.current[selected.id];
+      const container = listRef.current;
+      if (el && container) {
+        const offset = el.offsetTop - container.offsetTop;
+        container.scrollTo({ top: Math.max(0, offset - 16), behavior: "smooth" });
+      }
+      if (selectSource === "queue") {
+        workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    setSelectSource(null);
+  }, [selected?.id, selectSource]);
 
   function handleSave(id: string, status: ReportStatus) {
     updateStatus(id, status);
@@ -129,6 +152,11 @@ export default function DashboardPage() {
     setFilter((c) => (c === next ? "all" : next));
   }
 
+  function handleQueueViewAll() {
+    setFilter("pending");
+    workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const detailLabels = {
     location: t("detail.location"),
     aiReason: t("detail.aiReason"),
@@ -137,17 +165,6 @@ export default function DashboardPage() {
     score: t("report.riskScore"),
     close: t("common.close"),
   };
-
-  const headerActions = (
-    <>
-      <Button variant="ghost" className="hidden sm:inline-flex">
-        {t("dashboard.exportCsv")}
-      </Button>
-      <Link href="/report">
-        <Button variant="orange">{t("dashboard.newReport")}</Button>
-      </Link>
-    </>
-  );
 
   if (!isReady) {
     return (
@@ -162,7 +179,6 @@ export default function DashboardPage() {
       title={t("shell.greeting")}
       subtitle={t("dashboard.updated")}
       largeTitle
-      actions={headerActions}
     >
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiCard
@@ -206,100 +222,168 @@ export default function DashboardPage() {
           <QueueTimeline
             reports={todayQueue}
             selectedId={selected?.id ?? null}
-            onOpen={setSelected}
+            onOpen={(report) => selectReport(report, "queue")}
+            onViewAll={handleQueueViewAll}
           />
         </div>
-        <div className="lg:col-span-1 lg:row-span-2">
+        <div className="lg:col-span-1">
           <MapPreviewCard
             title={t("dashboard.mapTitle")}
             caption={t("dashboard.mapCaption")}
             reports={reports}
             selectedId={selected?.id ?? null}
             pinCount={reports.length}
-            onPinClick={setSelected}
+            onPinClick={(report) => selectReport(report, "map")}
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <section className="flex min-h-0 flex-col xl:col-span-7">
-          <Card padding="lg" className="flex min-h-0 flex-1 flex-col">
-            <h2 className="text-[20px] font-semibold text-slate-900">
-              {t("dashboard.listTitle")}
-            </h2>
-            <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
+      <section id="report-workspace" ref={workspaceRef}>
+        <Card padding="lg" className="hidden xl:block">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,480px)]">
+            <div className="flex min-h-0 flex-col">
+              <h2 className="text-[20px] font-semibold text-slate-900">
+                {t("dashboard.listTitle")}
+              </h2>
+              <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
 
-            <div className="mt-4 shrink-0">
-              <DashboardToolbar
-                search={search}
-                onSearchChange={setSearch}
-                sort={sort}
-                onSortChange={setSort}
-                resultCount={filtered.length}
-                labels={{
-                  search: t("dashboard.search"),
-                  searchPlaceholder: t("dashboard.searchPlaceholder"),
-                  showing: t("dashboard.showing"),
-                  sortLabel: t("dashboard.sortLabel"),
-                  sortRisk: t("dashboard.sortRisk"),
-                  sortNewest: t("dashboard.sortNewest"),
-                  sortUrgency: t("dashboard.sortUrgency"),
-                }}
-              />
-              <FilterTabs
-                value={filter}
-                onChange={setFilter}
-                labels={{
-                  all: t("dashboard.filterAll"),
-                  pending: t("dashboard.filterPending"),
-                  inProgress: t("dashboard.filterInProgress"),
-                  severe: t("dashboard.filterSevere"),
-                }}
-                counts={filterCounts}
-              />
+              <div className="mt-4 shrink-0">
+                <DashboardToolbar
+                  search={search}
+                  onSearchChange={setSearch}
+                  sort={sort}
+                  onSortChange={setSort}
+                  resultCount={filtered.length}
+                  labels={{
+                    search: t("dashboard.search"),
+                    searchPlaceholder: t("dashboard.searchPlaceholder"),
+                    showing: t("dashboard.showing"),
+                    sortLabel: t("dashboard.sortLabel"),
+                    sortRisk: t("dashboard.sortRisk"),
+                    sortNewest: t("dashboard.sortNewest"),
+                    sortUrgency: t("dashboard.sortUrgency"),
+                  }}
+                />
+                <FilterTabs
+                  value={filter}
+                  onChange={setFilter}
+                  labels={{
+                    all: t("dashboard.filterAll"),
+                    pending: t("dashboard.filterPending"),
+                    inProgress: t("dashboard.filterInProgress"),
+                    severe: t("dashboard.filterSevere"),
+                  }}
+                  counts={filterCounts}
+                />
+              </div>
+
+              {reports.length === 0 ? (
+                <EmptyState />
+              ) : isFilteredEmpty ? (
+                <EmptyState
+                  title={t("dashboard.noResults")}
+                  hint={t("dashboard.noResultsHint")}
+                  actionLabel={t("dashboard.clearFilters")}
+                  onAction={() => {
+                    setFilter("all");
+                    setSearch("");
+                  }}
+                />
+              ) : (
+                <div
+                  ref={listRef}
+                  className="mt-4 max-h-[min(520px,55vh)] space-y-3 overflow-y-auto overscroll-contain pr-1"
+                >
+                  {filtered.map((report) => (
+                    <ReportCard
+                      key={report.id}
+                      ref={(el) => {
+                        cardRefs.current[report.id] = el;
+                      }}
+                      report={report}
+                      onSelect={(r) => selectReport(r, "list")}
+                      isSelected={selected?.id === report.id}
+                      isPriority={report.id === topUrgentId}
+                      queueRank={queueRankById.get(report.id)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
-            {reports.length === 0 ? (
-              <EmptyState />
-            ) : isFilteredEmpty ? (
-              <EmptyState
-                title={t("dashboard.noResults")}
-                hint={t("dashboard.noResultsHint")}
-                actionLabel={t("dashboard.clearFilters")}
-                onAction={() => {
-                  setFilter("all");
-                  setSearch("");
-                }}
-              />
-            ) : (
-              <div className="mt-4 max-h-[480px] space-y-3 overflow-y-auto pr-1">
-                {filtered.map((report) => (
-                  <ReportCard
-                    key={report.id}
-                    ref={(el) => {
-                      cardRefs.current[report.id] = el;
-                    }}
-                    report={report}
-                    onSelect={setSelected}
-                    isSelected={selected?.id === report.id}
-                    isPriority={report.id === topUrgentId}
-                    queueRank={queueRankById.get(report.id)}
-                  />
-                ))}
-              </div>
-            )}
-          </Card>
-        </section>
+            <ReportDetailPanel
+              report={selected}
+              onClose={() => setSelected(null)}
+              onSave={handleSave}
+              labels={detailLabels}
+            />
+          </div>
+        </Card>
 
-        <section className="hidden xl:col-span-5 xl:block">
-          <ReportDetailPanel
-            report={selected}
-            onClose={() => setSelected(null)}
-            onSave={handleSave}
-            labels={detailLabels}
-          />
-        </section>
-      </div>
+        <Card padding="lg" className="xl:hidden">
+          <h2 className="text-[20px] font-semibold text-slate-900">
+            {t("dashboard.listTitle")}
+          </h2>
+          <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
+
+          <div className="mt-4 shrink-0">
+            <DashboardToolbar
+              search={search}
+              onSearchChange={setSearch}
+              sort={sort}
+              onSortChange={setSort}
+              resultCount={filtered.length}
+              labels={{
+                search: t("dashboard.search"),
+                searchPlaceholder: t("dashboard.searchPlaceholder"),
+                showing: t("dashboard.showing"),
+                sortLabel: t("dashboard.sortLabel"),
+                sortRisk: t("dashboard.sortRisk"),
+                sortNewest: t("dashboard.sortNewest"),
+                sortUrgency: t("dashboard.sortUrgency"),
+              }}
+            />
+            <FilterTabs
+              value={filter}
+              onChange={setFilter}
+              labels={{
+                all: t("dashboard.filterAll"),
+                pending: t("dashboard.filterPending"),
+                inProgress: t("dashboard.filterInProgress"),
+                severe: t("dashboard.filterSevere"),
+              }}
+              counts={filterCounts}
+            />
+          </div>
+
+          {reports.length === 0 ? (
+            <EmptyState />
+          ) : isFilteredEmpty ? (
+            <EmptyState
+              title={t("dashboard.noResults")}
+              hint={t("dashboard.noResultsHint")}
+              actionLabel={t("dashboard.clearFilters")}
+              onAction={() => {
+                setFilter("all");
+                setSearch("");
+              }}
+            />
+          ) : (
+            <div className="mt-4 space-y-3">
+              {filtered.map((report) => (
+                <ReportCard
+                  key={report.id}
+                  report={report}
+                  onSelect={(r) => selectReport(r, "list")}
+                  isSelected={selected?.id === report.id}
+                  isPriority={report.id === topUrgentId}
+                  queueRank={queueRankById.get(report.id)}
+                />
+              ))}
+            </div>
+          )}
+        </Card>
+      </section>
 
       {selected && (
         <div className="xl:hidden">

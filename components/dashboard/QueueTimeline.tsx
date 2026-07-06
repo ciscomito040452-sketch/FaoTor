@@ -9,9 +9,15 @@ interface QueueTimelineProps {
   reports: Report[];
   selectedId?: string | null;
   onOpen: (report: Report) => void;
+  onViewAll?: () => void;
 }
 
-export function QueueTimeline({ reports, selectedId, onOpen }: QueueTimelineProps) {
+export function QueueTimeline({
+  reports,
+  selectedId,
+  onOpen,
+  onViewAll,
+}: QueueTimelineProps) {
   const { t } = useApp();
 
   if (reports.length === 0) {
@@ -27,11 +33,24 @@ export function QueueTimeline({ reports, selectedId, onOpen }: QueueTimelineProp
 
   return (
     <Card className="flex h-full flex-col">
-      <p className="text-[15px] font-semibold text-slate-900">
-        {t("dashboard.todayQueue")}
-      </p>
-      <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.todayQueueHint")}</p>
-      <div className="relative mt-4 flex-1 space-y-0">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[15px] font-semibold text-slate-900">
+            {t("dashboard.todayQueue")}
+          </p>
+          <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.todayQueueHint")}</p>
+        </div>
+        {onViewAll && (
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="shrink-0 text-[13px] font-semibold text-brand-blue hover:text-brand-blue-dark"
+          >
+            {t("dashboard.queueViewAll")}
+          </button>
+        )}
+      </div>
+      <div className="relative mt-4 max-h-[min(320px,40vh)] flex-1 space-y-0 overflow-y-auto overscroll-contain pr-1">
         <div className="absolute bottom-2 left-[11px] top-2 w-0.5 bg-slate-100" />
         {reports.map((report, index) => {
           const selected = report.id === selectedId;
