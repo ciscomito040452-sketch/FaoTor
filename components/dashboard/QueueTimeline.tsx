@@ -22,7 +22,7 @@ export function QueueTimeline({
 
   if (reports.length === 0) {
     return (
-      <Card className="h-full">
+      <Card className="h-full w-full">
         <p className="text-[15px] font-semibold text-slate-900">
           {t("dashboard.todayQueue")}
         </p>
@@ -32,7 +32,7 @@ export function QueueTimeline({
   }
 
   return (
-    <Card className="flex h-full flex-col">
+    <Card className="flex h-full w-full min-h-0 flex-col">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-[15px] font-semibold text-slate-900">
@@ -50,7 +50,7 @@ export function QueueTimeline({
           </button>
         )}
       </div>
-      <div className="relative mt-4 max-h-[min(320px,40vh)] flex-1 space-y-0 overflow-y-auto overscroll-contain pr-1">
+      <div className="relative mt-4 min-h-0 flex-1 space-y-0 overflow-y-auto overscroll-contain pr-1">
         <div className="absolute bottom-2 left-[11px] top-2 w-0.5 bg-slate-100" />
         {reports.map((report, index) => {
           const selected = report.id === selectedId;

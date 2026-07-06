@@ -9,6 +9,7 @@ import { MapPreviewCard } from "@/components/dashboard/MapPreviewCard";
 import { ReportCard } from "@/components/dashboard/ReportCard";
 import { ReportDetailPanel } from "@/components/dashboard/ReportDetailPanel";
 import { ReportCalendar } from "@/components/dashboard/ReportCalendar";
+import { CalendarDayInsight } from "@/components/dashboard/CalendarDayInsight";
 import { QueueTimeline } from "@/components/dashboard/QueueTimeline";
 import {
   DashboardToolbar,
@@ -55,6 +56,7 @@ export default function DashboardPage() {
   const [sort, setSort] = useState<SortOption>("riskDesc");
   const [search, setSearch] = useState("");
   const [selectSource, setSelectSource] = useState<SelectSource | null>(null);
+  const [calendarDay, setCalendarDay] = useState(() => new Date().getDate());
   const cardRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const listRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLElement>(null);
@@ -157,6 +159,17 @@ export default function DashboardPage() {
     workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  function handleDayInsightViewList() {
+    workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function handleDayInsightSelect(report: Report) {
+    selectReport(report, "map");
+    workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  const calendarNow = new Date();
+
   const detailLabels = {
     location: t("detail.location"),
     aiReason: t("detail.aiReason"),
@@ -214,11 +227,23 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-1">
-          <ReportCalendar reports={reports} />
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-stretch">
+        <div className="flex min-h-0 flex-col gap-4 lg:col-span-1">
+          <ReportCalendar
+            reports={reports}
+            selectedDay={calendarDay}
+            onSelectDay={setCalendarDay}
+          />
+          <CalendarDayInsight
+            reports={reports}
+            year={calendarNow.getFullYear()}
+            month={calendarNow.getMonth()}
+            selectedDay={calendarDay}
+            onViewList={handleDayInsightViewList}
+            onSelectReport={handleDayInsightSelect}
+          />
         </div>
-        <div className="lg:col-span-1">
+        <div className="flex min-h-0 lg:col-span-1">
           <QueueTimeline
             reports={todayQueue}
             selectedId={selected?.id ?? null}
@@ -226,7 +251,7 @@ export default function DashboardPage() {
             onViewAll={handleQueueViewAll}
           />
         </div>
-        <div className="lg:col-span-1">
+        <div className="flex lg:col-span-1">
           <MapPreviewCard
             title={t("dashboard.mapTitle")}
             caption={t("dashboard.mapCaption")}
@@ -240,7 +265,7 @@ export default function DashboardPage() {
 
       <section id="report-workspace" ref={workspaceRef}>
         <Card padding="lg" className="hidden xl:block">
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,480px)]">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(380px,520px)]">
             <div className="flex min-h-0 flex-col">
               <h2 className="text-[20px] font-semibold text-slate-900">
                 {t("dashboard.listTitle")}

@@ -50,6 +50,22 @@ export function calendarHeatmap(
   return map;
 }
 
+export function reportsOnDay(
+  reports: Report[],
+  year: number,
+  month: number,
+  day: number
+): Report[] {
+  return reports.filter((r) => {
+    const d = new Date(r.createdAt);
+    return (
+      d.getFullYear() === year &&
+      d.getMonth() === month &&
+      d.getDate() === day
+    );
+  });
+}
+
 export function sparklineFromScores(reports: Report[], n = 8): number[] {
   return [...reports]
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())

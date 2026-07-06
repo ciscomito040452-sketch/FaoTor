@@ -42,7 +42,7 @@ export function MapPreviewCard({
   const { t } = useApp();
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]">
       <div className="border-b border-slate-100 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>

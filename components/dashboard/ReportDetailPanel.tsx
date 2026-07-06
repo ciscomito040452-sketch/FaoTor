@@ -45,9 +45,6 @@ export function ReportDetailPanel({
   return (
     <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain">
       <Card padding="lg">
-        <p className="mb-4 text-[15px] font-semibold text-slate-900">
-          {t("dashboard.detailTitle")}
-        </p>
         <ReportDetailContent
           report={report}
           labels={labels}

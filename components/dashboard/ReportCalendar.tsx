@@ -8,9 +8,15 @@ import { Card } from "@/components/ui/Card";
 
 interface ReportCalendarProps {
   reports: Report[];
+  selectedDay: number;
+  onSelectDay: (day: number) => void;
 }
 
-export function ReportCalendar({ reports }: ReportCalendarProps) {
+export function ReportCalendar({
+  reports,
+  selectedDay,
+  onSelectDay,
+}: ReportCalendarProps) {
   const { t } = useApp();
   const now = new Date();
   const heat = useMemo(
@@ -20,6 +26,7 @@ export function ReportCalendar({ reports }: ReportCalendarProps) {
 
   const year = now.getFullYear();
   const month = now.getMonth();
+  const today = now.getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells: (number | null)[] = [];
@@ -32,7 +39,7 @@ export function ReportCalendar({ reports }: ReportCalendarProps) {
   });
 
   return (
-    <Card className="h-full">
+    <Card>
       <p className="text-[15px] font-semibold text-slate-900">
         {t("dashboard.calendarTitle")}
       </p>
@@ -42,12 +49,14 @@ export function ReportCalendar({ reports }: ReportCalendarProps) {
           <span key={d}>{d}</span>
         ))}
       </div>
-      <div className="mt-2 grid grid-cols-7 gap-1">
+      <div className="mt-2 grid grid-cols-7 gap-0.5">
         {cells.map((day, i) => {
           if (day == null) {
-            return <div key={`e-${i}`} className="aspect-square" />;
+            return <div key={`e-${i}`} className="h-8" />;
           }
           const count = heat.get(day) ?? 0;
+          const isSelected = day === selectedDay;
+          const isToday = day === today;
           const intensity =
             count === 0
               ? "bg-slate-50 text-slate-400"
@@ -57,12 +66,20 @@ export function ReportCalendar({ reports }: ReportCalendarProps) {
                   ? "bg-brand-orange text-white"
                   : "bg-brand-blue text-white";
           return (
-            <div
+            <button
               key={day}
-              className={`flex aspect-square items-center justify-center rounded-lg text-[12px] font-semibold ${intensity}`}
+              type="button"
+              onClick={() => onSelectDay(day)}
+              className={`flex h-8 w-full items-center justify-center rounded-md text-[12px] font-semibold transition ${intensity} ${
+                isSelected
+                  ? "ring-2 ring-brand-blue ring-offset-1"
+                  : isToday
+                    ? "ring-1 ring-brand-orange/50"
+                    : "hover:opacity-80"
+              }`}
             >
               {day}
-            </div>
+            </button>
           );
         })}
       </div>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Report, ReportStatus } from "@/lib/types";
+import type { Report, ReportStatus, RiskLevel } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { useApp } from "@/lib/app-context";
+import { getRainLabel, getStatusLabel } from "@/lib/labels";
 import { RiskBadge } from "./RiskBadge";
-import { RiskScore } from "./RiskScore";
 import { StatusSegmented } from "./StatusSegmented";
-import { UrgencyBadge } from "./shared/UrgencyBadge";
+import { ScoreRing } from "./ui/ScoreRing";
+import { Button } from "./ui/Button";
 
 export interface ReportDetailLabels {
   location: string;
@@ -26,6 +27,24 @@ interface ReportDetailContentProps {
   compact?: boolean;
 }
 
+const RING_COLORS: Record<RiskLevel, string> = {
+  ปกติ: "#6B7280",
+  เริ่มอุดตัน: "#F97316",
+  อุดตันหนัก: "#EF4444",
+};
+
+const METRIC_BG: Record<RiskLevel, string> = {
+  ปกติ: "bg-slate-50",
+  เริ่มอุดตัน: "bg-brand-orange-soft",
+  อุดตันหนัก: "bg-risk-red-bg/40",
+};
+
+function urgencyRingColor(score: number): string {
+  if (score >= 85) return "#EF4444";
+  if (score >= 70) return "#F97316";
+  return "#3B82F6";
+}
+
 export function ReportDetailContent({
   report,
   labels,
@@ -33,25 +52,43 @@ export function ReportDetailContent({
   onClose,
   compact = false,
 }: ReportDetailContentProps) {
-  const { locale } = useApp();
+  const { locale, t } = useApp();
   const [status, setStatus] = useState<ReportStatus>("รอดำเนินการ");
 
   useEffect(() => {
     setStatus(report.status);
   }, [report]);
 
+  const ringSize = compact ? 72 : 88;
+  const urgencyScore = report.urgencyScore ?? null;
+
   return (
-    <>
-      {onClose && (
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] text-slate-600">{labels.location}</p>
-            <p
-              className={`mt-1 font-semibold text-slate-900 ${compact ? "text-[17px]" : "text-[22px]"}`}
-            >
-              {report.location}
-            </p>
+    <div className="space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold text-brand-blue">
+            {t("dashboard.detailTitle")}
+          </p>
+          <p
+            className={`mt-1 font-semibold text-slate-900 ${compact ? "text-[18px]" : "text-[22px]"}`}
+          >
+            {report.location}
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            {report.district && (
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] font-medium text-slate-600">
+                {report.district}
+              </span>
+            )}
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] text-slate-500">
+              {formatTimeAgo(report.createdAt, locale)}
+            </span>
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[12px] font-medium text-slate-600">
+              {getStatusLabel(report.status, locale)}
+            </span>
           </div>
+        </div>
+        {onClose && (
           <button
             type="button"
             onClick={onClose}
@@ -70,72 +107,86 @@ export function ReportDetailContent({
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
-        </div>
-      )}
-
-      {!onClose && (
-        <>
-          <p className="text-[13px] text-slate-600">{labels.location}</p>
-          <p className="mt-1 text-[22px] font-semibold text-slate-900">
-            {report.location}
-          </p>
-        </>
-      )}
-
-      {report.district && (
-        <p className="mt-1 text-[13px] text-slate-600">{report.district}</p>
-      )}
-      <p className="mt-1 text-[13px] text-slate-400">
-        {formatTimeAgo(report.createdAt, locale)}
-      </p>
-
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={report.imageUrl}
-        alt={report.location}
-        className={`mt-4 w-full rounded-[12px] object-cover ${compact ? "max-h-[200px]" : "max-h-[240px]"}`}
-      />
-
-      <div className={`flex items-start justify-between gap-4 ${compact ? "mt-4" : "mt-6"}`}>
-        <RiskScore
-          score={report.riskScore}
-          level={report.riskLevel}
-          label={labels.score}
-        />
-        <RiskBadge level={report.riskLevel} />
+        )}
       </div>
 
-      {report.urgencyScore != null && (
-        <div className="mt-4">
-          <UrgencyBadge
-            score={report.urgencyScore}
-            rain={report.rainForecast}
-            compact
-          />
-        </div>
-      )}
+      <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-slate-50">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={report.imageUrl}
+          alt={report.location}
+          className={`w-full object-cover ${compact ? "aspect-[16/10] max-h-[200px]" : "aspect-[16/10] max-h-[260px]"}`}
+        />
+      </div>
 
-      <div
-        className={`rounded-[12px] border-l-4 border-brand-blue bg-brand-blue-soft/50 p-4 dark:bg-blue-900/10 ${compact ? "mt-4" : "mt-6"}`}
-      >
-        <p className="mb-2 text-[13px] font-semibold text-slate-600">
+      <div className="grid grid-cols-2 gap-3">
+        <div
+          className={`flex flex-col items-center rounded-[16px] border border-slate-100 p-4 ${METRIC_BG[report.riskLevel]}`}
+        >
+          <ScoreRing
+            value={report.riskScore}
+            size={ringSize}
+            strokeColor={RING_COLORS[report.riskLevel]}
+            label={labels.score}
+          />
+          <div className="mt-3">
+            <RiskBadge level={report.riskLevel} />
+          </div>
+        </div>
+
+        <div
+          className={`flex flex-col items-center justify-center rounded-[16px] border border-slate-100 p-4 ${
+            urgencyScore != null && urgencyScore >= 70
+              ? "bg-brand-orange-soft"
+              : "bg-brand-blue-soft"
+          }`}
+        >
+          {urgencyScore != null ? (
+            <ScoreRing
+              value={urgencyScore}
+              size={ringSize}
+              strokeColor={urgencyRingColor(urgencyScore)}
+              label={t("report.urgencyScore")}
+              sublabel={
+                report.rainForecast
+                  ? `${t("report.rainForecast")}: ${getRainLabel(report.rainForecast, locale)}`
+                  : undefined
+              }
+            />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center py-4 text-center">
+              <p className="text-[28px] font-bold text-slate-300">—</p>
+              <p className="mt-2 text-[12px] text-slate-500">
+                {t("report.urgencyScore")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="rounded-[16px] bg-brand-blue-soft p-4">
+        <p className="text-[13px] font-semibold text-brand-blue">
           {labels.aiReason}
         </p>
-        <p className="text-[15px] text-slate-600">{report.reason}</p>
+        <p className="mt-2 text-[14px] leading-relaxed text-slate-700">
+          {report.reason}
+        </p>
       </div>
 
-      <p className={`mb-3 text-[13px] text-slate-600 ${compact ? "mt-4" : "mt-6"}`}>
-        {labels.changeStatus}
-      </p>
-      <StatusSegmented value={status} onChange={setStatus} />
+      <div className="rounded-[16px] border border-slate-100 bg-slate-50/80 p-4">
+        <p className="mb-3 text-[13px] font-semibold text-slate-700">
+          {labels.changeStatus}
+        </p>
+        <StatusSegmented value={status} onChange={setStatus} />
+      </div>
 
-      <button
-        type="button"
+      <Button
+        variant="primary"
+        className="w-full"
         onClick={() => onSave(report.id, status)}
-        className={`w-full rounded-[12px] bg-brand-blue font-semibold text-white hover:bg-brand-blue-dark ${compact ? "mt-4 h-[44px] text-[15px]" : "mt-6 h-[50px] text-[17px]"}`}
       >
         {labels.save}
-      </button>
-    </>
+      </Button>
+    </div>
   );
 }
