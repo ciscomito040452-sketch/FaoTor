@@ -7,7 +7,7 @@ import { ShieldDropletIcon } from "./ShieldDropletIcon";
 
 const STYLES: Record<RiskLevel, { bg: string; text: string }> = {
   ปกติ: { bg: "bg-slate-100", text: "text-slate-600" },
-  เริ่มอุดตัน: { bg: "bg-risk-amber-bg", text: "text-risk-amber-text" },
+  เริ่มอุดตัน: { bg: "bg-brand-orange-soft", text: "text-brand-orange" },
   อุดตันหนัก: { bg: "bg-risk-red-bg", text: "text-risk-red-text" },
 };
 

@@ -43,7 +43,7 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
 
       <div className="mb-6 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-blue-500 transition-all duration-500"
+          className="h-full rounded-full bg-brand-blue transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -62,9 +62,9 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${
                   done
-                    ? "bg-blue-500 text-white"
+                    ? "bg-brand-blue text-white"
                     : active
-                      ? "border-2 border-blue-500 text-blue-500"
+                      ? "border-2 border-brand-blue text-brand-blue"
                       : "bg-slate-100 text-slate-400"
                 }`}
               >

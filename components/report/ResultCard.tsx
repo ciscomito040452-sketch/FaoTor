@@ -36,7 +36,7 @@ export function ResultCard({
         <div className="mt-4">
           <UrgencyBadge score={result.urgencyScore} rain={result.rainForecast} compact />
         </div>
-        <p className="mt-6 border-l-4 border-blue-500 pl-4 text-[15px] leading-[1.35] text-slate-600">
+        <p className="mt-6 border-l-4 border-brand-blue pl-4 text-[15px] leading-[1.35] text-slate-600">
           {result.reason}
         </p>
         <p className="mt-4 text-[13px] text-slate-400">{location}</p>
@@ -45,7 +45,7 @@ export function ResultCard({
       <button
         type="button"
         onClick={onContinue}
-        className="h-[50px] w-full rounded-[12px] bg-blue-500 text-[17px] font-semibold text-white hover:bg-blue-700"
+        className="h-[50px] w-full rounded-[12px] bg-brand-blue text-[17px] font-semibold text-white hover:bg-brand-blue-dark"
       >
         {continueLabel}
       </button>

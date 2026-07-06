@@ -42,7 +42,7 @@ export function MapPreviewCard({
   const { t } = useApp();
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-[16px] border border-slate-100 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]">
       <div className="border-b border-slate-100 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -50,7 +50,7 @@ export function MapPreviewCard({
             <p className="mt-1 text-[13px] text-slate-600">{caption}</p>
           </div>
           {pinCount != null && (
-            <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1 text-[13px] font-semibold text-blue-500">
+            <span className="shrink-0 rounded-full bg-brand-blue-soft px-3 py-1 text-[13px] font-semibold text-brand-blue">
               {pinCount} {t("dashboard.mapPins")}
             </span>
           )}

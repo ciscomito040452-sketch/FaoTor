@@ -40,7 +40,7 @@ export function DashboardToolbar({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={labels.searchPlaceholder}
-            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-blue-500 dark:bg-[var(--color-surface)]"
+            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue dark:bg-[var(--color-surface)]"
           />
         </div>
         <div className="shrink-0">
@@ -51,7 +51,7 @@ export function DashboardToolbar({
             id="dashboard-sort"
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-blue-500 sm:w-auto dark:bg-[var(--color-surface)]"
+            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue sm:w-auto dark:bg-[var(--color-surface)]"
           >
             <option value="riskDesc">{labels.sortRisk}</option>
             <option value="newest">{labels.sortNewest}</option>

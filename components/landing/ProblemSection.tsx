@@ -15,7 +15,7 @@ export function ProblemSection() {
   );
 
   return (
-    <section className="mb-10 rounded-[16px] border border-slate-100 bg-white p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
+    <section className="bento-card mb-10 p-6">
       <h2 className="text-[22px] font-semibold text-slate-900">
         {t("landing.problem.title")}
       </h2>
@@ -27,7 +27,7 @@ export function ProblemSection() {
       </p>
       <Link
         href="/line"
-        className="mt-4 inline-flex min-h-[44px] items-center text-[15px] font-semibold text-blue-500 hover:text-blue-700"
+        className="mt-4 inline-flex min-h-[44px] items-center text-[15px] font-semibold text-brand-blue hover:text-brand-blue-dark"
       >
         {t("landing.problem.cta")} →
       </Link>

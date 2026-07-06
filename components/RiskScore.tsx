@@ -2,7 +2,7 @@ import type { RiskLevel } from "@/lib/types";
 
 const COLORS: Record<RiskLevel, string> = {
   ปกติ: "text-slate-600",
-  เริ่มอุดตัน: "text-risk-amber-text",
+  เริ่มอุดตัน: "text-brand-orange",
   อุดตันหนัก: "text-risk-red-text",
 };
 

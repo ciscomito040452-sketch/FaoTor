@@ -4,28 +4,35 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-blue-50: #eaf2fe;
-  --color-blue-100: #cfe1fc;
-  --color-blue-500: #2f6fed;
-  --color-blue-700: #1b4fbe;
-  --color-blue-900: #123b8f;
+  --color-brand-blue: #3b82f6;
+  --color-brand-blue-dark: #2563eb;
+  --color-brand-blue-soft: #eff6ff;
+  --color-brand-orange: #f97316;
+  --color-brand-orange-soft: #fff7ed;
+  --color-brand-orange-dark: #ea580c;
 
-  --color-slate-50: #f6f7f9;
-  --color-slate-100: #e9ebef;
-  --color-slate-400: #9aa3b2;
-  --color-slate-600: #4e5768;
-  --color-slate-900: #1b2130;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-500: #3b82f6;
+  --color-blue-700: #2563eb;
+  --color-blue-900: #1e3a8a;
 
-  --color-risk-amber-bg: #fff3dc;
-  --color-risk-amber-text: #8a5a00;
-  --color-risk-red-bg: #fde7e7;
-  --color-risk-red-text: #b3261e;
+  --color-slate-50: #f3f4f6;
+  --color-slate-100: #e5e7eb;
+  --color-slate-400: #9ca3af;
+  --color-slate-600: #6b7280;
+  --color-slate-900: #111827;
+
+  --color-risk-amber-bg: #fff7ed;
+  --color-risk-amber-text: #ea580c;
+  --color-risk-red-bg: #fef2f2;
+  --color-risk-red-text: #ef4444;
 
   --color-surface: #ffffff;
-  --color-surface-muted: #f6f7f9;
-  --color-text-primary: #1b2130;
-  --color-text-secondary: #4e5768;
-  --color-border: #e9ebef;
+  --color-surface-muted: #f3f4f6;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
 }
 
 .dark {
@@ -50,11 +57,11 @@ body {
 }
 
 .hero-gradient {
-  background: linear-gradient(165deg, #eaf2fe 0%, #f6f7f9 45%, #ffffff 100%);
+  background: linear-gradient(165deg, #eff6ff 0%, #f3f4f6 45%, #ffffff 100%);
 }
 
 .dark .hero-gradient {
-  background: linear-gradient(165deg, #123b8f 0%, #14161b 50%, #1e2128 100%);
+  background: linear-gradient(165deg, #1e3a8a 0%, #14161b 50%, #1e2128 100%);
 }
 
 .pb-safe-nav {
@@ -65,7 +72,6 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Keep Leaflet map contained inside its card — popups use z-index up to ~700 */
 .faotor-leaflet-map {
   position: relative;
   z-index: 0;
@@ -82,4 +88,11 @@ body {
 .faotor-map-pin--selected {
   background: transparent !important;
   border: none !important;
+}
+
+.bento-card {
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--color-border);
 }

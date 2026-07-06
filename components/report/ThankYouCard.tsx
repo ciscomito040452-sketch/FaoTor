@@ -29,7 +29,7 @@ export function ThankYouCard({
 }: ThankYouCardProps) {
   return (
     <div className="space-y-6 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-500 dark:bg-blue-900/30">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-blue-soft text-brand-blue dark:bg-blue-900/30">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden>
           <path
             d="M8 16l5 5 11-12"
@@ -62,7 +62,7 @@ export function ThankYouCard({
 
       <Link
         href="/dashboard"
-        className="flex h-[50px] items-center justify-center rounded-[12px] bg-blue-500 text-[17px] font-semibold text-white hover:bg-blue-700"
+        className="flex h-[50px] items-center justify-center rounded-[12px] bg-brand-blue text-[17px] font-semibold text-white hover:bg-brand-blue-dark"
       >
         {dashboardLabel}
       </Link>

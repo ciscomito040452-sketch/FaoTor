@@ -2,7 +2,36 @@
 
 ### **Design System — โปรเจกต์เฝ้าท่อ (FaoTor)**
 
-เอกสารนี้คือมาตรฐานภาพและการใช้งานของทุกหน้าในระบบ ห้ามใช้สี/ฟอนต์/ระยะห่างอื่นนอกจากที่ระบุไว้นี้ ถ้าจำเป็นต้องเบี่ยงเบนให้ถามก่อนตามกฎใน AGENT.md
+เอกสารนี้คือมาตรฐานภาพและการใช้งานของทุกหน้าในระบบ
+
+---
+
+## **v3 — KARO-Inspired (มีผลตั้งแต่ 2026-07-06)**
+
+อัปเดตสำหรับ redesign ทั้งระบบ — อ้างอิง `Docs/superpowers/specs/2026-07-06-faotor-karo-ui-v3-design.md`
+
+### สีหลัก v3
+
+| Token | Hex | ใช้ที่ไหน |
+| ----- | ----- | ----- |
+| brand-blue | #3B82F6 | ปุ่มหลัก, tab active |
+| brand-orange | #F97316 | accent รอง, trend badge |
+| surface-page | #F3F4F6 | พื้นหลังหน้า |
+| surface-card | #FFFFFF | การ์ด bento |
+
+### กฎ v3
+
+1. **Bento cards** — `rounded-[20px]`, shadow `0 1px 3px rgba(0,0,0,0.06)`
+2. **Top nav** แทน side nav (desktop + mobile bottom nav)
+3. **Mini charts** — SVG inline ใน KPI เท่านั้น (ห้าม chart library)
+4. **Risk แดง** — เฉพาะ badge/pin ไม่ทาพื้นทั้งการ์ด
+5. ฟอนต์และ spacing เดิม (IBM Plex Sans Thai, 8pt grid)
+
+---
+
+## เอกสารเวอร์ชันก่อน (v1/v2)
+
+เนื้อหาด้านล่างเป็น spec เดิม — บางข้อ (ห้ามกราฟ, side nav) **ถูกแทนที่โดย v3**
 
 ---
 

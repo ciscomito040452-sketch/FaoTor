@@ -22,7 +22,7 @@ export function PhotoUploadZone({
   return (
     <div className="space-y-3">
       {tips && (
-        <div className="rounded-[12px] border border-blue-100 bg-blue-50/50 px-4 py-3 text-[13px] text-slate-600 dark:border-blue-900/30 dark:bg-blue-900/10">
+        <div className="rounded-[12px] border border-brand-blue/20 bg-brand-blue-soft/50 px-4 py-3 text-[13px] text-slate-600 dark:border-blue-900/30 dark:bg-blue-900/10">
           {tips}
         </div>
       )}
@@ -36,7 +36,7 @@ export function PhotoUploadZone({
           <img src={preview} alt="" className="h-full w-full object-cover" />
         ) : (
           <>
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-500">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-blue-soft text-brand-blue">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden>
                 <rect x="3" y="8" width="22" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
                 <circle cx="14" cy="16" r="4" stroke="currentColor" strokeWidth="1.5" />

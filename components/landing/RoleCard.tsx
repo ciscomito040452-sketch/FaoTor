@@ -20,15 +20,15 @@ export function RoleCard({
   return (
     <Link
       href={href}
-      className={`flex min-h-[88px] items-start gap-4 rounded-[16px] border p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:shadow-md ${
+      className={`bento-card flex min-h-[100px] items-start gap-4 p-5 transition hover:shadow-md ${
         isPrimary
-          ? "border-blue-100 bg-blue-50 dark:border-blue-900/30 dark:bg-blue-900/20"
-          : "border-slate-100 bg-white dark:bg-[var(--color-surface)]"
+          ? "border-brand-blue/20 bg-brand-blue-soft"
+          : "border-brand-orange/30 bg-brand-orange-soft"
       }`}
     >
       <div
         className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] ${
-          isPrimary ? "bg-blue-500 text-white" : "bg-slate-100 text-slate-600"
+          isPrimary ? "bg-brand-blue text-white" : "border-2 border-brand-orange bg-white text-brand-orange"
         }`}
       >
         {icon}
@@ -38,7 +38,7 @@ export function RoleCard({
         <p className="mt-1 text-[15px] text-slate-600">{description}</p>
       </div>
       <svg
-        className="mt-1 shrink-0 text-slate-400"
+        className={`mt-1 shrink-0 ${isPrimary ? "text-brand-blue" : "text-brand-orange"}`}
         width="20"
         height="20"
         viewBox="0 0 20 20"

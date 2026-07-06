@@ -37,9 +37,9 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
             type="button"
             onClick={() => onChange(option.key)}
             className={`inline-flex min-h-[40px] items-center gap-2 rounded-full px-4 text-[14px] font-semibold transition ${
-              active
-                ? "bg-blue-500 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                active
+                  ? "bg-brand-blue text-white"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             {option.label}

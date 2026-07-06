@@ -4,7 +4,7 @@ import { useApp } from "@/lib/app-context";
 
 export function DemoPill() {
   return (
-    <span className="rounded-full bg-blue-50 px-3 py-1 text-[13px] font-medium text-blue-500 dark:bg-blue-900/30">
+    <span className="rounded-full bg-brand-blue-soft px-3 py-1 text-[13px] font-medium text-brand-blue">
       Demo
     </span>
   );
@@ -16,7 +16,7 @@ export function SettingsButton() {
     <button
       type="button"
       onClick={openSettings}
-      className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-slate-100 bg-white text-slate-600 transition-colors hover:border-slate-200 hover:bg-slate-50 hover:text-blue-500 dark:bg-[var(--color-surface)] dark:hover:bg-slate-100/10"
+      className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-slate-100 bg-white text-slate-600 transition-colors hover:border-slate-200 hover:bg-slate-50 hover:text-brand-blue"
       aria-label={t("settings.title")}
     >
       <svg

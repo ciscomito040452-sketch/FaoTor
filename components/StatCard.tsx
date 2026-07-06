@@ -17,11 +17,11 @@ export function StatCard({
     variant === "danger" && value > 0
       ? "border-l-[3px] border-l-risk-red-text"
       : variant === "warning" && value > 0
-        ? "border-l-[3px] border-l-risk-amber-text"
+        ? "border-l-[3px] border-l-brand-orange"
         : "";
 
   const className = `rounded-[16px] border border-slate-100 bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:border-slate-200 lg:p-5 dark:bg-[var(--color-surface)] ${accent} ${
-    active ? "ring-2 ring-blue-500 ring-offset-1" : ""
+    active ? "ring-2 ring-brand-blue ring-offset-1" : ""
   }`;
 
   const content = (

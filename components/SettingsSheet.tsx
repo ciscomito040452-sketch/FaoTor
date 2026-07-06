@@ -49,7 +49,7 @@ export function SettingsSheet() {
                   onClick={() => setLocale(lang)}
                   className={`min-h-[44px] flex-1 rounded-[10px] text-[15px] font-semibold ${
                     locale === lang
-                      ? "bg-white text-blue-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                      ? "bg-white text-brand-blue shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                       : "text-slate-600"
                   }`}
                 >
@@ -69,7 +69,7 @@ export function SettingsSheet() {
                   onClick={() => setTheme(mode)}
                   className={`min-h-[44px] flex-1 rounded-[10px] text-[15px] font-semibold ${
                     theme === mode
-                      ? "bg-white text-blue-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                      ? "bg-white text-brand-blue shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                       : "text-slate-600"
                   }`}
                 >
@@ -98,7 +98,7 @@ export function SettingsSheet() {
           <Link
             href="/line"
             onClick={closeSettings}
-            className="flex h-[50px] items-center justify-center rounded-[12px] bg-blue-50 text-[15px] font-semibold text-blue-500 dark:bg-blue-900/20"
+            className="flex h-[50px] items-center justify-center rounded-[12px] bg-brand-blue-soft text-[15px] font-semibold text-brand-blue dark:bg-blue-900/20"
           >
             {t("settings.lineLink")}
           </Link>

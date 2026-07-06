@@ -31,7 +31,7 @@ export function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className="mt-4 text-[15px] font-semibold text-blue-500 hover:text-blue-700"
+          className="mt-4 text-[15px] font-semibold text-brand-blue hover:text-brand-blue-dark"
         >
           {actionLabel}
         </button>

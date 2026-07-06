@@ -28,10 +28,10 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
         type="button"
         onClick={() => onSelect(report)}
         className={`w-full rounded-[16px] border p-3 text-left transition hover:shadow-md ${
-          isSelected
-            ? "border-blue-500 bg-blue-50/40 shadow-[0_0_0_1px_#2f6fed] dark:bg-blue-900/10"
-            : "border-slate-100 bg-white hover:border-slate-200 dark:bg-[var(--color-surface)]"
-        } ${isPriority && !isSelected ? "border-l-4 border-l-risk-red-text" : ""}`}
+        isSelected
+          ? "border-brand-blue bg-brand-blue-soft shadow-[0_0_0_1px_#3b82f6]"
+          : "border-slate-100 bg-white hover:border-slate-200 dark:bg-[var(--color-surface)]"
+      } ${isPriority && !isSelected ? "border-l-4 border-l-brand-orange" : ""}`}
       >
         <div className="flex gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}

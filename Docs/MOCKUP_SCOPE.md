@@ -1,6 +1,6 @@
-# MOCKUP_SCOPE.md — ขอบเขต Mock-up Demo (v2)
+# MOCKUP_SCOPE.md — ขอบเขต Mock-up Demo (v3)
 
-**สถานะปัจจุบัน:** โปรเจกต์อยู่ในโหมด **Mock-up v2 สำหรับอัดวิดีโอส่งรอบคัดเลือก** ไม่ใช่ Full Stack จริง
+**สถานะปัจจุบัน:** โปรเจกต์อยู่ในโหมด **Mock-up v3 (KARO UI)** สำหรับอัดวิดีโอส่งรอบคัดเลือก ไม่ใช่ Full Stack จริง
 
 อ่านไฟล์นี้ก่อน `TASKS.md` และ `TECH_STACK.md` เมื่อทำงานในโหมด Mock-up
 
@@ -16,45 +16,34 @@
 
 ---
 
-## ทำ (In Scope) — v2
+## ทำ (In Scope) — v3
 
 | หมวด | รายละเอียด |
 |------|-----------|
 | UI หลัก | `/`, `/report`, `/dashboard`, `/about`, `/line` |
-| Flow ครบ | อัปโหลด → AI mock → ขอบคุณ → Dashboard → เปลี่ยนสถานะ |
-| Design System | ตาม `UI_UX_SPEC.md` |
-| ข้อมูลจำลอง | Seed 10+ รายการ + localStorage + reset ใน Settings |
-| Smart mock AI | `mock-analyze.ts` — bias จากขนาด/ความมืดรูป + urgency score |
-| แผนที่ interactive | SVG mock — pin จาก reports, กดเปิด detail |
-| Urgency + ฝน mock | `mock-weather.ts` + UrgencyBadge (Big Number) |
-| LINE Bot teaser | `/line` — chat flow จำลอง (ไม่ใช่ LINE SDK) |
-| i18n ครบ | risk/status/toast/story ผ่าน locale JSON |
-| Dark mode | Settings toggle |
-| Demo tools | รีเซ็ตข้อมูล, รูปตัวอย่าง, ลิงก์ LINE |
-| Responsive | แยก mobile / iPad / PC (ดูด้านล่าง) |
+| Design System | KARO-inspired v3 — ฟ้า-ส้ม, bento grid, top nav |
+| Mini charts | SVG inline ใน KPI (ไม่ใช้ chart library) |
+| แผนที่ | Leaflet + OpenStreetMap (mock) |
+| Flow ครบ | อัปโหลด → AI mock → Dashboard → เปลี่ยนสถานะ |
+| ข้อมูลจำลอง | Seed 10+ รายการ + localStorage + reset |
+| i18n | TH/EN ครบ |
+| Responsive | Top nav desktop; bottom nav mobile |
 
----
+## Responsive Rules (v3)
 
-## Responsive Rules
-
-| Breakpoint | ขนาด | พฤติกรรม |
-|------------|------|----------|
-| Mobile | `< md` | Bottom nav; `/report` สูงสุด 480px จัดกลาง; detail sheet จากล่าง |
-| iPad | `md–lg` | Bottom nav; dashboard stats 2+1; map บน list ล่าง |
-| PC | `lg+` | Side nav ซ้าย; dashboard 2-column (map 40% + list 60%); detail modal กลางจอ |
-
-อ้างอิง `UI_UX_SPEC.md` §3: `/report` max 480px, `/dashboard` max 1024px
-
----
+| Breakpoint | พฤติกรรม |
+|------------|----------|
+| Mobile `< lg` | Top bar ย่อ + bottom nav; detail sheet จากล่าง |
+| Desktop `lg+` | Top nav เต็ม + pill tabs; dashboard bento grid |
 
 ## ไม่ทำ (Out of Scope)
 
 | หมวด | เหตุผล |
 |------|--------|
 | Firebase, Gemini, API routes | Phase 2 |
-| Leaflet / Google Maps จริง | Phase 2 |
-| LINE SDK deploy จริง | Teaser UI เท่านั้น |
-| Login, Gamification, กราฟสถิติ | Phase 2 / ขัด UI spec |
+| Chart library (Recharts ฯลฯ) | ใช้ SVG เท่านั้น |
+| LINE SDK deploy จริง | Teaser UI |
+| Login, Export CSV จริง | Mock ปุ่มได้ |
 
 ---
 

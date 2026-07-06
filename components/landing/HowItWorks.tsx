@@ -17,12 +17,16 @@ export function HowItWorks() {
         {t("landing.howItWorks")}
       </h2>
       <div className="space-y-3">
-        {steps.map((step) => (
+        {steps.map((step, index) => (
           <div
             key={step.num}
-            className="flex items-center gap-4 rounded-[16px] border border-slate-100 bg-white p-4 dark:bg-[var(--color-surface)]"
+            className="bento-card flex items-center gap-4 p-4"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-[17px] font-semibold text-white">
+            <span
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[17px] font-semibold text-white ${
+                index === 0 ? "bg-brand-blue" : index === 1 ? "bg-brand-orange" : "bg-brand-blue"
+              }`}
+            >
               {step.num}
             </span>
             <p className="text-[17px] font-semibold text-slate-900">

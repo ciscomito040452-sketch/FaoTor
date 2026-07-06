@@ -173,7 +173,7 @@ export function LocationMapPicker({
         type="button"
         onClick={handleUseMyLocation}
         disabled={locating}
-        className="h-[44px] w-full rounded-[12px] border border-slate-100 bg-white text-[15px] font-semibold text-blue-500 hover:bg-blue-50 disabled:opacity-60 dark:bg-[var(--color-surface)]"
+        className="h-[44px] w-full rounded-[12px] border border-slate-100 bg-white text-[15px] font-semibold text-brand-blue hover:bg-brand-blue-soft disabled:opacity-60 dark:bg-[var(--color-surface)]"
       >
         {labels.useMyLocation}
       </button>

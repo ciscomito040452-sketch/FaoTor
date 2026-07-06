@@ -116,7 +116,7 @@ export function ReportDetailContent({
       )}
 
       <div
-        className={`rounded-[12px] border-l-4 border-blue-500 bg-blue-50/50 p-4 dark:bg-blue-900/10 ${compact ? "mt-4" : "mt-6"}`}
+        className={`rounded-[12px] border-l-4 border-brand-blue bg-brand-blue-soft/50 p-4 dark:bg-blue-900/10 ${compact ? "mt-4" : "mt-6"}`}
       >
         <p className="mb-2 text-[13px] font-semibold text-slate-600">
           {labels.aiReason}
@@ -132,7 +132,7 @@ export function ReportDetailContent({
       <button
         type="button"
         onClick={() => onSave(report.id, status)}
-        className={`w-full rounded-[12px] bg-blue-500 font-semibold text-white hover:bg-blue-700 ${compact ? "mt-4 h-[44px] text-[15px]" : "mt-6 h-[50px] text-[17px]"}`}
+        className={`w-full rounded-[12px] bg-brand-blue font-semibold text-white hover:bg-brand-blue-dark ${compact ? "mt-4 h-[44px] text-[15px]" : "mt-6 h-[50px] text-[17px]"}`}
       >
         {labels.save}
       </button>

@@ -228,7 +228,7 @@ export function UploadForm() {
               value={locationNote}
               onChange={(e) => setLocationNote(e.target.value)}
               placeholder={t("report.locationPlaceholder")}
-              className="h-[50px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[17px] text-slate-900 outline-none focus:border-2 focus:border-blue-500 dark:bg-[var(--color-surface)]"
+              className="h-[50px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[17px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue dark:bg-[var(--color-surface)]"
             />
           </div>
 
@@ -237,7 +237,7 @@ export function UploadForm() {
             disabled={!canSubmit}
             className={`h-[50px] w-full rounded-[12px] text-[17px] font-semibold text-white ${
               canSubmit
-                ? "bg-blue-500 hover:bg-blue-700"
+                ? "bg-brand-blue hover:bg-brand-blue-dark"
                 : "cursor-not-allowed bg-slate-100 text-slate-400"
             }`}
           >

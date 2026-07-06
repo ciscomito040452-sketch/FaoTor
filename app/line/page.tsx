@@ -2,15 +2,17 @@
 
 import { AppShell } from "@/components/layout/AppShell";
 import { LineFlowMock } from "@/components/line/LineFlowMock";
+import { Card } from "@/components/ui/Card";
 import { useApp } from "@/lib/app-context";
 
 export default function LinePage() {
   const { t } = useApp();
 
   return (
-    <AppShell title={t("line.title")} showBack variant="report">
-      <p className="-mt-4 mb-8 text-[15px] text-slate-600">{t("line.subtitle")}</p>
-      <LineFlowMock />
+    <AppShell title={t("line.title")} subtitle={t("line.subtitle")} largeTitle>
+      <Card padding="none" className="mx-auto max-w-md overflow-hidden">
+        <LineFlowMock />
+      </Card>
     </AppShell>
   );
 }

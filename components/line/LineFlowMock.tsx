@@ -42,7 +42,7 @@ export function LineFlowMock() {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-[#8CABD9] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <div className="overflow-hidden rounded-[20px]">
         <div className="bg-[#06C755] px-4 py-3">
           <p className="text-[15px] font-semibold text-white">FaoTor LINE</p>
           <p className="text-[13px] text-white/80">Demo</p>
@@ -86,7 +86,7 @@ export function LineFlowMock() {
         type="button"
         onClick={playDemo}
         disabled={playing}
-        className="mt-6 h-[50px] w-full rounded-[12px] bg-blue-500 text-[17px] font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+        className="mt-6 h-[50px] w-full rounded-[12px] bg-brand-blue text-[17px] font-semibold text-white hover:bg-brand-blue-dark disabled:opacity-60"
       >
         {t("line.playDemo")}
       </button>

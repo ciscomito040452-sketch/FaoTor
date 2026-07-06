@@ -17,9 +17,11 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
           <div key={label} className="flex flex-1 flex-col items-center gap-2">
             <div
               className={`flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-semibold ${
-                done || active
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 text-slate-400"
+                done
+                  ? "bg-brand-orange text-white"
+                  : active
+                    ? "bg-brand-blue text-white"
+                    : "bg-slate-100 text-slate-400"
               }`}
             >
               {done ? (
@@ -38,7 +40,7 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
             </div>
             <span
               className={`text-center text-[10px] font-semibold sm:text-[11px] ${
-                active ? "text-blue-500" : "text-slate-400"
+                active ? "text-brand-blue" : "text-slate-400"
               }`}
             >
               {label}

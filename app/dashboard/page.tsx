@@ -1,21 +1,31 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DetailSheet } from "@/components/DetailSheet";
 import { EmptyState } from "@/components/EmptyState";
-import { StatCard } from "@/components/StatCard";
 import { FilterTabs, type Filter } from "@/components/dashboard/FilterTabs";
 import { MapPreviewCard } from "@/components/dashboard/MapPreviewCard";
 import { ReportCard } from "@/components/dashboard/ReportCard";
-import { TodayQueue } from "@/components/dashboard/TodayQueue";
 import { ReportDetailPanel } from "@/components/dashboard/ReportDetailPanel";
+import { ReportCalendar } from "@/components/dashboard/ReportCalendar";
+import { QueueTimeline } from "@/components/dashboard/QueueTimeline";
 import {
   DashboardToolbar,
   type SortOption,
 } from "@/components/dashboard/DashboardToolbar";
+import { KpiCard } from "@/components/ui/KpiCard";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { useApp } from "@/lib/app-context";
 import { useReports } from "@/lib/reports-store";
+import {
+  reportsByDay,
+  resolutionRate,
+  sparklineFromScores,
+  trendPercent,
+} from "@/lib/dashboard-analytics";
 import type { Report, ReportStatus } from "@/lib/types";
 
 function sortReports(list: Report[], sort: SortOption): Report[] {
@@ -78,17 +88,20 @@ export default function DashboardPage() {
   }, [todayQueue]);
 
   const topUrgentId = todayQueue[0]?.id ?? null;
+  const weeklyBars = useMemo(() => reportsByDay(reports, 7), [reports]);
+  const resolvedPct = useMemo(() => resolutionRate(reports), [reports]);
+  const severeSpark = useMemo(
+    () => sparklineFromScores(reports.filter((r) => r.riskLevel === "อุดตันหนัก")),
+    [reports]
+  );
+  const pendingTrend = trendPercent(stats.pending, Math.max(stats.pending - 1, 0));
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = [...reports];
-    if (filter === "pending") {
-      list = list.filter((r) => r.status === "รอดำเนินการ");
-    } else if (filter === "inProgress") {
-      list = list.filter((r) => r.status === "กำลังแก้ไข");
-    } else if (filter === "severe") {
-      list = list.filter((r) => r.riskLevel === "อุดตันหนัก");
-    }
+    if (filter === "pending") list = list.filter((r) => r.status === "รอดำเนินการ");
+    else if (filter === "inProgress") list = list.filter((r) => r.status === "กำลังแก้ไข");
+    else if (filter === "severe") list = list.filter((r) => r.riskLevel === "อุดตันหนัก");
     if (q) {
       list = list.filter(
         (r) =>
@@ -103,29 +116,17 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!selected?.id) return;
-    const el = cardRefs.current[selected.id];
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    cardRefs.current[selected.id]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [selected?.id]);
 
   function handleSave(id: string, status: ReportStatus) {
     updateStatus(id, status);
     showToast(t("toast.saved"));
-    setSelected((prev) =>
-      prev?.id === id ? { ...prev, status } : prev
-    );
-  }
-
-  function handleSelect(report: Report) {
-    setSelected(report);
+    setSelected((prev) => (prev?.id === id ? { ...prev, status } : prev));
   }
 
   function handleStatClick(next: Filter) {
-    setFilter((current) => (current === next ? "all" : next));
-  }
-
-  function clearFilters() {
-    setFilter("all");
-    setSearch("");
+    setFilter((c) => (c === next ? "all" : next));
   }
 
   const detailLabels = {
@@ -137,109 +138,127 @@ export default function DashboardPage() {
     close: t("common.close"),
   };
 
+  const headerActions = (
+    <>
+      <Button variant="ghost" className="hidden sm:inline-flex">
+        {t("dashboard.exportCsv")}
+      </Button>
+      <Link href="/report">
+        <Button variant="orange">{t("dashboard.newReport")}</Button>
+      </Link>
+    </>
+  );
+
   if (!isReady) {
     return (
-      <AppShell title={t("dashboard.title")} showBack variant="dashboard">
+      <AppShell title={t("dashboard.title")} largeTitle>
         <p className="text-slate-600">{t("common.loading")}</p>
       </AppShell>
     );
   }
 
   return (
-    <AppShell title={t("dashboard.title")} showBack largeTitle variant="dashboard">
-      <p className="-mt-4 mb-6 text-[13px] text-slate-600">
-        {t("dashboard.updated")}
-      </p>
-
-      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-        <StatCard
+    <AppShell
+      title={t("shell.greeting")}
+      subtitle={t("dashboard.updated")}
+      largeTitle
+      actions={headerActions}
+    >
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <KpiCard
           label={t("dashboard.statTotal")}
           value={stats.total}
+          chartType="bar"
+          chartData={weeklyBars}
           active={filter === "all"}
           onClick={() => setFilter("all")}
         />
-        <StatCard
+        <KpiCard
           label={t("dashboard.statPending")}
           value={stats.pending}
+          trend={pendingTrend}
+          chartType="bar"
+          chartData={weeklyBars}
           active={filter === "pending"}
           onClick={() => handleStatClick("pending")}
         />
-        <StatCard
-          label={t("dashboard.statInProgress")}
-          value={stats.inProgress}
-          variant="warning"
-          active={filter === "inProgress"}
-          onClick={() => handleStatClick("inProgress")}
-        />
-        <StatCard
+        <KpiCard
           label={t("dashboard.statSevere")}
           value={stats.severe}
-          variant="danger"
+          chartType="sparkline"
+          chartData={severeSpark.length ? severeSpark : [0, 0]}
           active={filter === "severe"}
           onClick={() => handleStatClick("severe")}
         />
+        <KpiCard
+          label={t("dashboard.statResolved")}
+          value={`${resolvedPct}%`}
+          chartType="donut"
+          donutPercent={resolvedPct}
+        />
       </div>
 
-      <TodayQueue
-        reports={todayQueue}
-        onOpen={handleSelect}
-        selectedId={selected?.id ?? null}
-      />
-
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <section className="xl:col-span-7">
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <ReportCalendar reports={reports} />
+        </div>
+        <div className="lg:col-span-1">
+          <QueueTimeline
+            reports={todayQueue}
+            selectedId={selected?.id ?? null}
+            onOpen={setSelected}
+          />
+        </div>
+        <div className="lg:col-span-1 lg:row-span-2">
           <MapPreviewCard
             title={t("dashboard.mapTitle")}
             caption={t("dashboard.mapCaption")}
             reports={reports}
             selectedId={selected?.id ?? null}
             pinCount={reports.length}
-            onPinClick={handleSelect}
+            onPinClick={setSelected}
           />
-        </section>
+        </div>
+      </div>
 
-        <section className="flex min-h-0 flex-col xl:col-span-5 xl:max-h-[calc(100vh-10rem)]">
-          <div className="mb-4 shrink-0">
-            <h2 className="text-[22px] font-semibold text-slate-900">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <section className="flex min-h-0 flex-col xl:col-span-7">
+          <Card padding="lg" className="flex min-h-0 flex-1 flex-col">
+            <h2 className="text-[20px] font-semibold text-slate-900">
               {t("dashboard.listTitle")}
             </h2>
-            <p className="text-[13px] text-slate-600">
-              {t("dashboard.listSubtitle")}
-            </p>
-          </div>
+            <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
 
-          <div className="shrink-0">
-            <DashboardToolbar
-              search={search}
-              onSearchChange={setSearch}
-              sort={sort}
-              onSortChange={setSort}
-              resultCount={filtered.length}
-              labels={{
-                search: t("dashboard.search"),
-                searchPlaceholder: t("dashboard.searchPlaceholder"),
-                showing: t("dashboard.showing"),
-                sortLabel: t("dashboard.sortLabel"),
-                sortRisk: t("dashboard.sortRisk"),
-                sortNewest: t("dashboard.sortNewest"),
-                sortUrgency: t("dashboard.sortUrgency"),
-              }}
-            />
+            <div className="mt-4 shrink-0">
+              <DashboardToolbar
+                search={search}
+                onSearchChange={setSearch}
+                sort={sort}
+                onSortChange={setSort}
+                resultCount={filtered.length}
+                labels={{
+                  search: t("dashboard.search"),
+                  searchPlaceholder: t("dashboard.searchPlaceholder"),
+                  showing: t("dashboard.showing"),
+                  sortLabel: t("dashboard.sortLabel"),
+                  sortRisk: t("dashboard.sortRisk"),
+                  sortNewest: t("dashboard.sortNewest"),
+                  sortUrgency: t("dashboard.sortUrgency"),
+                }}
+              />
+              <FilterTabs
+                value={filter}
+                onChange={setFilter}
+                labels={{
+                  all: t("dashboard.filterAll"),
+                  pending: t("dashboard.filterPending"),
+                  inProgress: t("dashboard.filterInProgress"),
+                  severe: t("dashboard.filterSevere"),
+                }}
+                counts={filterCounts}
+              />
+            </div>
 
-            <FilterTabs
-              value={filter}
-              onChange={setFilter}
-              labels={{
-                all: t("dashboard.filterAll"),
-                pending: t("dashboard.filterPending"),
-                inProgress: t("dashboard.filterInProgress"),
-                severe: t("dashboard.filterSevere"),
-              }}
-              counts={filterCounts}
-            />
-          </div>
-
-          <div className="flex min-h-0 flex-1 flex-col gap-4">
             {reports.length === 0 ? (
               <EmptyState />
             ) : isFilteredEmpty ? (
@@ -247,10 +266,13 @@ export default function DashboardPage() {
                 title={t("dashboard.noResults")}
                 hint={t("dashboard.noResultsHint")}
                 actionLabel={t("dashboard.clearFilters")}
-                onAction={clearFilters}
+                onAction={() => {
+                  setFilter("all");
+                  setSearch("");
+                }}
               />
             ) : (
-              <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+              <div className="mt-4 max-h-[480px] space-y-3 overflow-y-auto pr-1">
                 {filtered.map((report) => (
                   <ReportCard
                     key={report.id}
@@ -258,7 +280,7 @@ export default function DashboardPage() {
                       cardRefs.current[report.id] = el;
                     }}
                     report={report}
-                    onSelect={handleSelect}
+                    onSelect={setSelected}
                     isSelected={selected?.id === report.id}
                     isPriority={report.id === topUrgentId}
                     queueRank={queueRankById.get(report.id)}
@@ -266,16 +288,16 @@ export default function DashboardPage() {
                 ))}
               </div>
             )}
+          </Card>
+        </section>
 
-            <div className="hidden shrink-0 xl:block">
-              <ReportDetailPanel
-                report={selected}
-                onClose={() => setSelected(null)}
-                onSave={handleSave}
-                labels={detailLabels}
-              />
-            </div>
-          </div>
+        <section className="hidden xl:col-span-5 xl:block">
+          <ReportDetailPanel
+            report={selected}
+            onClose={() => setSelected(null)}
+            onSave={handleSave}
+            labels={detailLabels}
+          />
         </section>
       </div>
 
