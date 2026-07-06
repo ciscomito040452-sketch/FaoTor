@@ -32,7 +32,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
         ref={ref}
         type="button"
         onClick={() => onSelect(report)}
-        className={`box-border w-full min-w-0 rounded-2xl p-3.5 text-left transition ${
+        className={`box-border w-full min-w-0 rounded-2xl p-3 text-left transition ${
           isSelected
             ? "bg-slate-50 ring-2 ring-brand-blue/40"
             : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/70 hover:bg-slate-50/80 dark:bg-[var(--color-surface)]"
@@ -43,7 +43,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           <img
             src={report.imageUrl}
             alt={report.location}
-            className={`h-[72px] w-[72px] shrink-0 rounded-xl object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
+            className={`h-14 w-14 shrink-0 rounded-xl object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
           />
 
           <div className="min-w-0 flex-1">
@@ -94,7 +94,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           </div>
         </div>
 
-        <div className="mt-3 border-t border-slate-100 pt-3">
+        <div className="mt-2">
           <MetricsBento
             riskScore={report.riskScore}
             riskLevel={report.riskLevel}

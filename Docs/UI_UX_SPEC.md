@@ -57,6 +57,14 @@
 - Typed cells: urgency (orange top), risk (slate top), rain (sky top + sky-50/40 bg)
 - List card: metrics ใน tray + `border-t` คั่นจาก header
 
+### Metric Strip v3.3 (2026-07-07)
+
+- **รูปแบบเดียวทุกที่:** แถบ 3 ช่อง `[⚡ เร่งด่วน | 🛡 ความเสี่ยง | ☁ %ฝน]` — ไม่มี gray tray, ไม่มี hero row, ไม่มี `border-t-2`
+- **Token:** `METRIC_STRIP` (divide-x + ring) + cell tint: urgency `orange-50/40`, risk `white`, rain `sky-50/50`
+- **ไอคอน:** `MetricIcons` — bolt / shield / cloud
+- **Variant:** `inline` (list card กระชับ), `compact` (ResultCard), `panel` (detail + rain chip + API hint)
+- **ReportCard:** strip ใต้ meta โดยตรง, thumb 56px, padding ลดลง
+
 ### Detail Sheet Sticky Footer (2026-07-07)
 
 - Mobile `DetailSheet` + desktop `ReportDetailPanel`: **StatusSegmented + Save** อยู่ footer คงที่ ไม่ scroll

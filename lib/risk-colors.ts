@@ -25,15 +25,18 @@ export function urgencyRingColor(score: number): string {
   return "#94A3B8";
 }
 
-/** Bento metric surfaces — tray + typed cells */
-export const BENTO_TRAY = "rounded-[16px] bg-slate-100/80 p-2.5";
-export const BENTO_CELL_URGENCY =
-  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-brand-orange/70";
-export const BENTO_CELL_RISK =
-  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-slate-300";
-export const BENTO_CELL_RAIN =
-  "rounded-[12px] bg-sky-50/40 shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-sky-400/70";
-export const BENTO_HERO =
-  "rounded-[12px] bg-white shadow-sm ring-1 ring-slate-200/80 border-t-2 border-t-brand-orange/80";
+/** Metric strip — segmented Apple-style, no gray tray or top borders */
+export const METRIC_STRIP =
+  "grid grid-cols-3 divide-x divide-slate-200/80 overflow-hidden rounded-xl ring-1 ring-slate-200/70";
+export const METRIC_CELL_URGENCY = "bg-orange-50/40 px-2.5 py-2";
+export const METRIC_CELL_RISK = "bg-white px-2.5 py-2";
+export const METRIC_CELL_RAIN = "bg-sky-50/50 px-2.5 py-2";
+
+/** @deprecated use METRIC_STRIP + METRIC_CELL_* */
+export const BENTO_TRAY = METRIC_STRIP;
+export const BENTO_CELL_URGENCY = METRIC_CELL_URGENCY;
+export const BENTO_CELL_RISK = METRIC_CELL_RISK;
+export const BENTO_CELL_RAIN = METRIC_CELL_RAIN;
+export const BENTO_HERO = METRIC_CELL_URGENCY;
 export const BENTO_SURFACE =
   "rounded-[14px] bg-white ring-1 ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.03)]";
