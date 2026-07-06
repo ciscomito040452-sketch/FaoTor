@@ -1,24 +1,31 @@
 "use client";
 
 import type { RiskLevel } from "@/lib/types";
+import { RISK_BADGE } from "@/lib/risk-colors";
 import { getRiskLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";
 import { ShieldDropletIcon } from "./ShieldDropletIcon";
 
-const STYLES: Record<RiskLevel, { bg: string; text: string }> = {
-  ปกติ: { bg: "bg-slate-100", text: "text-slate-600" },
-  เริ่มอุดตัน: { bg: "bg-brand-orange-soft", text: "text-brand-orange" },
-  อุดตันหนัก: { bg: "bg-risk-red-bg", text: "text-risk-red-text" },
-};
-
-export function RiskBadge({ level }: { level: RiskLevel }) {
+export function RiskBadge({
+  level,
+  compact = false,
+}: {
+  level: RiskLevel;
+  compact?: boolean;
+}) {
   const { locale } = useApp();
-  const style = STYLES[level];
+  const style = RISK_BADGE[level];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[15px] font-semibold leading-none ${style.bg} ${style.text}`}
+      className={`inline-flex items-center rounded-full font-semibold leading-none ${style.bg} ${style.text} ${
+        compact
+          ? "gap-0.5 px-2 py-0.5 text-[11px]"
+          : "gap-1.5 px-3 py-1.5 text-[15px]"
+      }`}
     >
-      <ShieldDropletIcon className="shrink-0" />
+      <ShieldDropletIcon
+        className={compact ? "h-3 w-3 shrink-0" : "shrink-0"}
+      />
       {getRiskLabel(level, locale)}
     </span>
   );

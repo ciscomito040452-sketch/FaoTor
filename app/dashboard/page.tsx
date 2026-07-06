@@ -21,9 +21,10 @@ import { useApp } from "@/lib/app-context";
 import { useReports } from "@/lib/reports-store";
 import {
   reportsByDay,
+  reportsByDayPending,
+  reportsByDaySevere,
   resolutionRate,
-  sparklineFromScores,
-  trendPercent,
+  trendFromDaySeries,
 } from "@/lib/dashboard-analytics";
 import type { Report, ReportStatus } from "@/lib/types";
 
@@ -95,13 +96,28 @@ export default function DashboardPage() {
   }, [pendingSorted]);
 
   const topUrgentId = pendingSorted[0]?.id ?? null;
-  const weeklyBars = useMemo(() => reportsByDay(reports, 7), [reports]);
+
+  const totalBars = useMemo(() => reportsByDay(reports, 7), [reports]);
+  const pendingBars = useMemo(() => reportsByDayPending(reports, 7), [reports]);
+  const severeBars = useMemo(() => reportsByDaySevere(reports, 7), [reports]);
   const resolvedPct = useMemo(() => resolutionRate(reports), [reports]);
-  const severeSpark = useMemo(
-    () => sparklineFromScores(reports.filter((r) => r.riskLevel === "อุดตันหนัก")),
+
+  const totalTrend = useMemo(
+    () => trendFromDaySeries(reports, 7, () => true),
     [reports]
   );
-  const pendingTrend = trendPercent(stats.pending, Math.max(stats.pending - 1, 0));
+  const pendingTrend = useMemo(
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "รอดำเนินการ"),
+    [reports]
+  );
+  const severeTrend = useMemo(
+    () => trendFromDaySeries(reports, 7, (r) => r.riskLevel === "อุดตันหนัก"),
+    [reports]
+  );
+  const resolvedTrend = useMemo(
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "แก้ไขแล้ว"),
+    [reports]
+  );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -193,35 +209,44 @@ export default function DashboardPage() {
       subtitle={t("dashboard.updated")}
       largeTitle
     >
+      <p className="mb-2 text-[12px] text-slate-500">{t("dashboard.kpiRowHint")}</p>
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KpiCard
           label={t("dashboard.statTotal")}
+          caption={t("dashboard.kpiCaptionTotal")}
           value={stats.total}
+          trend={totalTrend}
           chartType="bar"
-          chartData={weeklyBars}
+          chartData={totalBars}
           active={filter === "all"}
           onClick={() => setFilter("all")}
         />
         <KpiCard
           label={t("dashboard.statPending")}
+          caption={t("dashboard.kpiCaptionPending")}
           value={stats.pending}
           trend={pendingTrend}
           chartType="bar"
-          chartData={weeklyBars}
+          chartData={pendingBars}
           active={filter === "pending"}
           onClick={() => handleStatClick("pending")}
         />
         <KpiCard
           label={t("dashboard.statSevere")}
+          caption={t("dashboard.kpiCaptionSevere")}
           value={stats.severe}
-          chartType="sparkline"
-          chartData={severeSpark.length ? severeSpark : [0, 0]}
+          trend={severeTrend}
+          chartType="bar"
+          chartData={severeBars}
+          barVariant="severe"
           active={filter === "severe"}
           onClick={() => handleStatClick("severe")}
         />
         <KpiCard
           label={t("dashboard.statResolved")}
+          caption={t("dashboard.kpiCaptionResolved")}
           value={`${resolvedPct}%`}
+          trend={resolvedTrend}
           chartType="donut"
           donutPercent={resolvedPct}
         />
@@ -243,7 +268,7 @@ export default function DashboardPage() {
             onSelectReport={handleDayInsightSelect}
           />
         </div>
-        <div className="flex min-h-0 lg:col-span-1">
+        <div className="lg:col-span-1 lg:self-start">
           <QueueTimeline
             reports={todayQueue}
             selectedId={selected?.id ?? null}
@@ -317,7 +342,7 @@ export default function DashboardPage() {
               ) : (
                 <div
                   ref={listRef}
-                  className="mt-4 max-h-[min(520px,55vh)] space-y-3 overflow-y-auto overscroll-contain pr-1"
+                  className="mt-4 max-h-[min(520px,55vh)] space-y-3 overflow-y-auto pr-1"
                 >
                   {filtered.map((report) => (
                     <ReportCard

@@ -2,12 +2,14 @@ interface MiniBarChartProps {
   values: number[];
   height?: number;
   className?: string;
+  variant?: "default" | "severe";
 }
 
 export function MiniBarChart({
   values,
   height = 48,
   className = "",
+  variant = "default",
 }: MiniBarChartProps) {
   const max = Math.max(...values, 1);
   const width = values.length * 12;
@@ -21,7 +23,12 @@ export function MiniBarChart({
     >
       {values.map((v, i) => {
         const barH = (v / max) * (height - 4);
-        const color = i % 2 === 0 ? "#3B82F6" : "#F97316";
+        const color =
+          variant === "severe"
+            ? "#F97316"
+            : i % 2 === 0
+              ? "#3B82F6"
+              : "#93C5FD";
         return (
           <rect
             key={i}

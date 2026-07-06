@@ -49,10 +49,10 @@ export function ReportCalendar({
           <span key={d}>{d}</span>
         ))}
       </div>
-      <div className="mt-2 grid grid-cols-7 gap-0.5">
+      <div className="mt-2 grid grid-cols-7 gap-1">
         {cells.map((day, i) => {
           if (day == null) {
-            return <div key={`e-${i}`} className="h-8" />;
+            return <div key={`e-${i}`} className="h-9" />;
           }
           const count = heat.get(day) ?? 0;
           const isSelected = day === selectedDay;
@@ -70,11 +70,11 @@ export function ReportCalendar({
               key={day}
               type="button"
               onClick={() => onSelectDay(day)}
-              className={`flex h-8 w-full items-center justify-center rounded-md text-[12px] font-semibold transition ${intensity} ${
+              className={`flex h-9 w-full items-center justify-center rounded-[10px] border border-transparent text-[12px] font-semibold transition ${intensity} ${
                 isSelected
-                  ? "ring-2 ring-brand-blue ring-offset-1"
+                  ? "border-brand-blue shadow-[inset_0_0_0_1px_#3B82F6]"
                   : isToday
-                    ? "ring-1 ring-brand-orange/50"
+                    ? "border-brand-orange/40"
                     : "hover:opacity-80"
               }`}
             >

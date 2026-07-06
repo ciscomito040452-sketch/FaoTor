@@ -43,7 +43,7 @@ export function ReportDetailPanel({
   }
 
   return (
-    <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain">
+    <div className="sticky top-20 self-start">
       <Card padding="lg">
         <ReportDetailContent
           report={report}

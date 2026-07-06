@@ -5,22 +5,69 @@ export interface DayCount {
   count: number;
 }
 
-export function reportsByDay(reports: Report[], days = 7): number[] {
-  const counts = new Map<string, number>();
+function dateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function reportDateKey(iso: string): string {
+  return dateKey(new Date(iso));
+}
+
+/** Count reports per day for the last `days` days (oldest → newest). */
+export function reportsByDayWhere(
+  reports: Report[],
+  days: number,
+  predicate: (r: Report) => boolean
+): number[] {
   const now = new Date();
+  const keys: string[] = [];
   for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    counts.set(key, 0);
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    keys.push(dateKey(d));
   }
+  const counts = new Map(keys.map((k) => [k, 0]));
   for (const r of reports) {
-    const key = r.createdAt.slice(0, 10);
-    if (counts.has(key)) {
-      counts.set(key, (counts.get(key) ?? 0) + 1);
+    const k = reportDateKey(r.createdAt);
+    if (counts.has(k) && predicate(r)) {
+      counts.set(k, (counts.get(k) ?? 0) + 1);
     }
   }
-  return Array.from(counts.values());
+  return keys.map((k) => counts.get(k) ?? 0);
+}
+
+export function reportsByDay(reports: Report[], days = 7): number[] {
+  return reportsByDayWhere(reports, days, () => true);
+}
+
+export function reportsByDayPending(reports: Report[], days = 7): number[] {
+  return reportsByDayWhere(reports, days, (r) => r.status === "รอดำเนินการ");
+}
+
+export function reportsByDaySevere(reports: Report[], days = 7): number[] {
+  return reportsByDayWhere(reports, days, (r) => r.riskLevel === "อุดตันหนัก");
+}
+
+export function reportsByDayResolved(reports: Report[], days = 7): number[] {
+  return reportsByDayWhere(reports, days, (r) => r.status === "แก้ไขแล้ว");
+}
+
+export function sumSeries(values: number[]): number {
+  return values.reduce((a, b) => a + b, 0);
+}
+
+/** Compare sum of last `windowDays` vs previous `windowDays` in a 2×window series. */
+export function trendFromDaySeries(
+  reports: Report[],
+  windowDays: number,
+  predicate: (r: Report) => boolean
+): number {
+  const series = reportsByDayWhere(reports, windowDays * 2, predicate);
+  const current = sumSeries(series.slice(-windowDays));
+  const previous = sumSeries(series.slice(0, windowDays));
+  return trendPercent(current, previous);
 }
 
 export function resolutionRate(reports: Report[]): number {
@@ -64,11 +111,4 @@ export function reportsOnDay(
       d.getDate() === day
     );
   });
-}
-
-export function sparklineFromScores(reports: Report[], n = 8): number[] {
-  return [...reports]
-    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-    .slice(-n)
-    .map((r) => r.riskScore);
 }

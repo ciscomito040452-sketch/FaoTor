@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { Report } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
 import { reportsOnDay } from "@/lib/dashboard-analytics";
+import { RISK_RING } from "@/lib/risk-colors";
 import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 
@@ -15,12 +16,6 @@ interface CalendarDayInsightProps {
   onViewList: () => void;
   onSelectReport: (report: Report) => void;
 }
-
-const RING_COLORS = {
-  ปกติ: "#6B7280",
-  เริ่มอุดตัน: "#F97316",
-  อุดตันหนัก: "#EF4444",
-} as const;
 
 export function CalendarDayInsight({
   reports,
@@ -116,8 +111,7 @@ export function CalendarDayInsight({
                   value={report.riskScore}
                   size={44}
                   strokeColor={
-                    RING_COLORS[report.riskLevel as keyof typeof RING_COLORS] ??
-                    "#3B82F6"
+                    RISK_RING[report.riskLevel] ?? "#3B82F6"
                   }
                 />
                 <div className="min-w-0 flex-1">

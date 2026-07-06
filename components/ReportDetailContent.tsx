@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Report, ReportStatus, RiskLevel } from "@/lib/types";
+import type { Report, ReportStatus } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { useApp } from "@/lib/app-context";
 import { getRainLabel, getStatusLabel } from "@/lib/labels";
@@ -9,6 +9,11 @@ import { RiskBadge } from "./RiskBadge";
 import { StatusSegmented } from "./StatusSegmented";
 import { ScoreRing } from "./ui/ScoreRing";
 import { Button } from "./ui/Button";
+import {
+  RISK_METRIC_BG,
+  RISK_RING,
+  urgencyRingColor,
+} from "@/lib/risk-colors";
 
 export interface ReportDetailLabels {
   location: string;
@@ -25,24 +30,6 @@ interface ReportDetailContentProps {
   onSave: (id: string, status: ReportStatus) => void;
   onClose?: () => void;
   compact?: boolean;
-}
-
-const RING_COLORS: Record<RiskLevel, string> = {
-  ปกติ: "#6B7280",
-  เริ่มอุดตัน: "#F97316",
-  อุดตันหนัก: "#EF4444",
-};
-
-const METRIC_BG: Record<RiskLevel, string> = {
-  ปกติ: "bg-slate-50",
-  เริ่มอุดตัน: "bg-brand-orange-soft",
-  อุดตันหนัก: "bg-risk-red-bg/40",
-};
-
-function urgencyRingColor(score: number): string {
-  if (score >= 85) return "#EF4444";
-  if (score >= 70) return "#F97316";
-  return "#3B82F6";
 }
 
 export function ReportDetailContent({
@@ -121,12 +108,12 @@ export function ReportDetailContent({
 
       <div className="grid grid-cols-2 gap-3">
         <div
-          className={`flex flex-col items-center rounded-[16px] border border-slate-100 p-4 ${METRIC_BG[report.riskLevel]}`}
+          className={`flex flex-col items-center rounded-[16px] border border-slate-100 p-4 ${RISK_METRIC_BG[report.riskLevel]}`}
         >
           <ScoreRing
             value={report.riskScore}
             size={ringSize}
-            strokeColor={RING_COLORS[report.riskLevel]}
+            strokeColor={RISK_RING[report.riskLevel]}
             label={labels.score}
           />
           <div className="mt-3">

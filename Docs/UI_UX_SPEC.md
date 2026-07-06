@@ -34,6 +34,7 @@
 - Detail panel: `sticky top-20`, `max-h-[calc(100vh-6rem)]`, scroll ภายใน panel เท่านั้น
 - List scroll แยกใน `max-h-[min(520px,55vh)]` — ไม่ scroll ทั้งหน้าเมื่อเลือกจาก list
 - คิวงาน: แสดง pending สูงสุด 8 รายการ, scroll ในกรอบ, ลิงก์ "ดูทั้งหมด" → filter pending
+- ปฏิทิน: selected day ใช้ **inset border** ภายใน cell (ไม่ใช้ ring offset) และเว้นช่อง `gap-1` เพื่อไม่ให้เลขวันทับกัน
 
 ---
 
