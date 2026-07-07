@@ -38,7 +38,7 @@
 
 ### Report Insight Strip (2026-07-07)
 
-- ทุก **ReportCard** และ **ResultCard** แสดง 3 สัญญาณเสมอผ่าน `MetricsBento`: **ความเร่งด่วน | ความเสี่ยง | พยากรณ์ฝน**
+- ทุก **ReportCard** แสดง 3 สัญญาณผ่าน `MetricFocusBlock`; **ResultCard** และ detail ใช้ `MetricsBento`
 - พยากรณ์ฝนแสดง micro-label `Weather API · Demo`
 - ความเร่งด่วนแสดง caption `+{n} จากฝน` เมื่อมี rain bonus
 - Status pill อยู่มุมขวาบนการ์ด — สีตามสถานะ (slate / blue / green)
@@ -64,6 +64,14 @@
 - **ไอคอน:** `MetricIcons` — bolt / shield / cloud
 - **Variant:** `inline` (list card กระชับ), `compact` (ResultCard), `panel` (detail + rain chip + API hint)
 - **ReportCard:** strip ใต้ meta โดยตรง, thumb 56px, padding ลดลง
+
+### ReportCard v4 — Horizontal Focus (2026-07-07)
+
+- **แถวเดียว 4 โซน:** `[ภาพ | หัวข้อ+รายละเอียด | MetricFocusBlock | Status pill]`
+- **MetricFocusBlock:** hero **Urgency** ซ้าย (ตัวเลขใหญ่) + **Risk** / **Rain %** stacked ขวา
+- **Token:** `METRIC_FOCUS_PANEL` + cell tint เดิม (`METRIC_CELL_*`)
+- **Status:** ชิดขวาสุด แนวตั้งกลาง — ไม่ปนกับชื่อสถานที่
+- Detail/ResultCard ยังใช้ `MetricsBento` (ไม่เปลี่ยน)
 
 ### Detail Sheet Sticky Footer (2026-07-07)
 

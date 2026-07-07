@@ -32,6 +32,10 @@ export const METRIC_CELL_URGENCY = "bg-orange-50/40 px-2.5 py-2";
 export const METRIC_CELL_RISK = "bg-white px-2.5 py-2";
 export const METRIC_CELL_RAIN = "bg-sky-50/50 px-2.5 py-2";
 
+/** Metric focus panel — hero urgency + stacked risk/rain (ReportCard v4) */
+export const METRIC_FOCUS_PANEL =
+  "grid min-w-[108px] max-w-[120px] shrink-0 grid-cols-[minmax(72px,1fr)_minmax(64px,0.9fr)] grid-rows-2 overflow-hidden rounded-xl ring-1 ring-slate-200/70 sm:max-w-none sm:min-w-[128px]";
+
 /** @deprecated use METRIC_STRIP + METRIC_CELL_* */
 export const BENTO_TRAY = METRIC_STRIP;
 export const BENTO_CELL_URGENCY = METRIC_CELL_URGENCY;
