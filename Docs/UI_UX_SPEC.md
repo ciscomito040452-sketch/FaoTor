@@ -87,6 +87,13 @@
 - **Text:** `max-w-[160px] shrink` ไม่ใช้ `flex-1`
 - **Metrics + Status:** กลุ่มเดียว `flex gap-2 shrink-0`
 
+### ReportCard v4.3 — Aligned grid (2026-07-07)
+
+- **Grid:** `72px | 1fr | 188px | auto` — metrics/status ยึดจากขวา แนว ScoreRing ตรงกันทุกการ์ด
+- **Text:** `min-w-0 truncate` กินพื้นที่ซ้ายที่เหลือ
+- **Priority:** chip แยกบรรทัดเหนือชื่อ
+- **METRIC_FOCUS_PANEL:** `w-[188px]` คงที่
+
 ### Detail image balance (2026-07-07)
 
 - **`imageVariant`:** แยกจาก `compact` — `panel` = `aspect-[16/10] max-h-[220px] min-h-[160px]`
