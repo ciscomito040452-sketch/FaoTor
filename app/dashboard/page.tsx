@@ -307,7 +307,7 @@ export default function DashboardPage() {
 
       <section id="report-workspace" ref={workspaceRef}>
         <Card padding="lg" className="hidden overflow-hidden xl:block">
-          <div className="grid max-h-[min(72vh,calc(100vh-14rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] xl:grid-rows-[minmax(0,1fr)] xl:items-stretch">
+          <div className="grid max-h-[min(72vh,calc(100vh-14rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1.05fr)_minmax(400px,0.95fr)] xl:grid-rows-[minmax(0,1fr)] xl:items-stretch">
             <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
               <h2 className="text-[20px] font-semibold text-slate-900">
                 {t("dashboard.listTitle")}

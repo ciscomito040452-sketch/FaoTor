@@ -23,6 +23,8 @@ export interface ReportDetailLabels {
   close?: string;
 }
 
+export type DetailImageVariant = "compact" | "panel";
+
 interface ReportDetailContentProps {
   report: Report;
   labels: ReportDetailLabels;
@@ -30,6 +32,7 @@ interface ReportDetailContentProps {
   onClose?: () => void;
   onViewOnMap?: (report: Report) => void;
   compact?: boolean;
+  imageVariant?: DetailImageVariant;
   metricsVariant?: MetricsBentoVariant;
   showSaveButton?: boolean;
   showStatusSection?: boolean;
@@ -44,6 +47,7 @@ export function ReportDetailContent({
   onClose,
   onViewOnMap,
   compact = false,
+  imageVariant,
   metricsVariant,
   showSaveButton = true,
   showStatusSection = true,
@@ -69,6 +73,12 @@ export function ReportDetailContent({
     report.urgencyScore ?? computeUrgencyScore(report.riskScore, rainForecast);
   const bentoVariant: MetricsBentoVariant =
     metricsVariant ?? (compact ? "compact" : "panel");
+  const resolvedImage: DetailImageVariant =
+    imageVariant ?? (compact ? "compact" : "panel");
+  const imageClass =
+    resolvedImage === "panel"
+      ? "aspect-[16/10] max-h-[220px] min-h-[160px]"
+      : "aspect-[16/9] max-h-[120px]";
 
   return (
     <div className={compact ? "space-y-2.5" : "space-y-4"}>
@@ -146,7 +156,7 @@ export function ReportDetailContent({
         <img
           src={report.imageUrl}
           alt={report.location}
-          className={`w-full object-cover ${compact ? "aspect-[16/9] max-h-[120px]" : "aspect-[16/10] max-h-[270px]"}`}
+          className={`w-full object-cover ${imageClass}`}
         />
       </div>
 

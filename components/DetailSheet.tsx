@@ -64,6 +64,7 @@ export function DetailSheet({
             onClose={onClose}
             onViewOnMap={onViewOnMap}
             compact
+            imageVariant="panel"
             showSaveButton={false}
             showStatusSection={false}
             status={status}

@@ -32,7 +32,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
         ref={ref}
         type="button"
         onClick={() => onSelect(report)}
-        className={`box-border grid min-h-[80px] w-full min-w-0 grid-cols-[72px_minmax(0,1fr)_auto_auto] items-center gap-x-3 rounded-2xl px-3 py-3 text-left transition ${
+        className={`box-border flex min-h-[80px] w-full min-w-0 items-center gap-2.5 rounded-2xl px-3 py-3 text-left transition ${
           isSelected
             ? "bg-slate-50 ring-2 ring-brand-blue/40"
             : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/70 hover:bg-slate-50/80 dark:bg-[var(--color-surface)]"
@@ -45,7 +45,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           className={`h-[72px] w-[72px] shrink-0 rounded-[14px] object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
         />
 
-        <div className="min-w-0 max-w-[min(100%,200px)] justify-self-start">
+        <div className="min-w-0 max-w-[160px] shrink">
           <div className="flex min-w-0 flex-wrap items-center gap-1.5">
             {queueRank != null && (
               <span className="shrink-0 text-[11px] font-semibold tabular-nums text-slate-400">
@@ -66,7 +66,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           )}
         </div>
 
-        <div className="flex items-center justify-self-end">
+        <div className="flex shrink-0 items-center gap-2">
           <MetricFocusBlock
             riskScore={report.riskScore}
             riskLevel={report.riskLevel}
@@ -75,28 +75,28 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
             rainChancePercent={report.rainChancePercent}
             scoreLabel={t("dashboard.cardRiskLabel")}
           />
-        </div>
 
-        <div className="flex shrink-0 flex-col items-center justify-center gap-1 justify-self-end">
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${STATUS_PILL[report.status]}`}
-          >
-            {getStatusLabel(report.status, locale)}
-          </span>
-          {isSelected && (
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-brand-blue"
-              aria-hidden
+          <div className="flex shrink-0 flex-col items-center justify-center gap-1">
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${STATUS_PILL[report.status]}`}
             >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          )}
+              {getStatusLabel(report.status, locale)}
+            </span>
+            {isSelected && (
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-brand-blue"
+                aria-hidden
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            )}
+          </div>
         </div>
       </button>
     );

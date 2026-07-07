@@ -81,6 +81,18 @@
 - **Risk level:** ข้อความสีตาม `RISK_BADGE` แทน compact badge ใน cell แคบ
 - **Panel:** `min-w-[168px] min-h-[72px]` ไม่จำกัด `max-width` แคบ
 
+### ReportCard v4.2 — Flex pack (2026-07-07)
+
+- **Layout:** `flex gap-2.5` แทน grid `1fr` — ชื่อ/metrics/status ติดกัน ไม่มี dead zone กลางการ์ด
+- **Text:** `max-w-[160px] shrink` ไม่ใช้ `flex-1`
+- **Metrics + Status:** กลุ่มเดียว `flex gap-2 shrink-0`
+
+### Detail image balance (2026-07-07)
+
+- **`imageVariant`:** แยกจาก `compact` — `panel` = `aspect-[16/10] max-h-[220px] min-h-[160px]`
+- **Workspace:** `xl:grid-cols-[1.05fr_0.95fr]` detail กว้างขึ้น ~45%
+- **ReportDetailPanel + DetailSheet:** ใช้ `imageVariant="panel"`
+
 ### Detail Sheet Sticky Footer (2026-07-07)
 
 - Mobile `DetailSheet` + desktop `ReportDetailPanel`: **StatusSegmented + Save** อยู่ footer คงที่ ไม่ scroll
