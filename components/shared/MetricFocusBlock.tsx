@@ -7,14 +7,17 @@ import {
   resolveRainChancePercent,
   resolveRainForecast,
 } from "@/lib/mock-weather";
-import { RiskBadge } from "@/components/RiskBadge";
+import { getRiskLabel } from "@/lib/labels";
+import { ScoreRing } from "@/components/ui/ScoreRing";
 import {
   METRIC_CELL_RAIN,
   METRIC_CELL_RISK,
   METRIC_CELL_URGENCY,
   METRIC_FOCUS_PANEL,
+  RISK_BADGE,
+  urgencyRingColor,
 } from "@/lib/risk-colors";
-import { RainMetricIcon, RiskMetricIcon, UrgencyIcon } from "@/components/shared/MetricIcons";
+import { RainMetricIcon, RiskMetricIcon } from "@/components/shared/MetricIcons";
 
 interface MetricFocusBlockProps {
   riskScore: number;
@@ -26,12 +29,6 @@ interface MetricFocusBlockProps {
   className?: string;
 }
 
-function urgencyAccent(score: number): string {
-  if (score >= 85) return "text-brand-orange-dark";
-  if (score >= 70) return "text-brand-orange";
-  return "text-slate-900";
-}
-
 export function MetricFocusBlock({
   riskScore,
   riskLevel,
@@ -41,60 +38,59 @@ export function MetricFocusBlock({
   scoreLabel,
   className = "",
 }: MetricFocusBlockProps) {
-  const { t } = useApp();
+  const { locale, t } = useApp();
   const rain = resolveRainForecast(rainForecast);
   const urgency = urgencyScore ?? computeUrgencyScore(riskScore, rain);
   const rainPercent = resolveRainChancePercent(rain, rainChancePercent);
+  const riskLevelLabel = getRiskLabel(riskLevel, locale);
+  const riskLevelClass = RISK_BADGE[riskLevel].text;
 
   return (
     <div className={`${METRIC_FOCUS_PANEL} ${className}`}>
       <div
-        className={`${METRIC_CELL_URGENCY} row-span-2 flex min-w-0 flex-col justify-center border-r border-slate-200/80 px-2 py-2`}
+        className={`${METRIC_CELL_URGENCY} flex flex-col items-center justify-center border-r border-slate-200/80 px-3 py-2.5`}
       >
-        <div className="flex items-center gap-0.5">
-          <UrgencyIcon className="text-brand-orange" />
-          <p className="text-[9px] font-semibold text-slate-500 sm:text-[10px]">
-            {t("dashboard.cardUrgencyLabel")}
-          </p>
-        </div>
-        <p
-          className={`mt-0.5 text-[22px] font-bold leading-none tabular-nums tracking-tight sm:text-[26px] ${urgencyAccent(urgency)}`}
+        <ScoreRing
+          value={urgency}
+          size={56}
+          strokeColor={urgencyRingColor(urgency)}
+          label={t("dashboard.cardUrgencyLabel")}
+        />
+      </div>
+
+      <div className="grid min-w-0 grid-rows-2">
+        <div
+          className={`${METRIC_CELL_RISK} flex min-w-0 flex-col justify-center border-b border-slate-200/80 px-3 py-2.5`}
         >
-          {urgency}
-        </p>
-      </div>
-
-      <div
-        className={`${METRIC_CELL_RISK} flex min-w-0 flex-col justify-center border-b border-slate-200/80 px-1.5 py-1.5 sm:px-2`}
-      >
-        <div className="flex items-center gap-0.5">
-          <RiskMetricIcon />
-          <p className="truncate text-[8px] font-semibold text-slate-500 sm:text-[9px]">
-            {scoreLabel}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-1">
+              <RiskMetricIcon />
+              <p className="truncate text-[10px] font-semibold text-slate-500">
+                {scoreLabel}
+              </p>
+            </div>
+            <p className="shrink-0 text-[18px] font-bold leading-none tabular-nums text-slate-900">
+              {riskScore}
+            </p>
+          </div>
+          <p className={`mt-1 truncate text-[10px] font-semibold ${riskLevelClass}`}>
+            {riskLevelLabel}
           </p>
         </div>
-        <p className="mt-0.5 text-[15px] font-bold leading-none tabular-nums text-slate-900 sm:text-[16px]">
-          {riskScore}
-        </p>
-        <div className="mt-0.5">
-          <RiskBadge level={riskLevel} compact />
-        </div>
-      </div>
 
-      <div
-        className={`${METRIC_CELL_RAIN} flex min-w-0 flex-col justify-center px-1.5 py-1.5 sm:px-2`}
-      >
-        <div className="flex items-center gap-0.5">
-          <RainMetricIcon level={rain} />
-          <p className="hidden truncate text-[8px] font-semibold text-slate-500 sm:inline sm:text-[9px]">
-            {t("weather.rainChance")}
-          </p>
-        </div>
-        <div className="mt-0.5 flex items-baseline gap-0.5">
-          <p className="text-[15px] font-bold leading-none tabular-nums text-slate-900 sm:text-[16px]">
+        <div
+          className={`${METRIC_CELL_RAIN} flex min-w-0 items-center justify-between gap-2 px-3 py-2.5`}
+        >
+          <div className="flex min-w-0 items-center gap-1">
+            <RainMetricIcon level={rain} />
+            <p className="truncate text-[10px] font-semibold text-slate-500">
+              {t("weather.rainChance")}
+            </p>
+          </div>
+          <p className="shrink-0 text-[18px] font-bold leading-none tabular-nums text-slate-900">
             {rainPercent}
+            <span className="text-[12px] font-semibold text-slate-500">%</span>
           </p>
-          <span className="text-[10px] font-semibold text-slate-500">%</span>
         </div>
       </div>
     </div>

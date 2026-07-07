@@ -73,6 +73,14 @@
 - **Status:** ชิดขวาสุด แนวตั้งกลาง — ไม่ปนกับชื่อสถานที่
 - Detail/ResultCard ยังใช้ `MetricsBento` (ไม่เปลี่ยน)
 
+### ReportCard v4.1 — Spacing + ScoreRing (2026-07-07)
+
+- **Grid layout:** `72px | text (max 200px) | MetricFocusBlock | Status` — ลดช่องว่างกลางการ์ด
+- **Thumb:** 72×72px `rounded-[14px]` เท่าความสูงการ์ด
+- **MetricFocusBlock:** Urgency ใช้ `ScoreRing` size 56; Risk/Rain ตัวเลข 18px + spacing `px-3 py-2.5`
+- **Risk level:** ข้อความสีตาม `RISK_BADGE` แทน compact badge ใน cell แคบ
+- **Panel:** `min-w-[168px] min-h-[72px]` ไม่จำกัด `max-width` แคบ
+
 ### Detail Sheet Sticky Footer (2026-07-07)
 
 - Mobile `DetailSheet` + desktop `ReportDetailPanel`: **StatusSegmented + Save** อยู่ footer คงที่ ไม่ scroll
