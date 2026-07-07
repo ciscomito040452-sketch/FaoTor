@@ -10,6 +10,26 @@
 
 ---
 
+## **Mock-up v3 — Completed (Demo รอบคัดเลือก)**
+
+สถานะปัจจุบัน: **เสร็จแล้ว** สำหรับอัดวิดีโอ pitch (อ้างอิง `Docs/MOCKUP_SCOPE.md`)
+
+* \[x] Routes: `/`, `/report`, `/dashboard`, `/about`, `/line`
+* \[x] Flow อัปโหลดรูป → mock AI → บันทึก localStorage → Dashboard
+* \[x] Dashboard: KPI, ปฏิทิน, คิว, แผนที่ Leaflet, filter/sort/search, เปลี่ยนสถานะ
+* \[x] i18n TH/EN, dark mode, responsive (top nav + bottom nav)
+* \[x] Sample images + reset demo data ใน Settings
+* \[x] Deploy Vercel ได้โดยไม่ต้องตั้ง env
+* \[x] `npm run smoke` สำหรับตรวจ route + locale
+
+---
+
+## **Future — Phase 1 MVP (หลังผ่านรอบคัดเลือก)**
+
+Task ด้านล่างเป็น checklist สำหรับเชื่อม Gemini + Firestore จริง — **ยังไม่ต้องทำในโหมด Mock-up**
+
+---
+
 ## **Task 0 — Setup โปรเจกต์ (ทำก่อนสิ่งอื่นทั้งหมด)**
 
 * \[ \] 0.1 สร้างโปรเจกต์ Next.js ตามคำสั่งใน `Docs/TECH_STACK.md` หมวด 5  

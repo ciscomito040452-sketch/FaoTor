@@ -14,20 +14,21 @@
 
 ## **2\. Scope ที่ทำอยู่ตอนนี้ (สำคัญที่สุด)**
 
-**โหมดปัจจุบัน: Mock-up Demo** — อ่าน `Docs/MOCKUP_SCOPE.md` ก่อนเสมอ
+**โหมดปัจจุบัน: Mock-up Demo v3 (KARO UI)** — อ่าน `Docs/MOCKUP_SCOPE.md` ก่อนเสมอ (source of truth)
 
 กำลังทำ **Prototype สำหรับอัดวิดีโอ** — UI/flow ครบตาม FR-101 ถึง FR-106 ในมุมผู้ใช้ แต่ใช้ `mock-analyze.ts` + `localStorage` แทน Gemini/Firestore จริง
+
+**ใน v3 ทำแล้ว (mock):** แผนที่ Leaflet (`mock` pins), พยากรณ์ฝน (`mock-weather.ts` สำหรับ urgency score), หน้า `/line` teaser
 
 **ห้าม** สร้าง Firebase, Gemini API routes, หรือ `.env` setup จนกว่าจะออกจากโหมด Mock-up
 
 เมื่อ upgrade เป็น Full Stack จริง ค่อยกลับมาทำ **Phase 1 (MVP)** ตาม `Docs/TASKS.md` Task 0–6
 
-**ห้ามทำสิ่งต่อไปนี้ในตอนนี้** (เป็นของ Phase 2 ยังไม่ต้องทำ):
+**ห้ามทำสิ่งต่อไปนี้ในตอนนี้** (เป็นของ Phase 2 หลังผ่านรอบคัดเลือก):
 
 * ห้ามสร้างระบบ Login/Authentication ที่ซับซ้อน  
-* ห้ามทำแผนที่ (Map View) — Phase 1 ใช้ตาราง/List ธรรมดาพอ  
 * ห้ามทำระบบ Gamification/แต้มสะสม  
-* ห้ามเชื่อม API พยากรณ์ฝน — Phase 1 มีแค่ AI วิเคราะห์ภาพอย่างเดียว
+* ห้าม deploy LINE Bot จริง (หน้า `/line` เป็น animated mock เท่านั้น)
 
 ถ้า Agent เห็นว่างานที่กำลังทำเข้าเงื่อนไขด้านบน ให้หยุดถามก่อน ไม่ต้องทำเองแล้วมาบอกทีหลัง
 
@@ -46,6 +47,7 @@
 * โค้ดต้อง**เรียบง่ายที่สุดที่ทำงานได้** (Simplicity over cleverness) — ทีมนี้คือนักเรียนม.ปลายที่ Vibe Coding ไม่ใช่ทีม Dev มืออาชีพ โค้ดต้องอ่านง่าย แก้ง่าย  
 * Comment ในโค้ดเป็นภาษาไทยหรืออังกฤษก็ได้ แต่ต้องอธิบายว่า "ทำไม" ไม่ใช่แค่ "ทำอะไร"  
 * ทุกฟีเจอร์ต้องทดสอบได้จริงผ่านหน้าเว็บ (Manual test ผ่านเบราว์เซอร์) ไม่ใช่แค่ Code สวยแต่รันไม่ได้จริง  
+* ก่อน push: รัน `npm run build` และ `npm run smoke` (ดู `Docs/DEMO_RECORDING.md`)  
 * ถ้า Error หรือไม่แน่ใจว่าทำถูกไหม ให้หยุดและถามก่อน ดีกว่าทำต่อแบบเดาไปเรื่อย
 
 ## **6\. ลำดับความสำคัญเมื่อเวลาน้อย (Timeline บีบมาก)**

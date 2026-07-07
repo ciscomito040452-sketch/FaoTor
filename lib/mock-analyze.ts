@@ -22,16 +22,25 @@ const ANALYSIS_POOL: Record<
   },
 };
 
+const SAMPLE_LEVEL: Record<string, RiskLevel> = {
+  "drain-severe": "อุดตันหนัก",
+  "drain-partial": "เริ่มอุดตัน",
+  "drain-normal": "ปกติ",
+};
+
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Heuristic จากขนาด base64 หรือ path รูปตัวอย่าง */
-function imageBias(imageDataUrl: string): number {
-  if (imageDataUrl.includes("drain-severe")) return 0.5;
-  if (imageDataUrl.includes("drain-partial")) return 0.15;
-  if (imageDataUrl.includes("drain-normal")) return -0.4;
+function sampleRiskLevel(imageDataUrl: string): RiskLevel | null {
+  for (const [key, level] of Object.entries(SAMPLE_LEVEL)) {
+    if (imageDataUrl.includes(key)) return level;
+  }
+  return null;
+}
 
+/** Heuristic จากขนาด base64 (รูปจากกล้อง) */
+function imageBias(imageDataUrl: string): number {
   const len = imageDataUrl.length;
   if (len > 800_000) return 0.35;
   if (len > 400_000) return 0.2;
@@ -51,14 +60,22 @@ export async function mockAnalyzeImage(
 ): Promise<AnalyzeResult> {
   await delay(2000 + Math.random() * 1500);
 
-  const bias = imageBias(imageDataUrl);
-  const riskLevel = pickLevel(bias);
+  const sampleLevel = sampleRiskLevel(imageDataUrl);
+  const riskLevel = sampleLevel ?? pickLevel(imageBias(imageDataUrl));
   const base = ANALYSIS_POOL[riskLevel];
-  const variance = Math.floor(Math.random() * 8) - 4;
-  const riskScore = Math.min(
-    100,
-    Math.max(5, base.riskScore + variance + Math.round(bias * 20))
-  );
+
+  const riskScore = sampleLevel
+    ? base.riskScore
+    : Math.min(
+        100,
+        Math.max(
+          5,
+          base.riskScore +
+            (Math.floor(Math.random() * 8) - 4) +
+            Math.round(imageBias(imageDataUrl) * 20)
+        )
+      );
+
   const rainForecast = getRainForecast();
   const urgencyScore = computeUrgencyScore(riskScore, rainForecast);
 

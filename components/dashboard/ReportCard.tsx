@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { forwardRef } from "react";
-import type { Report, ReportStatus } from "@/lib/types";
+import type { Report } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { getStatusLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";

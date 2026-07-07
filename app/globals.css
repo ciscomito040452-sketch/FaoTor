@@ -52,7 +52,7 @@
 body {
   background-color: var(--color-surface-muted);
   color: var(--color-text-primary);
-  font-family: "IBM Plex Sans Thai", "Inter", -apple-system, sans-serif;
+  font-family: var(--font-ibm-plex-sans-thai), var(--font-inter), -apple-system, sans-serif;
   line-height: 1.35;
 }
 

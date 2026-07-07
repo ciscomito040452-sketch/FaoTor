@@ -4,76 +4,96 @@
 
 วางไฟล์ตามโครงสร้างนี้เท่านั้น ถ้าจำเป็นต้องสร้างโฟลเดอร์ใหม่นอกเหนือจากนี้ ให้ถามก่อน (ตามกฎใน AGENT.md)
 
----
-
-## **1\. โครงสร้างทั้งหมด**
-
-faotor/  
-├── app/  
-│   ├── layout.tsx  
-│   ├── page.tsx                  \# หน้าแรก (ลิงก์ไปหน้า report / dashboard)  
-│   ├── globals.css  
-│   ├── report/  
-│   │   └── page.tsx              \# หน้าอัปโหลดรูปท่อ (ฝั่งชุมชน) \- FR-101,102,103  
-│   ├── dashboard/  
-│   │   └── page.tsx              \# หน้ารายการความเสี่ยง (ฝั่งเจ้าหน้าที่) \- FR-105,106  
-│   └── api/  
-│       ├── analyze/  
-│       │   └── route.ts          \# เรียก Gemini Vision API \- FR-102  
-│       └── reports/  
-│           └── route.ts          \# CRUD ข้อมูลรายงานกับ Firestore \- FR-104  
-│  
-├── components/  
-│   ├── UploadForm.tsx            \# ฟอร์มอัปโหลดรูป \+ กรอกตำแหน่ง  
-│   ├── RiskBadge.tsx             \# แสดงระดับความเสี่ยง (ปกติ/เริ่มอุดตัน/อุดตันหนัก)  
-│   ├── ReportTable.tsx           \# ตารางรายการรายงานใน Dashboard  
-│   └── StatusButton.tsx          \# ปุ่มเปลี่ยนสถานะงาน  
-│  
-├── lib/  
-│   ├── gemini.ts                 \# ตั้งค่า Gemini API Client  
-│   ├── firebase.ts               \# ตั้งค่า Firebase App (Firestore \+ Storage)  
-│   └── firestore.ts              \# ฟังก์ชันอ่าน/เขียนข้อมูล reports  
-│  
-├── public/  
-│   └── (ไฟล์ Static เช่น Logo — ถ้ามี)  
-│  
-├── .env.local                    \# เก็บ API Key (ห้าม Commit ขึ้น GitHub)  
-├── .gitignore  
-├── package.json  
-├── tailwind.config.ts  
-├── tsconfig.json  
-│  
-├── FaoTor\_SRS.md                 \# เอกสาร Requirement หลัก  
-├── AGENT.md                      \# กฎการทำงานของ AI Agent  
-├── TECH\_STACK.md                 \# เทคโนโลยีที่ใช้  
-└── FOLDER\_STRUCTURE.md           \# ไฟล์นี้
+**โหมดปัจจุบัน:** Mock-up v3 — โครงสร้างด้านล่างสะท้อนโค้ดจริงใน repo
 
 ---
 
-## **2\. คำอธิบายแต่ละโฟลเดอร์**
+## **1\. โครงสร้างทั้งหมด (ปัจจุบัน)**
+
+```
+faotor/
+├── app/
+│   ├── layout.tsx              # Root layout, providers, fonts
+│   ├── page.tsx                # Landing
+│   ├── globals.css             # Tailwind v4 @theme (ไม่มี tailwind.config.ts)
+│   ├── report/page.tsx         # อัปโหลดรูป + mock AI
+│   ├── dashboard/page.tsx      # Officer dashboard
+│   ├── about/page.tsx          # Vision + Phase roadmap
+│   └── line/page.tsx           # LINE bot teaser (mock)
+│
+├── components/
+│   ├── UploadForm.tsx          # Report wizard
+│   ├── dashboard/              # ReportCard, LeafletMap, KPI helpers
+│   ├── report/                 # PhotoUploadZone, LocationMapPicker, ...
+│   ├── ui/                     # Card, Button, KpiCard, ...
+│   ├── shell/                  # TopNav, MobileBottomNav
+│   ├── layout/                 # AppShell
+│   └── shared/                 # Toast, MetricsBento, badges
+│
+├── lib/
+│   ├── mock-analyze.ts         # จำลอง Gemini Vision
+│   ├── mock-weather.ts         # จำลองพยากรณ์ฝน
+│   ├── mock-data.ts            # Seed reports
+│   ├── reports-store.tsx       # localStorage CRUD
+│   ├── dashboard-analytics.ts  # KPI / trend helpers
+│   ├── app-context.tsx         # i18n, theme, toast
+│   ├── locales/                # th.json, en.json
+│   ├── fonts.ts                # next/font/google
+│   └── types.ts
+│
+├── public/
+│   ├── samples/                # drain-severe|partial|normal.svg
+│   └── logo.svg
+│
+├── scripts/
+│   └── smoke-check.mjs         # Route + locale smoke test
+│
+├── Docs/                       # SRS, MOCKUP_SCOPE, TASKS, ...
+├── AGENT.md
+├── eslint.config.mjs
+├── package.json
+└── tsconfig.json
+```
+
+---
+
+## **2\. Phase 2 (planned — ยังไม่มีใน repo)**
+
+```
+app/api/analyze/route.ts        # Gemini Vision
+app/api/reports/route.ts        # Firestore CRUD
+lib/gemini.ts
+lib/firebase.ts
+lib/firestore.ts
+.env.local                      # API keys (gitignored)
+```
+
+---
+
+## **3\. คำอธิบายแต่ละโฟลเดอร์**
 
 | โฟลเดอร์ | หน้าที่ | กฎการวางไฟล์ |
 | ----- | ----- | ----- |
-| `app/` | หน้าเว็บและ API Route ทั้งหมด | ไฟล์หน้าเว็บใหม่ ต้องอยู่ในรูปแบบ `app/ชื่อหน้า/page.tsx` เท่านั้น |
-| `components/` | UI Component ที่ใช้ซ้ำได้ | Component ใหม่ต้องตั้งชื่อไฟล์แบบ PascalCase เช่น `MapPin.tsx` |
-| `lib/` | โค้ดเชื่อมต่อ Service ภายนอก (Gemini, Firebase) | ห้ามเรียก Gemini/Firebase ตรงจากหน้าเว็บ ต้องผ่านไฟล์ใน `lib/` เท่านั้น เพื่อให้แก้ Config ที่เดียวได้ |
-| `public/` | ไฟล์ Static | รูปภาพ Logo/Icon เท่านั้น ห้ามเก็บรูปที่ผู้ใช้อัปโหลด (รูปอัปโหลดเก็บใน Firebase Storage) |
+| `app/` | หน้าเว็บ (App Router) | หน้าใหม่ใช้ `app/ชื่อ/page.tsx` |
+| `components/` | UI ที่ใช้ซ้ำ | PascalCase, แยกตาม domain (`dashboard/`, `report/`) |
+| `lib/` | Logic, mock layer, context | หน้าเว็บไม่เรียก external API ตรง — ผ่าน `lib/` |
+| `public/` | Static assets | รูป demo ใน `samples/`; รูป user เก็บใน localStorage (mock) |
+| `scripts/` | เครื่องมือ dev/smoke | ไม่ import ใน production bundle |
 
 ---
 
-## **3\. เอกสารประกอบโปรเจกต์ (Root Level)**
-
-ไฟล์ `.md` ทั้ง 4 ไฟล์ที่อยู่ Root ให้ Agent อ่านตามลำดับนี้เมื่อเริ่มงานใหม่ทุกครั้ง:
+## **4\. เอกสารที่ Agent ควรอ่าน**
 
 1. `AGENT.md` — กฎการทำงาน  
-2. `FaoTor_SRS.md` — Requirement ว่าต้องทำอะไร  
-3. `TECH_STACK.md` — ต้องใช้เทคโนโลยีอะไร  
-4. `FOLDER_STRUCTURE.md` — ไฟล์นี้ ต้องวางไฟล์ตรงไหน
+2. `Docs/MOCKUP_SCOPE.md` — scope โหมดปัจจุบัน  
+3. `Docs/FaoTor_SRS.md` — Requirement เต็ม  
+4. `Docs/DEMO_RECORDING.md` — ก่อนอัดวิดีโอ  
+5. `Docs/FOLDER_STRUCTURE.md` — ไฟล์นี้
 
 ---
 
-## **4\. ข้อห้าม**
+## **5\. ข้อห้าม**
 
-* ห้ามสร้างโฟลเดอร์ `pages/` (Next.js แบบเก่า) — โปรเจกต์นี้ใช้ `app/` Router เท่านั้น  
-* ห้ามสร้างไฟล์ Component ปนอยู่ใน `app/` — Component ที่ใช้ซ้ำต้องอยู่ใน `components/` เท่านั้น  
-* ห้ามสร้างโฟลเดอร์ `server/` หรือ `backend/` แยกต่างหาก — ตาม TECH\_STACK.md ใช้ Next.js API Route ใน `app/api/` พอ
+* ห้ามสร้างโฟลเดอร์ `pages/` — ใช้ `app/` Router เท่านั้น  
+* ห้ามสร้าง Component ปนใน `app/` — ใช้ `components/`  
+* ห้ามสร้าง `server/` หรือ `backend/` แยก — Phase 2 ใช้ `app/api/` ใน Next.js

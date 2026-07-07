@@ -18,7 +18,7 @@ export function ReportCalendar({
   onSelectDay,
 }: ReportCalendarProps) {
   const { t } = useApp();
-  const now = new Date();
+  const now = useMemo(() => new Date(), []);
   const heat = useMemo(
     () => calendarHeatmap(reports, now.getFullYear(), now.getMonth()),
     [reports, now]

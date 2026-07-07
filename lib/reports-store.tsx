@@ -6,9 +6,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { useApp } from "./app-context";
 import { SEED_REPORTS } from "./mock-data";
 import { coordsFromLegacyMapXY, randomBangkokCoords } from "./map-utils";
 import type { Report, ReportStatus } from "./types";
@@ -48,13 +50,20 @@ function loadReports(): Report[] {
   }
 }
 
-function saveReports(reports: Report[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+function saveReports(reports: Report[]): boolean {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function ReportsProvider({ children }: { children: ReactNode }) {
+  const { showToast, t } = useApp();
   const [reports, setReports] = useState<Report[]>(SEED_REPORTS);
   const [isReady, setIsReady] = useState(false);
+  const storageErrorShown = useRef(false);
 
   useEffect(() => {
     setReports(loadReports());
@@ -62,8 +71,14 @@ export function ReportsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isReady) saveReports(reports);
-  }, [reports, isReady]);
+    if (!isReady) return;
+    const ok = saveReports(reports);
+    if (!ok && !storageErrorShown.current) {
+      storageErrorShown.current = true;
+      showToast(t("toast.storageFull"));
+    }
+    if (ok) storageErrorShown.current = false;
+  }, [reports, isReady, showToast, t]);
 
   const addReport = useCallback(
     (data: Omit<Report, "id" | "createdAt" | "status">) => {
