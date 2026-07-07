@@ -9,7 +9,7 @@ const LeafletMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[320px] items-center justify-center bg-slate-50 text-[13px] text-slate-600 dark:bg-slate-100/10 lg:h-[min(42vh,400px)]">
+      <div className="absolute inset-0 flex min-h-[240px] items-center justify-center bg-slate-50 text-[13px] text-slate-600 dark:bg-slate-100/10">
         …
       </div>
     ),
@@ -72,12 +72,12 @@ export function MapPreviewCard({
           )}
         </div>
       </div>
-      <div className="relative isolate z-0 min-h-0 flex-1 overflow-hidden">
+      <div className="relative isolate z-0 min-h-[min(42vh,360px)] flex-1 overflow-hidden lg:min-h-[280px]">
         <LeafletMap
           reports={reports}
           selectedId={selectedId}
           onPinClick={onPinClick}
-          className="h-[320px] w-full lg:h-[min(42vh,400px)]"
+          className="absolute inset-0 h-full w-full"
         />
       </div>
       <div className="flex flex-wrap gap-4 border-t border-slate-100 px-5 py-3">

@@ -292,7 +292,7 @@ export default function DashboardPage() {
             onViewAll={handleQueueViewAll}
           />
         </div>
-        <div className="flex lg:col-span-1">
+        <div className="flex min-h-0 lg:col-span-1 lg:self-stretch">
           <MapPreviewCard
             title={t("dashboard.mapTitle")}
             caption={t("dashboard.mapCaption")}

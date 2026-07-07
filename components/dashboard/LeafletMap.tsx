@@ -34,7 +34,12 @@ function MapController({
 
   useEffect(() => {
     const timer = window.setTimeout(() => map.invalidateSize(), 50);
-    return () => window.clearTimeout(timer);
+    const onResize = () => map.invalidateSize();
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", onResize);
+    };
   }, [map]);
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export function LeafletMap({
   reports,
   selectedId,
   onPinClick,
-  className = "h-[280px] w-full lg:h-[420px]",
+  className = "h-full min-h-[200px] w-full",
 }: LeafletMapProps) {
   const markers = useMemo(
     () =>

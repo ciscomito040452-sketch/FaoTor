@@ -76,6 +76,14 @@ body {
   position: relative;
   z-index: 0;
   isolation: isolate;
+  width: 100%;
+  height: 100%;
+}
+
+.faotor-leaflet-map.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  font-family: inherit;
 }
 
 .faotor-leaflet-map .leaflet-pane,
