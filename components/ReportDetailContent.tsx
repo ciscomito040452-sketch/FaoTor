@@ -76,12 +76,12 @@ export function ReportDetailContent({
     report.urgencyScore ?? computeUrgencyScore(report.riskScore, rainForecast);
   const bentoVariant: MetricsBentoVariant =
     metricsVariant ??
-    (layout === "split" ? "stacked" : compact ? "compact" : "panel");
+    (layout === "split" ? "panel" : compact ? "compact" : "panel");
   const resolvedImage: DetailImageVariant =
     imageVariant ?? (compact ? "compact" : "panel");
   const imageClass =
     layout === "split"
-      ? "aspect-[4/3] w-full"
+      ? "aspect-[16/10] max-h-[168px] w-full min-h-[120px]"
       : resolvedImage === "panel"
         ? "aspect-[16/10] max-h-[220px] min-h-[160px]"
         : "aspect-[16/9] max-h-[120px]";
@@ -94,9 +94,12 @@ export function ReportDetailContent({
   const aiTitleClass =
     compact || layout === "split" ? "text-[13px]" : "text-[14px]";
   const aiBodyClass =
-    compact || layout === "split" ? "text-[13px]" : "text-[15px]";
-  const showStatusInBody =
-    layout === "split" ? true : showStatusSection;
+    layout === "split"
+      ? "text-[14px]"
+      : compact
+        ? "text-[13px]"
+        : "text-[15px]";
+  const showStatusInBody = showStatusSection;
   const mapLinkInHeader = layout !== "split" && onViewOnMap;
 
   const header = (
@@ -180,7 +183,11 @@ export function ReportDetailContent({
           AI
         </span>
       </div>
-      <p className={`mt-2 leading-[1.5] text-slate-600 ${aiBodyClass}`}>
+      <p
+        className={`mt-2 text-slate-600 ${aiBodyClass} ${
+          layout === "split" ? "leading-relaxed" : "leading-[1.5]"
+        }`}
+      >
         {report.reason}
       </p>
     </div>
@@ -221,17 +228,15 @@ export function ReportDetailContent({
     return (
       <div className="space-y-4">
         {header}
-        <div className="grid grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-start gap-4">
-          <div className="min-w-0 space-y-3">
+        <div className="grid grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)] items-start gap-4">
+          <div className="flex min-w-0 flex-col gap-3">
             {mapLinkBlock}
-            {aiReasonBlock}
-            {statusBlock}
+            <div className="min-h-0 flex-1">{aiReasonBlock}</div>
           </div>
-          <div className="min-w-0 space-y-3">
-            {imageBlock}
-            {metricsBlock}
-          </div>
+          <div className="min-w-0">{imageBlock}</div>
         </div>
+        {metricsBlock}
+        {statusBlock}
         {saveButton}
       </div>
     );
