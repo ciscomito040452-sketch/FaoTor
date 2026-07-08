@@ -135,7 +135,7 @@ function PanelSupportCard({
 }) {
   return (
     <div
-      className={`flex min-h-[96px] flex-col rounded-lg px-3 py-2 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
+      className={`flex min-h-[90px] flex-col rounded-lg px-3 py-1.5 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
     >
       <div className="flex items-center gap-1.5">
         {icon}
@@ -144,7 +144,7 @@ function PanelSupportCard({
         </p>
       </div>
 
-      <div className="mt-1 flex justify-center px-1">
+      <div className="mt-0.5 flex justify-center px-1">
         <MetricPercentValue
           value={value}
           size="sm"
@@ -153,7 +153,7 @@ function PanelSupportCard({
         />
       </div>
 
-      <div className="mt-1 px-1">
+      <div className="mt-0.5 px-1">
         <MetricScoreBar
           value={value}
           fillClass={barFillClass}
@@ -161,7 +161,7 @@ function PanelSupportCard({
         />
       </div>
 
-      <div className="mt-1 min-h-[20px] space-y-0.5 text-center">{footer}</div>
+      <div className="mt-0.5 min-h-[18px] space-y-0.5 text-center">{footer}</div>
     </div>
   );
 }
@@ -196,10 +196,10 @@ export function MetricsBento({
   if (variant === "panel") {
     return (
       <div
-        className={`grid grid-cols-1 gap-1.5 rounded-xl bg-white/60 p-2 ring-1 ring-slate-200/85 md:grid-cols-12 md:grid-rows-2 ${className}`}
+        className={`grid grid-cols-1 gap-1 rounded-xl bg-white/60 p-2 ring-1 ring-slate-200/85 md:grid-cols-12 md:grid-rows-2 ${className}`}
       >
         <div
-          className={`flex min-h-[186px] flex-col rounded-lg px-3.5 py-2.5 ring-1 ring-inset ring-orange-200/70 shadow-[0_8px_18px_rgba(234,88,12,0.08)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
+          className={`flex min-h-[168px] flex-col rounded-lg px-3 py-2 ring-1 ring-inset ring-orange-200/70 shadow-[0_8px_18px_rgba(234,88,12,0.08)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-1.5">
@@ -213,40 +213,30 @@ export function MetricsBento({
             </span>
           </div>
 
-          <div className="mt-2 grid grid-cols-[76px_minmax(0,1fr)] items-center gap-2.5">
+          <div className="mt-1.5 grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2.5">
             <ScoreRing
               value={urgency}
-              size={74}
+              size={70}
               compact
               showPercent
               strokeColor={urgencyRingStroke(urgency)}
             />
-            <div className="min-w-0">
-              <div className={`${urgencyAccent(urgency)} text-[34px] font-bold leading-none tabular-nums`}>
-                {urgency}
-                <span className="ml-0.5 text-[20px] font-semibold text-slate-500">%</span>
-              </div>
-              {rainBonus > 0 && (
-                <p className="mt-0.5 text-[11px] font-semibold text-brand-orange">
+            {rainBonus > 0 ? (
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold text-brand-orange">
                   {t("weather.rainBonus").replace("{n}", String(rainBonus))}
                 </p>
-              )}
-            </div>
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-2">
+          <div className="mt-1">
             <MetricScoreBar
               value={urgency}
               fillClass={urgencyBarColor(urgency)}
               trackClass="bg-orange-200/55"
               markers={[40, 70]}
             />
-          </div>
-          <div className="mt-1 flex items-center justify-between text-[10px] font-medium text-slate-500">
-            <span>0</span>
-            <span>40</span>
-            <span>70</span>
-            <span>100</span>
           </div>
         </div>
 
