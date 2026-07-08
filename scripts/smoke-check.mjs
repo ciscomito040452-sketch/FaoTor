@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
  * Smoke checks for FaoTor demo (routes + locale files).
- * Run after: npm run dev
- * Usage: node scripts/smoke-check.mjs [baseUrl]
+ * Usage:
+ *   node scripts/smoke-check.mjs
+ *   node scripts/smoke-check.mjs http://127.0.0.1:3001
+ *   BASE_URL=http://127.0.0.1:3011 node scripts/smoke-check.mjs
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -10,10 +12,12 @@ import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
-const base = process.argv[2] ?? "http://127.0.0.1:3000";
+const inputBase = process.argv.find((arg, idx) => idx > 1 && !arg.startsWith("--"));
+const base = process.env.BASE_URL ?? inputBase ?? "http://127.0.0.1:3000";
 const routes = ["/", "/report", "/dashboard", "/about", "/line"];
 
 let failed = 0;
+let routeFailures = 0;
 
 function assert(name, ok) {
   if (!ok) {
@@ -39,9 +43,11 @@ for (const path of routes) {
   try {
     const res = await fetch(`${base}${path}`);
     assert(`GET ${path} -> 200`, res.status === 200);
+    if (res.status !== 200) routeFailures++;
   } catch (e) {
     console.error(`FAIL: GET ${path}`, e.message);
     failed++;
+    routeFailures++;
   }
 }
 
@@ -55,6 +61,11 @@ for (const sample of samples) {
 }
 
 if (failed > 0) {
+  if (routeFailures > 0) {
+    console.error(
+      `Hint: make sure server is running on ${base} (or pass BASE_URL / explicit URL argument).`,
+    );
+  }
   console.error(`\n${failed} check(s) failed`);
   process.exit(1);
 }

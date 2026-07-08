@@ -20,7 +20,8 @@ Open [http://localhost:3000](http://localhost:3000)
 | `npm run dev` | Development server (Turbopack) |
 | `npm run build` | Production build (run before push) |
 | `npm run lint` | ESLint |
-| `npm run smoke` | Smoke test routes + locales (dev server must be running) |
+| `npm run smoke` | Smoke test routes + locales (pass URL if not `127.0.0.1:3000`) |
+| `npm run verify` | Full local gate: lint + build + start + smoke |
 
 ## Routes
 
