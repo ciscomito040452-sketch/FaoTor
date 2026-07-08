@@ -106,6 +106,15 @@
 - Header chip สะท้อน status ที่เลือก (live update)
 - Metrics ผ่าน `MetricsBento` (ไม่ใช้ ScoreRing ใหญ่ใน compact)
 
+### Detail Panel Split Layout (2026-07-08)
+
+- **Desktop `ReportDetailPanel`:** `layout="split"` — 2 คอลัมน์ `1.05fr / 0.95fr`
+  - **ซ้าย:** ดูบนแผนที่, AI reason, เปลี่ยนสถานะ
+  - **ขวา:** รูป `aspect-[4/3]` + `MetricsBento` variant `stacked`
+- **Footer desktop:** ปุ่มบันทึกเท่านั้น (`StatusActionBar showStatus={false}`)
+- **Mobile `DetailSheet`:** คง `layout="stack"` (บนลงล่าง) + status ใน footer
+- **Workspace:** `xl:grid-cols-[minmax(0,1fr)_minmax(400px,520px)]`
+
 ---
 
 ## เอกสารเวอร์ชันก่อน (v1/v2)

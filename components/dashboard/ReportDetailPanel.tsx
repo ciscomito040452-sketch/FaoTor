@@ -63,8 +63,9 @@ export function ReportDetailPanel({
             onClose={onClose}
             onViewOnMap={onViewOnMap}
             compact
+            layout="split"
             imageVariant="panel"
-            metricsVariant="panel"
+            metricsVariant="stacked"
             showSaveButton={false}
             showStatusSection={false}
             status={status}
@@ -78,6 +79,7 @@ export function ReportDetailPanel({
             onSave={() => onSave(report.id, status)}
             changeStatusLabel={labels.changeStatus}
             saveLabel={labels.save}
+            showStatus={false}
           />
         </div>
       </Card>

@@ -18,7 +18,7 @@ import {
 } from "@/lib/risk-colors";
 import { RainMetricIcon, RiskMetricIcon, UrgencyIcon } from "@/components/shared/MetricIcons";
 
-export type MetricsBentoVariant = "compact" | "panel" | "inline";
+export type MetricsBentoVariant = "compact" | "panel" | "inline" | "stacked";
 
 interface MetricsBentoProps {
   riskScore: number;
@@ -46,7 +46,7 @@ function stripSizes(variant: MetricsBentoVariant) {
       sub: "text-[9px]",
     };
   }
-  if (variant === "compact") {
+  if (variant === "compact" || variant === "stacked") {
     return {
       cell: "py-2",
       score: "text-[20px]",
@@ -80,10 +80,15 @@ export function MetricsBento({
   const levelLabel = getRainLabel(rain, locale);
   const sizes = stripSizes(variant);
   const showRainMeta = variant !== "inline";
-  const showUrgencyHint = variant === "panel" && rainBonus > 0;
+  const showUrgencyHint =
+    (variant === "panel" || variant === "stacked") && rainBonus > 0;
+  const stripClass =
+    variant === "stacked"
+      ? "grid grid-cols-1 divide-y divide-slate-200/80 overflow-hidden rounded-xl ring-1 ring-slate-200/70"
+      : METRIC_STRIP;
 
   return (
-    <div className={`${METRIC_STRIP} ${className}`}>
+    <div className={`${stripClass} ${className}`}>
       <div className={`${METRIC_CELL_URGENCY} ${sizes.cell} min-w-0`}>
         <div className="flex items-center gap-1">
           <UrgencyIcon className="text-brand-orange" />
@@ -136,7 +141,9 @@ export function MetricsBento({
               {levelLabel}
             </span>
             {variant === "panel" && (
-              <span className={`${sizes.sub} text-slate-400`}>{t("weather.apiSource")}</span>
+              <span className={`${sizes.sub} text-slate-400`}>
+                {t("weather.apiSource")}
+              </span>
             )}
           </div>
         )}

@@ -10,6 +10,7 @@ interface StatusActionBarProps {
   onSave: () => void;
   changeStatusLabel: string;
   saveLabel: string;
+  showStatus?: boolean;
 }
 
 export function StatusActionBar({
@@ -18,11 +19,18 @@ export function StatusActionBar({
   onSave,
   changeStatusLabel,
   saveLabel,
+  showStatus = true,
 }: StatusActionBarProps) {
   return (
     <div className="space-y-3">
-      <p className="text-[13px] font-semibold text-slate-700">{changeStatusLabel}</p>
-      <StatusSegmented value={status} onChange={onStatusChange} />
+      {showStatus && (
+        <>
+          <p className="text-[13px] font-semibold text-slate-700">
+            {changeStatusLabel}
+          </p>
+          <StatusSegmented value={status} onChange={onStatusChange} />
+        </>
+      )}
       <Button variant="primary" className="w-full" onClick={onSave}>
         {saveLabel}
       </Button>
