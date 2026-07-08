@@ -55,7 +55,7 @@ export function ReportDetailPanel({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <Card padding="none" className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto px-5 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto px-4 py-3.5">
           <ReportDetailContent
             report={report}
             labels={labels}
@@ -72,13 +72,14 @@ export function ReportDetailPanel({
             onStatusChange={setStatus}
           />
         </div>
-        <div className="shrink-0 border-t border-slate-100 bg-white px-5 py-4">
+        <div className="shrink-0 border-t border-slate-100 bg-white px-4 py-3">
           <StatusActionBar
             status={status}
             onStatusChange={setStatus}
             onSave={() => onSave(report.id, status)}
             changeStatusLabel={labels.changeStatus}
             saveLabel={labels.save}
+            compact
           />
         </div>
       </Card>

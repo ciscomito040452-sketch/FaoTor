@@ -7,7 +7,9 @@ import {
   resolveRainChancePercent,
   resolveRainForecast,
 } from "@/lib/mock-weather";
-import { getRiskLabel } from "@/lib/labels";
+import { getRiskLabel, getUrgencyTierLabel } from "@/lib/labels";
+import { getUrgencyTier } from "@/lib/urgency-levels";
+import { MetricPercentValue } from "@/components/shared/MetricPercentValue";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import {
   METRIC_CELL_RAIN,
@@ -18,6 +20,9 @@ import {
   urgencyRingColor,
 } from "@/lib/risk-colors";
 import { RainMetricIcon, RiskMetricIcon } from "@/components/shared/MetricIcons";
+
+const METRIC_ROW_GRID =
+  "grid grid-cols-[minmax(0,1fr)_3.25rem] gap-x-1.5 px-2.5";
 
 interface MetricFocusBlockProps {
   riskScore: number;
@@ -44,53 +49,63 @@ export function MetricFocusBlock({
   const rainPercent = resolveRainChancePercent(rain, rainChancePercent);
   const riskLevelLabel = getRiskLabel(riskLevel, locale);
   const riskLevelClass = RISK_BADGE[riskLevel].text;
+  const urgencyTier = getUrgencyTier(urgency);
+  const urgencyTierLabel = getUrgencyTierLabel(urgencyTier, locale);
+  const urgencyTierClass =
+    urgencyTier === "high"
+      ? "text-brand-orange-dark"
+      : urgencyTier === "medium"
+        ? "text-brand-orange"
+        : "text-slate-500";
 
   return (
     <div className={`${METRIC_FOCUS_PANEL} ${className}`}>
       <div
-        className={`${METRIC_CELL_URGENCY} flex flex-col items-center justify-center border-r border-slate-200/80 px-3 py-2.5`}
+        className={`${METRIC_CELL_URGENCY} flex items-center justify-center border-r border-slate-200/80 px-1.5 py-2`}
       >
         <ScoreRing
           value={urgency}
-          size={56}
+          size={46}
           strokeColor={urgencyRingColor(urgency)}
-          label={t("dashboard.cardUrgencyLabel")}
+          label={urgencyTierLabel}
+          labelClassName={`max-w-[78px] text-center font-semibold leading-tight ${urgencyTierClass}`}
+          compact
+          showPercent
         />
       </div>
 
-      <div className="grid min-w-0 grid-rows-2">
+      <div className="grid min-w-0 grid-rows-2 overflow-hidden">
         <div
-          className={`${METRIC_CELL_RISK} flex min-w-0 flex-col justify-center border-b border-slate-200/80 px-3 py-2.5`}
+          className={`${METRIC_CELL_RISK} ${METRIC_ROW_GRID} grid-rows-[auto_auto] gap-y-0.5 border-b border-slate-200/80 py-2`}
         >
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex min-w-0 items-center gap-1">
-              <RiskMetricIcon />
-              <p className="truncate text-[10px] font-semibold text-slate-500">
-                {scoreLabel}
-              </p>
-            </div>
-            <p className="shrink-0 text-[18px] font-bold leading-none tabular-nums text-slate-900">
-              {riskScore}
+          <div className="col-start-1 row-start-1 flex min-w-0 items-center gap-1">
+            <RiskMetricIcon />
+            <p className="text-[11px] font-semibold leading-tight text-slate-600">
+              {scoreLabel}
             </p>
           </div>
-          <p className={`mt-1 truncate text-[10px] font-semibold ${riskLevelClass}`}>
+          <div className="col-start-2 row-start-1 self-center justify-self-end">
+            <MetricPercentValue value={riskScore} />
+          </div>
+          <p
+            className={`col-span-2 row-start-2 text-[10px] font-semibold leading-tight ${riskLevelClass}`}
+          >
             {riskLevelLabel}
           </p>
         </div>
 
         <div
-          className={`${METRIC_CELL_RAIN} flex min-w-0 items-center justify-between gap-2 px-3 py-2.5`}
+          className={`${METRIC_CELL_RAIN} ${METRIC_ROW_GRID} items-center py-2`}
         >
           <div className="flex min-w-0 items-center gap-1">
             <RainMetricIcon level={rain} />
-            <p className="truncate text-[10px] font-semibold text-slate-500">
+            <p className="text-[11px] font-semibold leading-tight text-slate-600">
               {t("weather.rainChance")}
             </p>
           </div>
-          <p className="shrink-0 text-[18px] font-bold leading-none tabular-nums text-slate-900">
-            {rainPercent}
-            <span className="text-[12px] font-semibold text-slate-500">%</span>
-          </p>
+          <div className="justify-self-end">
+            <MetricPercentValue value={rainPercent} />
+          </div>
         </div>
       </div>
     </div>

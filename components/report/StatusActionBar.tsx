@@ -11,6 +11,7 @@ interface StatusActionBarProps {
   changeStatusLabel: string;
   saveLabel: string;
   showStatus?: boolean;
+  compact?: boolean;
 }
 
 export function StatusActionBar({
@@ -20,18 +21,27 @@ export function StatusActionBar({
   changeStatusLabel,
   saveLabel,
   showStatus = true,
+  compact = false,
 }: StatusActionBarProps) {
   return (
-    <div className="space-y-3">
+    <div className={compact ? "space-y-2" : "space-y-3"}>
       {showStatus && (
         <>
-          <p className="text-[13px] font-semibold text-slate-700">
+          <p
+            className={`font-semibold text-slate-700 ${
+              compact ? "text-[12px]" : "text-[13px]"
+            }`}
+          >
             {changeStatusLabel}
           </p>
           <StatusSegmented value={status} onChange={onStatusChange} />
         </>
       )}
-      <Button variant="primary" className="w-full" onClick={onSave}>
+      <Button
+        variant="primary"
+        className={compact ? "h-10 w-full text-[15px]" : "w-full"}
+        onClick={onSave}
+      >
         {saveLabel}
       </Button>
     </div>

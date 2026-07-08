@@ -81,13 +81,15 @@ export function ReportDetailContent({
     imageVariant ?? (compact ? "compact" : "panel");
   const imageClass =
     layout === "split"
-      ? "aspect-[16/10] max-h-[168px] w-full min-h-[120px]"
+      ? "aspect-[16/10] max-h-[112px] w-full min-h-[88px]"
       : resolvedImage === "panel"
         ? "aspect-[16/10] max-h-[220px] min-h-[160px]"
         : "aspect-[16/9] max-h-[120px]";
 
   const titleClass = compact
-    ? "text-[18px] leading-snug"
+    ? layout === "split"
+      ? "text-[17px] leading-snug"
+      : "text-[18px] leading-snug"
     : layout === "split"
       ? "text-[20px] leading-snug"
       : "text-[24px]";
@@ -95,7 +97,7 @@ export function ReportDetailContent({
     compact || layout === "split" ? "text-[13px]" : "text-[14px]";
   const aiBodyClass =
     layout === "split"
-      ? "text-[14px]"
+      ? "text-[13px] leading-snug"
       : compact
         ? "text-[13px]"
         : "text-[15px]";
@@ -103,15 +105,23 @@ export function ReportDetailContent({
   const mapLinkInHeader = layout !== "split" && onViewOnMap;
 
   const header = (
-    <div className="flex items-start justify-between gap-3">
+    <div className="flex items-start justify-between gap-2">
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold text-brand-blue">
+        <p
+          className={`font-semibold text-brand-blue ${
+            layout === "split" ? "text-[12px]" : "text-[13px]"
+          }`}
+        >
           {t("dashboard.detailTitle")}
         </p>
-        <p className={`mt-1 font-bold text-slate-900 ${titleClass}`}>
+        <p className={`mt-0.5 font-bold text-slate-900 ${titleClass}`}>
           {report.location}
         </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+        <div
+          className={`flex flex-wrap items-center gap-1 ${
+            layout === "split" ? "mt-1" : "mt-1.5"
+          }`}
+        >
           {report.district && (
             <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600">
               {report.district}
@@ -174,7 +184,7 @@ export function ReportDetailContent({
   );
 
   const aiReasonBlock = (
-    <div className="rounded-[14px] border border-slate-200/80 bg-white p-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+    <div className="rounded-[12px] border border-slate-200/80 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="flex items-center justify-between gap-2">
         <p className={`font-semibold tracking-tight text-slate-900 ${aiTitleClass}`}>
           {labels.aiReason}
@@ -184,8 +194,8 @@ export function ReportDetailContent({
         </span>
       </div>
       <p
-        className={`mt-2 text-slate-600 ${aiBodyClass} ${
-          layout === "split" ? "leading-relaxed" : "leading-[1.5]"
+        className={`mt-1.5 text-slate-600 ${aiBodyClass} ${
+          layout === "split" ? "leading-snug" : "leading-[1.5]"
         }`}
       >
         {report.reason}
@@ -226,16 +236,16 @@ export function ReportDetailContent({
 
   if (layout === "split") {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {header}
-        <div className="grid grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)] items-start gap-4">
-          <div className="flex min-w-0 flex-col gap-3">
+        <div className="grid grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)] items-start gap-3.5">
+          <div className="flex min-w-0 flex-col gap-2.5">
             {mapLinkBlock}
             <div className="min-h-0 flex-1">{aiReasonBlock}</div>
           </div>
           <div className="min-w-0">{imageBlock}</div>
         </div>
-        {metricsBlock}
+        <div className="pt-1">{metricsBlock}</div>
         {statusBlock}
         {saveButton}
       </div>

@@ -1,4 +1,5 @@
 import type { RainForecast, ReportStatus, RiskLevel } from "./types";
+import type { UrgencyTier } from "./urgency-levels";
 
 type LabelLocale = "th" | "en";
 
@@ -33,6 +34,19 @@ const RAIN_LABELS: Record<LabelLocale, Record<RainForecast, string>> = {
   en: { สูง: "High", ปานกลาง: "Medium", ต่ำ: "Low" },
 };
 
+const URGENCY_TIER_LABELS: Record<LabelLocale, Record<UrgencyTier, string>> = {
+  th: {
+    high: "เร่งด่วนมาก",
+    medium: "ปานกลาง",
+    low: "ปกติ",
+  },
+  en: {
+    high: "Critical",
+    medium: "Moderate",
+    low: "Normal",
+  },
+};
+
 export function getRiskLabel(level: RiskLevel, locale: LabelLocale): string {
   return RISK_LABELS[locale][level];
 }
@@ -43,6 +57,13 @@ export function getStatusLabel(status: ReportStatus, locale: LabelLocale): strin
 
 export function getRainLabel(forecast: RainForecast, locale: LabelLocale): string {
   return RAIN_LABELS[locale][forecast];
+}
+
+export function getUrgencyTierLabel(
+  tier: UrgencyTier,
+  locale: LabelLocale
+): string {
+  return URGENCY_TIER_LABELS[locale][tier];
 }
 
 export const STATUS_OPTIONS: ReportStatus[] = [

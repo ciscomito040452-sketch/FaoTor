@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import type { Filter } from "./FilterTabs";
+
 export type SortOption = "riskDesc" | "newest" | "urgencyDesc";
 
 interface DashboardToolbarProps {
@@ -7,6 +9,8 @@ interface DashboardToolbarProps {
   onSearchChange: (value: string) => void;
   sort: SortOption;
   onSortChange: (value: SortOption) => void;
+  filter: Filter;
+  onFilterChange: (value: Filter) => void;
   resultCount: number;
   labels: {
     search: string;
@@ -16,20 +20,48 @@ interface DashboardToolbarProps {
     sortRisk: string;
     sortNewest: string;
     sortUrgency: string;
+    filterLabel: string;
+    filterAll: string;
+    filterPending: string;
+    filterInProgress: string;
+    filterSevere: string;
+  };
+  filterCounts: {
+    all: number;
+    pending: number;
+    inProgress: number;
+    severe: number;
   };
 }
+
+const fieldClass =
+  "h-10 w-full rounded-[10px] border border-slate-100 bg-white px-3 text-[13px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue dark:bg-[var(--color-surface)]";
 
 export function DashboardToolbar({
   search,
   onSearchChange,
   sort,
   onSortChange,
+  filter,
+  onFilterChange,
   resultCount,
   labels,
+  filterCounts,
 }: DashboardToolbarProps) {
+  const filterOptions: { key: Filter; label: string; count: number }[] = [
+    { key: "all", label: labels.filterAll, count: filterCounts.all },
+    { key: "pending", label: labels.filterPending, count: filterCounts.pending },
+    {
+      key: "inProgress",
+      label: labels.filterInProgress,
+      count: filterCounts.inProgress,
+    },
+    { key: "severe", label: labels.filterSevere, count: filterCounts.severe },
+  ];
+
   return (
-    <div className="space-y-3">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <div className="space-y-2">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
         <div className="min-w-0 flex-1">
           <label className="sr-only" htmlFor="dashboard-search">
             {labels.search}
@@ -40,26 +72,45 @@ export function DashboardToolbar({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={labels.searchPlaceholder}
-            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue dark:bg-[var(--color-surface)]"
+            className={fieldClass}
           />
         </div>
-        <div className="shrink-0">
-          <label className="sr-only" htmlFor="dashboard-sort">
-            {labels.sortLabel}
-          </label>
-          <select
-            id="dashboard-sort"
-            value={sort}
-            onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className="h-[48px] w-full rounded-[12px] border border-slate-100 bg-white px-4 text-[15px] text-slate-900 outline-none focus:border-2 focus:border-brand-blue sm:w-auto dark:bg-[var(--color-surface)]"
-          >
-            <option value="riskDesc">{labels.sortRisk}</option>
-            <option value="newest">{labels.sortNewest}</option>
-            <option value="urgencyDesc">{labels.sortUrgency}</option>
-          </select>
+        <div className="flex shrink-0 gap-2">
+          <div className="min-w-[148px] flex-1 sm:flex-none">
+            <label className="sr-only" htmlFor="dashboard-filter">
+              {labels.filterLabel}
+            </label>
+            <select
+              id="dashboard-filter"
+              value={filter}
+              onChange={(e) => onFilterChange(e.target.value as Filter)}
+              className={`${fieldClass} sm:min-w-[148px]`}
+            >
+              {filterOptions.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label} ({option.count})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="min-w-[132px] flex-1 sm:flex-none">
+            <label className="sr-only" htmlFor="dashboard-sort">
+              {labels.sortLabel}
+            </label>
+            <select
+              id="dashboard-sort"
+              value={sort}
+              onChange={(e) => onSortChange(e.target.value as SortOption)}
+              className={`${fieldClass} sm:min-w-[132px]`}
+            >
+              <option value="riskDesc">{labels.sortRisk}</option>
+              <option value="newest">{labels.sortNewest}</option>
+              <option value="urgencyDesc">{labels.sortUrgency}</option>
+            </select>
+          </div>
         </div>
       </div>
-      <p className="text-[13px] text-slate-600">
+      <p className="text-[12px] text-slate-500">
         {labels.showing.replace("{count}", String(resultCount))}
       </p>
     </div>

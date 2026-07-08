@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import type { AnalyzeResult } from "@/lib/types";
-import { RiskBadge } from "@/components/RiskBadge";
-import { RiskScore } from "@/components/RiskScore";
-import { UrgencyBadge } from "@/components/shared/UrgencyBadge";
+import { MetricsBento } from "@/components/shared/MetricsBento";
+import { useApp } from "@/lib/app-context";
 
 interface ThankYouCardProps {
   result: AnalyzeResult;
@@ -27,10 +26,12 @@ export function ThankYouCard({
   anotherLabel,
   onReset,
 }: ThankYouCardProps) {
+  const { t } = useApp();
+
   return (
-    <div className="space-y-6 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-blue-soft text-brand-blue dark:bg-blue-900/30">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden>
+    <div className="space-y-4 text-center">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-blue-soft text-brand-blue dark:bg-blue-900/30">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden>
           <path
             d="M8 16l5 5 11-12"
             stroke="currentColor"
@@ -41,22 +42,34 @@ export function ThankYouCard({
         </svg>
       </div>
       <div>
-        <h2 className="text-[22px] font-semibold text-slate-900">{title}</h2>
-        <p className="mt-2 text-[15px] text-slate-600">{body}</p>
+        <h2 className="text-[20px] font-semibold text-slate-900">{title}</h2>
+        <p className="mt-1.5 text-[15px] text-slate-600">{body}</p>
       </div>
 
-      <div className="rounded-[16px] border border-slate-100 bg-white p-6 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
+      <div className="rounded-[16px] border border-slate-100 bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
         <p className="text-[13px] text-slate-600">{location}</p>
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-          <RiskScore
-            score={result.riskScore}
-            level={result.riskLevel}
-            label={scoreLabel}
+        <div className="mt-3">
+          <MetricsBento
+            riskScore={result.riskScore}
+            riskLevel={result.riskLevel}
+            urgencyScore={result.urgencyScore}
+            rainForecast={result.rainForecast}
+            rainChancePercent={result.rainChancePercent}
+            scoreLabel={scoreLabel}
+            variant="panel"
+            className="!mt-0"
           />
-          <RiskBadge level={result.riskLevel} />
         </div>
-        <div className="mt-4">
-          <UrgencyBadge score={result.urgencyScore} rain={result.rainForecast} compact />
+        <div className="mt-3 rounded-[12px] border border-slate-200/80 bg-white p-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[13px] font-semibold tracking-tight text-slate-900">
+              {t("detail.aiReason")}
+            </p>
+            <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+              AI
+            </span>
+          </div>
+          <p className="mt-1.5 text-[13px] leading-[1.45] text-slate-600">{result.reason}</p>
         </div>
       </div>
 

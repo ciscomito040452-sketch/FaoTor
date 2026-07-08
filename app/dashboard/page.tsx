@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DetailSheet } from "@/components/DetailSheet";
 import { EmptyState } from "@/components/EmptyState";
-import { FilterTabs, type Filter } from "@/components/dashboard/FilterTabs";
+import { type Filter } from "@/components/dashboard/FilterTabs";
 import { MapPreviewCard } from "@/components/dashboard/MapPreviewCard";
 import { ReportCard } from "@/components/dashboard/ReportCard";
 import { ReportDetailPanel } from "@/components/dashboard/ReportDetailPanel";
@@ -314,13 +314,16 @@ export default function DashboardPage() {
               </h2>
               <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
 
-              <div className="mt-4 shrink-0">
+              <div className="mt-3 shrink-0">
                 <DashboardToolbar
                   search={search}
                   onSearchChange={setSearch}
                   sort={sort}
                   onSortChange={setSort}
+                  filter={filter}
+                  onFilterChange={setFilter}
                   resultCount={filtered.length}
+                  filterCounts={filterCounts}
                   labels={{
                     search: t("dashboard.search"),
                     searchPlaceholder: t("dashboard.searchPlaceholder"),
@@ -329,18 +332,12 @@ export default function DashboardPage() {
                     sortRisk: t("dashboard.sortRisk"),
                     sortNewest: t("dashboard.sortNewest"),
                     sortUrgency: t("dashboard.sortUrgency"),
+                    filterLabel: t("dashboard.filterLabel"),
+                    filterAll: t("dashboard.filterAll"),
+                    filterPending: t("dashboard.filterPending"),
+                    filterInProgress: t("dashboard.filterInProgress"),
+                    filterSevere: t("dashboard.filterSevere"),
                   }}
-                />
-                <FilterTabs
-                  value={filter}
-                  onChange={setFilter}
-                  labels={{
-                    all: t("dashboard.filterAll"),
-                    pending: t("dashboard.filterPending"),
-                    inProgress: t("dashboard.filterInProgress"),
-                    severe: t("dashboard.filterSevere"),
-                  }}
-                  counts={filterCounts}
                 />
               </div>
 
@@ -359,7 +356,7 @@ export default function DashboardPage() {
               ) : (
                 <div
                   ref={listRef}
-                  className="mt-4 min-h-0 flex-1 space-y-2.5 overflow-x-hidden overflow-y-auto px-1 py-1 [scrollbar-gutter:stable]"
+                  className="mt-2 min-h-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto px-1 py-1 [scrollbar-gutter:stable]"
                 >
                   {filtered.map((report) => (
                     <ReportCard
@@ -396,13 +393,16 @@ export default function DashboardPage() {
           </h2>
           <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
 
-          <div className="mt-4 shrink-0">
+          <div className="mt-3 shrink-0">
             <DashboardToolbar
               search={search}
               onSearchChange={setSearch}
               sort={sort}
               onSortChange={setSort}
+              filter={filter}
+              onFilterChange={setFilter}
               resultCount={filtered.length}
+              filterCounts={filterCounts}
               labels={{
                 search: t("dashboard.search"),
                 searchPlaceholder: t("dashboard.searchPlaceholder"),
@@ -411,18 +411,12 @@ export default function DashboardPage() {
                 sortRisk: t("dashboard.sortRisk"),
                 sortNewest: t("dashboard.sortNewest"),
                 sortUrgency: t("dashboard.sortUrgency"),
+                filterLabel: t("dashboard.filterLabel"),
+                filterAll: t("dashboard.filterAll"),
+                filterPending: t("dashboard.filterPending"),
+                filterInProgress: t("dashboard.filterInProgress"),
+                filterSevere: t("dashboard.filterSevere"),
               }}
-            />
-            <FilterTabs
-              value={filter}
-              onChange={setFilter}
-              labels={{
-                all: t("dashboard.filterAll"),
-                pending: t("dashboard.filterPending"),
-                inProgress: t("dashboard.filterInProgress"),
-                severe: t("dashboard.filterSevere"),
-              }}
-              counts={filterCounts}
             />
           </div>
 
@@ -439,7 +433,7 @@ export default function DashboardPage() {
               }}
             />
           ) : (
-            <div className="mt-4 max-h-[min(60vh,520px)] space-y-2.5 overflow-y-auto pr-1">
+            <div className="mt-2 max-h-[min(60vh,520px)] space-y-2 overflow-y-auto pr-1">
               {filtered.map((report) => (
                 <ReportCard
                   key={report.id}

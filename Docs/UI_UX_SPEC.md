@@ -92,6 +92,14 @@
 - **Grid:** `72px | 1fr | 188px | auto` — metrics/status ยึดจากขวา แนว ScoreRing ตรงกันทุกการ์ด
 - **Text:** `min-w-0 truncate` กินพื้นที่ซ้ายที่เหลือ
 - **Priority:** chip แยกบรรทัดเหนือชื่อ
+
+### ReportCard v4.7 — Landscape thumb + aligned metrics (2026-07-08)
+
+- **Thumb:** แนวนอน `96×56px` (`rounded-[10px]`)
+- **MetricFocusBlock:** แถวความเสี่ยง/ฝนโครงเดียวกัน `grid-cols-[1fr_3rem]` — เลขชิดขวาแนวเดียวกัน
+- **ระดับความเสี่ยง:** ข้อความสีต่อท้าย label (`ความเสี่ยง · อุดตันหนัก`) ไม่ใช้ RiskBadge pill
+- **Mock seed v7:** `rainChancePercent` + `urgencyScore` แยกรายการ ไม่ซ้ำ 85%/55%/25%
+- **Storage:** `faotor-mock-reports-v7`
 - **METRIC_FOCUS_PANEL:** `w-[188px]` คงที่
 
 ### Detail image balance (2026-07-07)

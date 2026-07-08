@@ -34,7 +34,7 @@ export function ResultCard({
           rainForecast={result.rainForecast}
           rainChancePercent={result.rainChancePercent}
           scoreLabel={scoreLabel}
-          variant="compact"
+          variant="panel"
           className="!mt-0"
         />
 

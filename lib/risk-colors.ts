@@ -28,13 +28,13 @@ export function urgencyRingColor(score: number): string {
 /** Metric strip — segmented Apple-style, no gray tray or top borders */
 export const METRIC_STRIP =
   "grid grid-cols-3 divide-x divide-slate-200/80 overflow-hidden rounded-xl ring-1 ring-slate-200/70";
-export const METRIC_CELL_URGENCY = "bg-orange-50/40 px-2.5 py-2";
-export const METRIC_CELL_RISK = "bg-white px-2.5 py-2";
-export const METRIC_CELL_RAIN = "bg-sky-50/50 px-2.5 py-2";
+export const METRIC_CELL_URGENCY = "bg-orange-50/75";
+export const METRIC_CELL_RISK = "bg-slate-50/85";
+export const METRIC_CELL_RAIN = "bg-sky-50/75";
 
-/** Metric focus panel — hero urgency ring + stacked risk/rain (ReportCard v4.3) */
+/** Metric focus panel — hero urgency ring + stacked risk/rain (ReportCard v4.8) */
 export const METRIC_FOCUS_PANEL =
-  "grid h-full min-h-[72px] w-[188px] shrink-0 grid-cols-[auto_1fr] grid-rows-1 overflow-hidden rounded-xl ring-1 ring-slate-200/70";
+  "grid min-h-[68px] w-[284px] max-w-[284px] shrink-0 grid-cols-[90px_194px] grid-rows-1 overflow-hidden rounded-xl ring-1 ring-inset ring-slate-200/80";
 
 /** @deprecated use METRIC_STRIP + METRIC_CELL_* */
 export const BENTO_TRAY = METRIC_STRIP;
