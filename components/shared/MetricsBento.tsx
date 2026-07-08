@@ -101,7 +101,7 @@ function MetricScoreBar({
       {markers?.map((mark) => (
         <div
           key={mark}
-          className="absolute bottom-0 top-0 z-10 w-px bg-white/80"
+          className="absolute bottom-0 top-0 z-10 w-px bg-white/60"
           style={{ left: `${mark}%` }}
           aria-hidden
         />
@@ -120,48 +120,51 @@ function PanelSupportCard({
   label,
   value,
   valueClassName,
+  chip,
   barFillClass,
   barTrackClass,
-  footer,
 }: {
   bgClass: string;
   icon: ReactNode;
   label: string;
   value: number;
   valueClassName?: string;
+  chip?: ReactNode;
   barFillClass: string;
   barTrackClass?: string;
-  footer: ReactNode;
 }) {
   return (
     <div
-      className={`flex min-h-[90px] flex-col rounded-lg px-3 py-1.5 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
+      className={`flex min-h-[92px] flex-col rounded-lg px-4 py-3 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
     >
       <div className="flex items-center gap-1.5">
         {icon}
-        <p className="truncate text-[12px] font-semibold leading-tight text-slate-600">
+        <p className="truncate text-[13px] font-semibold leading-tight text-slate-600">
           {label}
         </p>
       </div>
 
-      <div className="mt-0.5 flex justify-center px-1">
-        <MetricPercentValue
-          value={value}
-          size="sm"
-          align="center"
-          className={valueClassName}
-        />
+      <div className="mt-2">
+        <div className="flex items-end gap-1">
+          <span
+            className={`text-[30px] font-bold leading-none tabular-nums ${
+              valueClassName ?? "text-slate-900"
+            }`}
+          >
+            {value}
+          </span>
+          <span className="pb-1 text-[14px] font-semibold text-slate-500">%</span>
+        </div>
+        {chip && <div className="mt-1.5">{chip}</div>}
       </div>
 
-      <div className="mt-0.5 px-1">
+      <div className="mt-auto pt-2">
         <MetricScoreBar
           value={value}
           fillClass={barFillClass}
           trackClass={barTrackClass}
         />
       </div>
-
-      <div className="mt-0.5 min-h-[18px] space-y-0.5 text-center">{footer}</div>
     </div>
   );
 }
@@ -194,12 +197,16 @@ export function MetricsBento({
         : "text-slate-500";
 
   if (variant === "panel") {
+    const riskValueClass = riskLevelClass;
+    const rainValueClass =
+      rain === "สูง" ? "text-sky-800" : rain === "ปานกลาง" ? "text-sky-700" : "text-sky-600";
+
     return (
       <div
-        className={`grid grid-cols-1 gap-1 rounded-xl bg-white/60 p-2 ring-1 ring-slate-200/85 md:grid-cols-12 md:grid-rows-2 ${className}`}
+        className={`grid grid-cols-1 gap-2 rounded-xl bg-transparent p-2 md:grid-cols-12 md:grid-rows-2 ${className}`}
       >
         <div
-          className={`flex min-h-[168px] flex-col rounded-lg px-3 py-2 ring-1 ring-inset ring-orange-200/70 shadow-[0_8px_18px_rgba(234,88,12,0.08)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
+          className={`flex min-h-[154px] flex-col rounded-lg px-4 py-3 ring-1 ring-inset ring-orange-200/70 shadow-[0_6px_16px_rgba(234,88,12,0.06)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-1.5">
@@ -208,12 +215,20 @@ export function MetricsBento({
                 {t("dashboard.cardUrgencyLabel")}
               </p>
             </div>
-            <span className={`rounded-md px-2 py-0.5 text-[11px] font-semibold ${urgencyTierClass}`}>
+            <span
+              className={`inline-flex max-w-full items-center justify-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${
+                urgencyTier === "high"
+                  ? "ring-[#EA580C]/25"
+                  : urgencyTier === "medium"
+                    ? "ring-[#F97316]/20"
+                    : ""
+              } ${urgencyTierClass}`}
+            >
               {urgencyTierLabel}
             </span>
           </div>
 
-          <div className="mt-1.5 grid grid-cols-[72px_minmax(0,1fr)] items-center gap-2.5">
+          <div className="mt-3 flex items-center gap-3">
             <ScoreRing
               value={urgency}
               size={70}
@@ -221,16 +236,27 @@ export function MetricsBento({
               showPercent
               strokeColor={urgencyRingStroke(urgency)}
             />
-            {rainBonus > 0 ? (
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold text-brand-orange">
-                  {t("weather.rainBonus").replace("{n}", String(rainBonus))}
-                </p>
+            <div className="min-w-0">
+              <div className={`flex items-end gap-1 ${urgencyAccent(urgency)}`}>
+                <span className="text-[36px] font-bold leading-none tabular-nums">
+                  {urgency}
+                </span>
+                <span className="pb-1 text-[16px] font-semibold text-slate-500">%</span>
               </div>
-            ) : null}
+              <p className="mt-1 text-[11px] font-medium text-slate-500">
+                {t("detail.urgencyFormula")}
+              </p>
+              {rainBonus > 0 ? (
+                <div className="mt-1.5">
+                  <span className="inline-flex max-w-full items-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-brand-orange ring-1 ring-slate-200/80">
+                    {t("weather.rainBonus").replace("{n}", String(rainBonus))}
+                  </span>
+                </div>
+              ) : null}
+            </div>
           </div>
 
-          <div className="mt-1">
+          <div className="mt-auto pt-3">
             <MetricScoreBar
               value={urgency}
               fillClass={urgencyBarColor(urgency)}
@@ -246,17 +272,20 @@ export function MetricsBento({
             icon={<RiskMetricIcon />}
             label={scoreLabel}
             value={riskScore}
+            valueClassName={riskValueClass}
+            chip={
+              <span
+                className={`inline-flex max-w-full items-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${riskLevelClass}`}
+              >
+                {riskLevelLabel}
+              </span>
+            }
             barFillClass={
               riskLevel === "อุดตันหนัก"
                 ? "bg-brand-orange-dark"
                 : riskLevel === "เริ่มอุดตัน"
                   ? "bg-brand-orange"
                   : "bg-slate-400"
-            }
-            footer={
-              <p className={`text-[11px] font-semibold leading-tight ${riskLevelClass}`}>
-                {riskLevelLabel}
-              </p>
             }
           />
         </div>
@@ -267,6 +296,7 @@ export function MetricsBento({
             icon={<RainMetricIcon level={rain} />}
             label={t("weather.rainChance")}
             value={rainPercent}
+            valueClassName={rainValueClass}
             barFillClass={
               rain === "สูง"
                 ? "bg-sky-600"
@@ -275,13 +305,13 @@ export function MetricsBento({
                   : "bg-sky-400"
             }
             barTrackClass="bg-sky-200/60"
-            footer={
+            chip={
               <>
-                <span className="inline-flex w-fit max-w-full items-center justify-center gap-1 rounded-md bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-slate-600 ring-1 ring-slate-200/80">
+                <span className="inline-flex w-fit max-w-full items-center justify-center gap-1 rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-slate-600 ring-1 ring-slate-200/80">
                   <RainMetricIcon level={rain} />
                   {levelLabel}
                 </span>
-                <p className="text-[9px] leading-tight text-slate-400">
+                <p className="mt-0.5 text-[9px] leading-tight text-slate-400">
                   {t("weather.apiSource")}
                 </p>
               </>
