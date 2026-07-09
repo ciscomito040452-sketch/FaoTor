@@ -1,8 +1,13 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 interface MiniBarChartProps {
   values: number[];
   height?: number;
   className?: string;
   variant?: "default" | "severe";
+  animate?: boolean;
 }
 
 export function MiniBarChart({
@@ -10,9 +15,19 @@ export function MiniBarChart({
   height = 48,
   className = "",
   variant = "default",
+  animate = false,
 }: MiniBarChartProps) {
   const max = Math.max(...values, 1);
   const width = values.length * 12;
+  const [mounted, setMounted] = useState(!animate);
+  const valuesKey = values.join(",");
+
+  useEffect(() => {
+    if (!animate) return;
+    const timer = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(timer);
+  }, [animate, valuesKey]);
+
   return (
     <svg
       width={width}
@@ -33,12 +48,15 @@ export function MiniBarChart({
           <rect
             key={i}
             x={i * 12 + 1}
-            y={height - barH}
+            y={height - (mounted ? barH : 0)}
             width={8}
-            height={barH}
+            height={mounted ? barH : 0}
             rx={2}
             fill={color}
             opacity={0.85}
+            style={{
+              transition: `y 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${i * 40}ms, height 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${i * 40}ms`,
+            }}
           />
         );
       })}

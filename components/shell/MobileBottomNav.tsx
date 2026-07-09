@@ -1,19 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/lib/app-context";
+import { useReducedMotion } from "@/lib/motion";
 
 const TABS = [
   { href: "/", key: "nav.home" as const },
   { href: "/report", key: "nav.report" as const },
   { href: "/dashboard", key: "nav.dashboard" as const },
+  { href: "/line", key: "nav.line" as const },
   { href: "/about", key: "nav.about" as const },
 ];
 
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { t } = useApp();
+  const reduced = useReducedMotion();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-100 bg-white/95 pb-safe backdrop-blur lg:hidden">
@@ -24,11 +28,32 @@ export function MobileBottomNav() {
             <Link
               key={href}
               href={href}
-              className={`flex min-h-[56px] flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-semibold ${
+              className={`relative flex min-h-[56px] flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-semibold transition-colors ${
                 active ? "text-brand-blue" : "text-slate-400"
               }`}
             >
-              <NavIcon name={key} active={active} />
+              <motion.span
+                animate={
+                  reduced
+                    ? undefined
+                    : { scale: active ? 1.08 : 1 }
+                }
+                transition={{ duration: 0.2 }}
+                whileTap={reduced ? undefined : { scale: 0.92 }}
+                className="relative flex flex-col items-center"
+              >
+                <NavIcon name={key} active={active} />
+                {active && !reduced && (
+                  <motion.span
+                    layoutId="mobile-nav-dot"
+                    className="absolute -bottom-1 h-1 w-1 rounded-full bg-brand-blue"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
+                )}
+                {active && reduced && (
+                  <span className="absolute -bottom-1 h-1 w-1 rounded-full bg-brand-blue" />
+                )}
+              </motion.span>
               {t(key)}
             </Link>
           );
@@ -65,6 +90,19 @@ function NavIcon({ name, active }: { name: string; active: boolean }) {
           strokeWidth={stroke}
         />
         <circle cx="11" cy="12.5" r="3" stroke="currentColor" strokeWidth={stroke} />
+      </svg>
+    );
+  }
+  if (name === "nav.line") {
+    return (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+        <path
+          d="M4 6h14v10H4V6z"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          strokeLinejoin="round"
+        />
+        <path d="M7 9h8M7 12h5" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" />
       </svg>
     );
   }

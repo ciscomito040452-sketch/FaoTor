@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { useApp } from "@/lib/app-context";
 import { calendarHeatmap } from "@/lib/dashboard-analytics";
 import type { Report } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
+import { useReducedMotion } from "@/lib/motion";
 
 interface ReportCalendarProps {
   reports: Report[];
@@ -18,6 +20,7 @@ export function ReportCalendar({
   onSelectDay,
 }: ReportCalendarProps) {
   const { t } = useApp();
+  const reduced = useReducedMotion();
   const now = useMemo(() => new Date(), []);
   const heat = useMemo(
     () => calendarHeatmap(reports, now.getFullYear(), now.getMonth()),
@@ -66,11 +69,14 @@ export function ReportCalendar({
                   ? "bg-brand-orange text-white"
                   : "bg-brand-blue text-white";
           return (
-            <button
+            <motion.button
               key={day}
               type="button"
               onClick={() => onSelectDay(day)}
-              className={`flex h-9 w-full items-center justify-center rounded-[10px] border border-transparent text-[12px] font-semibold transition ${intensity} ${
+              whileTap={reduced ? undefined : { scale: 0.95 }}
+              animate={isSelected && !reduced ? { scale: 1.05 } : { scale: 1 }}
+              transition={{ type: "spring", stiffness: 420, damping: 32 }}
+              className={`flex h-9 w-full items-center justify-center rounded-[10px] border border-transparent text-[12px] font-semibold transition-colors ${intensity} ${
                 isSelected
                   ? "border-brand-blue shadow-[inset_0_0_0_1px_#3B82F6]"
                   : isToday
@@ -79,7 +85,7 @@ export function ReportCalendar({
               }`}
             >
               {day}
-            </button>
+            </motion.button>
           );
         })}
       </div>

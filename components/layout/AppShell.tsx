@@ -35,4 +35,4 @@ export function AppShell({
   );
 }
 
-export { DemoPill, SettingsButton } from "./NavActions";
+export { SettingsButton } from "./NavActions";

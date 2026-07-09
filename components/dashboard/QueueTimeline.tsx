@@ -1,9 +1,11 @@
 "use client";
 
+import { motion } from "framer-motion";
 import type { Report } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
 import { RiskBadge } from "@/components/RiskBadge";
 import { Card } from "@/components/ui/Card";
+import { motionTransition, staggerChildren, useReducedMotion } from "@/lib/motion";
 
 interface QueueTimelineProps {
   reports: Report[];
@@ -19,6 +21,7 @@ export function QueueTimeline({
   onViewAll,
 }: QueueTimelineProps) {
   const { t } = useApp();
+  const reduced = useReducedMotion();
 
   if (reports.length === 0) {
     return (
@@ -56,13 +59,22 @@ export function QueueTimeline({
           const selected = report.id === selectedId;
           const isLast = index === reports.length - 1;
           return (
-            <button
+            <motion.button
               key={report.id}
               type="button"
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                ...motionTransition(reduced),
+                ...staggerChildren(index),
+              }}
               onClick={() => onOpen(report)}
               className={`relative flex w-full gap-3 pb-4 text-left ${isLast ? "" : ""}`}
             >
-              <div
+              <motion.div
+                animate={
+                  selected && !reduced ? { scale: 1.15 } : { scale: 1 }
+                }
                 className={`relative z-10 mt-1 h-6 w-6 shrink-0 rounded-full border-2 ${
                   selected
                     ? "border-brand-blue bg-brand-blue"
@@ -89,7 +101,7 @@ export function QueueTimeline({
                   <RiskBadge level={report.riskLevel} />
                 </div>
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>

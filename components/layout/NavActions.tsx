@@ -2,14 +2,6 @@
 
 import { useApp } from "@/lib/app-context";
 
-export function DemoPill() {
-  return (
-    <span className="rounded-full bg-brand-blue-soft px-3 py-1 text-[13px] font-medium text-brand-blue">
-      Demo
-    </span>
-  );
-}
-
 export function SettingsButton() {
   const { openSettings, t } = useApp();
   return (

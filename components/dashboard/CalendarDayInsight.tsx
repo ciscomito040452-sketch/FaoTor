@@ -1,12 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { Report } from "@/lib/types";
 import { useApp } from "@/lib/app-context";
 import { reportsOnDay } from "@/lib/dashboard-analytics";
 import { RISK_RING } from "@/lib/risk-colors";
 import { Card } from "@/components/ui/Card";
 import { ScoreRing } from "@/components/ui/ScoreRing";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { fadeUpVariants, motionTransition, useReducedMotion } from "@/lib/motion";
 
 interface CalendarDayInsightProps {
   reports: Report[];
@@ -26,6 +29,7 @@ export function CalendarDayInsight({
   onSelectReport,
 }: CalendarDayInsightProps) {
   const { t } = useApp();
+  const reduced = useReducedMotion();
   const now = new Date();
   const isToday =
     now.getFullYear() === year &&
@@ -47,8 +51,10 @@ export function CalendarDayInsight({
     ? t("dashboard.dayInsightToday")
     : t("dashboard.dayInsightDay").replace("{day}", String(selectedDay));
 
+  const insightKey = `${year}-${month}-${selectedDay}`;
+
   return (
-    <Card className="flex flex-1 flex-col">
+    <Card className="flex flex-1 flex-col overflow-hidden">
       <p className="text-[15px] font-semibold text-slate-900">{title}</p>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -70,69 +76,90 @@ export function CalendarDayInsight({
         ))}
       </div>
 
-      {dayReports.length === 0 ? (
-        <p className="mt-4 text-[13px] text-slate-500">
-          {t("dashboard.dayInsightEmpty")}
-        </p>
-      ) : (
-        <>
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            <div className="rounded-[12px] bg-slate-50 px-2 py-3 text-center">
-              <p className="text-[20px] font-bold text-slate-900">
-                {dayReports.length}
-              </p>
-              <p className="text-[10px] text-slate-500">
-                {t("dashboard.dayInsightReports")}
-              </p>
-            </div>
-            <div className="rounded-[12px] bg-brand-blue-soft px-2 py-3 text-center">
-              <p className="text-[20px] font-bold text-brand-blue">{pending}</p>
-              <p className="text-[10px] text-slate-600">
-                {t("dashboard.filterPending")}
-              </p>
-            </div>
-            <div className="rounded-[12px] bg-brand-orange-soft px-2 py-3 text-center">
-              <p className="text-[20px] font-bold text-brand-orange">{severe}</p>
-              <p className="text-[10px] text-slate-600">
-                {t("dashboard.filterSevere")}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-3 space-y-2">
-            {topReports.map((report) => (
-              <button
-                key={report.id}
-                type="button"
-                onClick={() => onSelectReport(report)}
-                className="flex w-full items-center gap-3 rounded-[12px] border border-slate-100 bg-slate-50/50 p-2 text-left transition hover:border-brand-blue/30 hover:bg-brand-blue-soft/30"
-              >
-                <ScoreRing
-                  value={report.riskScore}
-                  size={44}
-                  strokeColor={
-                    RISK_RING[report.riskLevel] ?? "#3B82F6"
-                  }
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-semibold text-slate-900">
-                    {report.location}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={insightKey}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={fadeUpVariants}
+          transition={motionTransition(reduced)}
+        >
+          {dayReports.length === 0 ? (
+            <p className="mt-4 text-[13px] text-slate-500">
+              {t("dashboard.dayInsightEmpty")}
+            </p>
+          ) : (
+            <>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="rounded-[12px] bg-slate-50 px-2 py-3 text-center">
+                  <p className="text-[20px] font-bold text-slate-900">
+                    <AnimatedCounter value={dayReports.length} />
                   </p>
-                  <p className="text-[11px] text-slate-500">{report.district}</p>
+                  <p className="text-[10px] text-slate-500">
+                    {t("dashboard.dayInsightReports")}
+                  </p>
                 </div>
-              </button>
-            ))}
-          </div>
+                <div className="rounded-[12px] bg-brand-blue-soft px-2 py-3 text-center">
+                  <p className="text-[20px] font-bold text-brand-blue">
+                    <AnimatedCounter value={pending} />
+                  </p>
+                  <p className="text-[10px] text-slate-600">
+                    {t("dashboard.filterPending")}
+                  </p>
+                </div>
+                <div className="rounded-[12px] bg-brand-orange-soft px-2 py-3 text-center">
+                  <p className="text-[20px] font-bold text-brand-orange">
+                    <AnimatedCounter value={severe} />
+                  </p>
+                  <p className="text-[10px] text-slate-600">
+                    {t("dashboard.filterSevere")}
+                  </p>
+                </div>
+              </div>
 
-          <button
-            type="button"
-            onClick={onViewList}
-            className="mt-auto pt-4 text-[13px] font-semibold text-brand-blue hover:text-brand-blue-dark"
-          >
-            {t("dashboard.dayInsightViewList")} →
-          </button>
-        </>
-      )}
+              <div className="mt-3 space-y-2">
+                {topReports.map((report, index) => (
+                  <motion.button
+                    key={report.id}
+                    type="button"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      ...motionTransition(reduced),
+                      delay: index * 0.06,
+                    }}
+                    onClick={() => onSelectReport(report)}
+                    className="flex w-full items-center gap-3 rounded-[12px] border border-slate-100 bg-slate-50/50 p-2 text-left transition hover:border-brand-blue/30 hover:bg-brand-blue-soft/30"
+                  >
+                    <ScoreRing
+                      value={report.riskScore}
+                      size={44}
+                      strokeColor={
+                        RISK_RING[report.riskLevel] ?? "#3B82F6"
+                      }
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-semibold text-slate-900">
+                        {report.location}
+                      </p>
+                      <p className="text-[11px] text-slate-500">{report.district}</p>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={onViewList}
+                className="mt-auto pt-4 text-[13px] font-semibold text-brand-blue hover:text-brand-blue-dark"
+              >
+                {t("dashboard.dayInsightViewList")} →
+              </button>
+            </>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </Card>
   );
 }

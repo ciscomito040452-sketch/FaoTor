@@ -3,21 +3,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { DetailSheet } from "@/components/DetailSheet";
-import { EmptyState } from "@/components/EmptyState";
+import { DashboardListWorkspace } from "@/components/dashboard/DashboardListWorkspace";
 import { type Filter } from "@/components/dashboard/FilterTabs";
 import { MapPreviewCard } from "@/components/dashboard/MapPreviewCard";
-import { ReportCard } from "@/components/dashboard/ReportCard";
 import { ReportDetailPanel } from "@/components/dashboard/ReportDetailPanel";
 import { ReportCalendar } from "@/components/dashboard/ReportCalendar";
 import { CalendarDayInsight } from "@/components/dashboard/CalendarDayInsight";
 import { QueueTimeline } from "@/components/dashboard/QueueTimeline";
-import {
-  DashboardToolbar,
-  type SortOption,
-} from "@/components/dashboard/DashboardToolbar";
-import { ListWorkspaceHeader } from "@/components/dashboard/ListWorkspaceHeader";
+import { type SortOption } from "@/components/dashboard/DashboardToolbar";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Card } from "@/components/ui/Card";
+import { StaggerReveal } from "@/components/ui/StaggerList";
+import { DashboardSkeleton } from "@/components/ui/Skeleton";
 import { useApp } from "@/lib/app-context";
 import { useReports } from "@/lib/reports-store";
 import {
@@ -68,9 +65,9 @@ export default function DashboardPage() {
   const stats = useMemo(
     () => ({
       total: reports.length,
-      pending: reports.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23").length,
-      inProgress: reports.filter((r) => r.status === "\u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02").length,
-      severe: reports.filter((r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01").length,
+      pending: reports.filter((r) => r.status === "รอดำเนินการ").length,
+      inProgress: reports.filter((r) => r.status === "กำลังแก้ไข").length,
+      severe: reports.filter((r) => r.riskLevel === "อุดตันหนัก").length,
     }),
     [reports]
   );
@@ -86,7 +83,7 @@ export default function DashboardPage() {
   );
 
   const pendingSorted = useMemo(() => {
-    const pending = reports.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23");
+    const pending = reports.filter((r) => r.status === "รอดำเนินการ");
     return sortReports(pending, "urgencyDesc");
   }, [reports]);
 
@@ -110,24 +107,24 @@ export default function DashboardPage() {
     [reports]
   );
   const pendingTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23"),
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "รอดำเนินการ"),
     [reports]
   );
   const severeTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01"),
+    () => trendFromDaySeries(reports, 7, (r) => r.riskLevel === "อุดตันหนัก"),
     [reports]
   );
   const resolvedTrend = useMemo(
-    () => trendFromDaySeries(reports, 7, (r) => r.status === "\u0e41\u0e01\u0e49\u0e44\u0e02\u0e41\u0e25\u0e49\u0e27"),
+    () => trendFromDaySeries(reports, 7, (r) => r.status === "แก้ไขแล้ว"),
     [reports]
   );
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = [...reports];
-    if (filter === "pending") list = list.filter((r) => r.status === "\u0e23\u0e2d\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23");
-    else if (filter === "inProgress") list = list.filter((r) => r.status === "\u0e01\u0e33\u0e25\u0e31\u0e07\u0e41\u0e01\u0e49\u0e44\u0e02");
-    else if (filter === "severe") list = list.filter((r) => r.riskLevel === "\u0e2d\u0e38\u0e14\u0e15\u0e31\u0e19\u0e2b\u0e19\u0e31\u0e01");
+    if (filter === "pending") list = list.filter((r) => r.status === "รอดำเนินการ");
+    else if (filter === "inProgress") list = list.filter((r) => r.status === "กำลังแก้ไข");
+    else if (filter === "severe") list = list.filter((r) => r.riskLevel === "อุดตันหนัก");
     if (q) {
       list = list.filter(
         (r) =>
@@ -139,6 +136,26 @@ export default function DashboardPage() {
   }, [reports, filter, search, sort]);
 
   const isFilteredEmpty = filtered.length === 0 && reports.length > 0;
+
+  const listLabels = {
+    listTitle: t("dashboard.listTitle"),
+    listSubtitle: t("dashboard.listSubtitle"),
+    search: t("dashboard.search"),
+    searchPlaceholder: t("dashboard.searchPlaceholder"),
+    showing: t("dashboard.showing"),
+    sortLabel: t("dashboard.sortLabel"),
+    sortRisk: t("dashboard.sortRisk"),
+    sortNewest: t("dashboard.sortNewest"),
+    sortUrgency: t("dashboard.sortUrgency"),
+    filterLabel: t("dashboard.filterLabel"),
+    filterAll: t("dashboard.filterAll"),
+    filterPending: t("dashboard.filterPending"),
+    filterInProgress: t("dashboard.filterInProgress"),
+    filterSevere: t("dashboard.filterSevere"),
+    noResults: t("dashboard.noResults"),
+    noResultsHint: t("dashboard.noResultsHint"),
+    clearFilters: t("dashboard.clearFilters"),
+  };
 
   function selectReport(report: Report, source: SelectSource) {
     setSelected(report);
@@ -155,12 +172,10 @@ export default function DashboardPage() {
         const offset = el.offsetTop - container.offsetTop;
         container.scrollTo({ top: Math.max(0, offset - 16), behavior: "smooth" });
       }
-      if (selectSource === "queue" || selectSource === "map") {
-        const delay = selectSource === "map" ? 500 : 0;
-        window.setTimeout(() => {
-          workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, delay);
-      }
+      const delay = selectSource === "map" ? 500 : 0;
+      window.setTimeout(() => {
+        workspaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, delay);
     }
 
     setSelectSource(null);
@@ -168,12 +183,17 @@ export default function DashboardPage() {
 
   function handleSave(id: string, status: ReportStatus) {
     updateStatus(id, status);
-    showToast(t("toast.saved"));
+    showToast(t("toast.saved"), "success");
     setSelected((prev) => (prev?.id === id ? { ...prev, status } : prev));
   }
 
   function handleStatClick(next: Filter) {
     setFilter((c) => (c === next ? "all" : next));
+  }
+
+  function handleClearFilters() {
+    setFilter("all");
+    setSearch("");
   }
 
   function handleQueueViewAll() {
@@ -197,8 +217,7 @@ export default function DashboardPage() {
   function handleViewOnMap(report: Report) {
     setSelected(report);
     setSelectSource("list");
-    const mapEl = document.getElementById("dashboard-map");
-    mapEl?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("dashboard-map")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const calendarNow = new Date();
@@ -212,48 +231,10 @@ export default function DashboardPage() {
     close: t("common.close"),
   };
 
-  const toolbarLabels = {
-    search: t("dashboard.search"),
-    searchPlaceholder: t("dashboard.searchPlaceholder"),
-    showing: t("dashboard.showing"),
-    sortLabel: t("dashboard.sortLabel"),
-    sortRisk: t("dashboard.sortRisk"),
-    sortNewest: t("dashboard.sortNewest"),
-    sortUrgency: t("dashboard.sortUrgency"),
-    filterLabel: t("dashboard.filterLabel"),
-    filterAll: t("dashboard.filterAll"),
-    filterPending: t("dashboard.filterPending"),
-    filterInProgress: t("dashboard.filterInProgress"),
-    filterSevere: t("dashboard.filterSevere"),
-  };
-
-  const listWorkspaceHeader = (
-    <ListWorkspaceHeader
-      title={t("dashboard.listTitle")}
-      subtitle={t("dashboard.listSubtitle")}
-      resultCount={filtered.length}
-      showingLabel={t("dashboard.showing")}
-      controls={
-        <DashboardToolbar
-          search={search}
-          onSearchChange={setSearch}
-          sort={sort}
-          onSortChange={setSort}
-          filter={filter}
-          onFilterChange={setFilter}
-          resultCount={filtered.length}
-          filterCounts={filterCounts}
-          labels={toolbarLabels}
-          showResultCount={false}
-        />
-      }
-    />
-  );
-
   if (!isReady) {
     return (
       <AppShell title={t("dashboard.title")} largeTitle>
-        <p className="text-slate-600">{t("common.loading")}</p>
+        <DashboardSkeleton />
       </AppShell>
     );
   }
@@ -264,49 +245,60 @@ export default function DashboardPage() {
       subtitle={t("dashboard.updated")}
       largeTitle
     >
-      <p className="mb-2 text-[12px] text-slate-500">{t("dashboard.kpiRowHint")}</p>
+      <StaggerReveal index={0}>
+        <p className="mb-2 text-[12px] text-slate-500">{t("dashboard.kpiRowHint")}</p>
+      </StaggerReveal>
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiCard
-          label={t("dashboard.statTotal")}
-          caption={t("dashboard.kpiCaptionTotal")}
-          value={stats.total}
-          trend={totalTrend}
-          chartType="bar"
-          chartData={totalBars}
-          active={filter === "all"}
-          onClick={() => setFilter("all")}
-        />
-        <KpiCard
-          label={t("dashboard.statPending")}
-          caption={t("dashboard.kpiCaptionPending")}
-          value={stats.pending}
-          trend={pendingTrend}
-          chartType="bar"
-          chartData={pendingBars}
-          active={filter === "pending"}
-          onClick={() => handleStatClick("pending")}
-        />
-        <KpiCard
-          label={t("dashboard.statSevere")}
-          caption={t("dashboard.kpiCaptionSevere")}
-          value={stats.severe}
-          trend={severeTrend}
-          chartType="bar"
-          chartData={severeBars}
-          barVariant="severe"
-          active={filter === "severe"}
-          onClick={() => handleStatClick("severe")}
-        />
-        <KpiCard
-          label={t("dashboard.statResolved")}
-          caption={t("dashboard.kpiCaptionResolved")}
-          value={`${resolvedPct}%`}
-          trend={resolvedTrend}
-          chartType="donut"
-          donutPercent={resolvedPct}
-        />
+        <StaggerReveal index={0}>
+          <KpiCard
+            label={t("dashboard.statTotal")}
+            caption={t("dashboard.kpiCaptionTotal")}
+            value={stats.total}
+            trend={totalTrend}
+            chartType="bar"
+            chartData={totalBars}
+            active={filter === "all"}
+            onClick={() => setFilter("all")}
+          />
+        </StaggerReveal>
+        <StaggerReveal index={1}>
+          <KpiCard
+            label={t("dashboard.statPending")}
+            caption={t("dashboard.kpiCaptionPending")}
+            value={stats.pending}
+            trend={pendingTrend}
+            chartType="bar"
+            chartData={pendingBars}
+            active={filter === "pending"}
+            onClick={() => handleStatClick("pending")}
+          />
+        </StaggerReveal>
+        <StaggerReveal index={2}>
+          <KpiCard
+            label={t("dashboard.statSevere")}
+            caption={t("dashboard.kpiCaptionSevere")}
+            value={stats.severe}
+            trend={severeTrend}
+            chartType="bar"
+            chartData={severeBars}
+            barVariant="severe"
+            active={filter === "severe"}
+            onClick={() => handleStatClick("severe")}
+          />
+        </StaggerReveal>
+        <StaggerReveal index={3}>
+          <KpiCard
+            label={t("dashboard.statResolved")}
+            caption={t("dashboard.kpiCaptionResolved")}
+            value={`${resolvedPct}%`}
+            trend={resolvedTrend}
+            chartType="donut"
+            donutPercent={resolvedPct}
+          />
+        </StaggerReveal>
       </div>
 
+      <StaggerReveal index={4}>
       <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-stretch">
         <div className="flex min-h-0 flex-col gap-4 lg:col-span-1">
           <ReportCalendar
@@ -343,90 +335,67 @@ export default function DashboardPage() {
           />
         </div>
       </div>
+      </StaggerReveal>
 
+      <StaggerReveal index={5}>
       <section id="report-workspace" ref={workspaceRef}>
         <Card padding="lg" className="hidden overflow-hidden xl:block">
           <div className="grid max-h-[min(72vh,calc(100vh-14rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(520px,600px)] xl:grid-rows-[minmax(0,1fr)] xl:items-stretch">
-            <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
-              {listWorkspaceHeader}
-
-              {reports.length === 0 ? (
-                <EmptyState />
-              ) : isFilteredEmpty ? (
-                <EmptyState
-                  title={t("dashboard.noResults")}
-                  hint={t("dashboard.noResultsHint")}
-                  actionLabel={t("dashboard.clearFilters")}
-                  onAction={() => {
-                    setFilter("all");
-                    setSearch("");
-                  }}
-                />
-              ) : (
-                <div
-                  ref={listRef}
-                  className="mt-2 min-h-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto px-1 py-1 [scrollbar-gutter:stable]"
-                >
-                  {filtered.map((report) => (
-                    <ReportCard
-                      key={report.id}
-                      ref={(el) => {
-                        cardRefs.current[report.id] = el;
-                      }}
-                      report={report}
-                      onSelect={(r) => selectReport(r, "list")}
-                      isSelected={selected?.id === report.id}
-                      isPriority={report.id === topUrgentId}
-                      queueRank={queueRankById.get(report.id)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
+            <DashboardListWorkspace
+              reports={reports}
+              filtered={filtered}
+              isFilteredEmpty={isFilteredEmpty}
+              filter={filter}
+              sort={sort}
+              search={search}
+              filterCounts={filterCounts}
+              selectedId={selected?.id}
+              topUrgentId={topUrgentId}
+              queueRankById={queueRankById}
+              listRef={listRef}
+              cardRefs={cardRefs}
+              onSelect={(r) => selectReport(r, "list")}
+              onSearchChange={setSearch}
+              onSortChange={setSort}
+              onFilterChange={setFilter}
+              onClearFilters={handleClearFilters}
+              labels={listLabels}
+            />
             <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
               <ReportDetailPanel
-              report={selected}
-              onClose={() => setSelected(null)}
-              onSave={handleSave}
-              labels={detailLabels}
-              onViewOnMap={handleViewOnMap}
+                report={selected}
+                onClose={() => setSelected(null)}
+                onSave={handleSave}
+                labels={detailLabels}
+                onViewOnMap={handleViewOnMap}
               />
             </div>
           </div>
         </Card>
 
         <Card padding="lg" className="xl:hidden">
-          {listWorkspaceHeader}
-
-          {reports.length === 0 ? (
-            <EmptyState />
-          ) : isFilteredEmpty ? (
-            <EmptyState
-              title={t("dashboard.noResults")}
-              hint={t("dashboard.noResultsHint")}
-              actionLabel={t("dashboard.clearFilters")}
-              onAction={() => {
-                setFilter("all");
-                setSearch("");
-              }}
-            />
-          ) : (
-            <div className="mt-2 max-h-[min(60vh,520px)] space-y-2 overflow-y-auto pr-1">
-              {filtered.map((report) => (
-                <ReportCard
-                  key={report.id}
-                  report={report}
-                  onSelect={(r) => selectReport(r, "list")}
-                  isSelected={selected?.id === report.id}
-                  isPriority={report.id === topUrgentId}
-                  queueRank={queueRankById.get(report.id)}
-                />
-              ))}
-            </div>
-          )}
+          <DashboardListWorkspace
+            reports={reports}
+            filtered={filtered}
+            isFilteredEmpty={isFilteredEmpty}
+            filter={filter}
+            sort={sort}
+            search={search}
+            filterCounts={filterCounts}
+            selectedId={selected?.id}
+            topUrgentId={topUrgentId}
+            queueRankById={queueRankById}
+            onSelect={(r) => selectReport(r, "list")}
+            onSearchChange={setSearch}
+            onSortChange={setSort}
+            onFilterChange={setFilter}
+            onClearFilters={handleClearFilters}
+            listClassName="mt-2 max-h-[min(60vh,520px)] space-y-2 overflow-y-auto pr-1"
+            labels={listLabels}
+          />
         </Card>
       </section>
+      </StaggerReveal>
 
       {selected && !isDesktop && (
         <DetailSheet
@@ -440,10 +409,3 @@ export default function DashboardPage() {
     </AppShell>
   );
 }
-
-
-
-
-
-
-

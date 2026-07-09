@@ -17,6 +17,8 @@
 | เก็บรูปภาพ | **Firebase Storage** | ใช้คู่กับ Firestore ได้ทันที ไม่ต้องผูก Service เพิ่ม |
 | Hosting/Deploy | **Vercel (Free Tier)** | Deploy Next.js ได้ในคลิกเดียว ได้ URL จริงไปใส่ในวิดีโอ Demo |
 | Styling | **Tailwind CSS** | เขียน UI เร็ว ไม่ต้องเขียน CSS แยกไฟล์ |
+| Animation | **Framer Motion** + CSS motion tokens | Page transitions, sheets, stagger lists, KPI count-up (Mock-up v3) |
+| Fonts | **Self-hosted** IBM Plex Sans Thai + Inter (`lib/fonts.ts`, `public/fonts/`) | ไม่พึ่ง Google Fonts ตอน runtime |
 
 ---
 

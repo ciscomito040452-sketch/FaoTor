@@ -27,6 +27,16 @@
 4. **Risk แดง** — เฉพาะ badge/pin ไม่ทาพื้นทั้งการ์ด
 5. ฟอนต์และ spacing เดิม (IBM Plex Sans Thai, 8pt grid)
 
+### Motion v1 (2026-07-09)
+
+อ้างอิง `Docs/superpowers/specs/2026-07-09-motion-design-system.md`
+
+1. **Duration:** 150–400ms — ห้าม animate layout ทั้งหน้า
+2. **Properties:** ใช้ `transform` + `opacity` เท่านั้น
+3. **Easing:** `--ease-out-expo` สำหรับ enter; spring สำหรับ sheet/nav pill
+4. **Reduced motion:** ทุก animation ต้อง respect `prefers-reduced-motion`
+5. **Demo badge:** แสดง `Demo · Mock AI` ใน top nav ตลอด mock mode
+
 ### Dashboard Officer Workspace
 
 - **ไม่มี** ปุ่มรายงานใหม่ / ส่งออก CSV (เป็นหน้าที่ผู้รายงาน)

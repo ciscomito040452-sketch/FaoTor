@@ -43,7 +43,11 @@ export function MapPreviewCard({
   return (
     <div
       id="dashboard-map"
-      className="flex h-full w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]"
+      className={`flex h-full w-full flex-col overflow-hidden rounded-[20px] border bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-shadow duration-300 dark:bg-[var(--color-surface)] ${
+        selectedId
+          ? "border-brand-blue/40 shadow-[0_0_0_2px_rgba(59,130,246,0.25)]"
+          : "border-slate-100"
+      }`}
     >
       <div className="border-b border-slate-100 px-5 py-4">
         <div className="flex items-start justify-between gap-3">

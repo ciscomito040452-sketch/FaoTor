@@ -7,7 +7,8 @@ import { LiveStatsTeaser } from "@/components/landing/LiveStatsTeaser";
 import { ProblemSection } from "@/components/landing/ProblemSection";
 import { RoleCard } from "@/components/landing/RoleCard";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { Button } from "@/components/ui/Button";
+import { MotionButton } from "@/components/ui/MotionButton";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 export default function HomePage() {
   const { t } = useApp();
@@ -19,43 +20,50 @@ export default function HomePage() {
       largeTitle
       actions={
         <Link href="/report">
-          <Button variant="orange">{t("landing.ctaReport")}</Button>
+          <MotionButton variant="orange">{t("landing.ctaReport")}</MotionButton>
         </Link>
       }
     >
-      <LiveStatsTeaser />
+      <FadeIn index={0}>
+        <LiveStatsTeaser />
+      </FadeIn>
 
-      <div className="mb-6 grid gap-4 md:grid-cols-2">
-        <RoleCard
-          href="/report"
-          variant="primary"
-          title={t("landing.role.reporter.title")}
-          description={t("landing.role.reporter.desc")}
-          icon={
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <rect x="3" y="7" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="12" cy="14" r="3.5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-          }
-        />
-        <RoleCard
-          href="/dashboard"
-          variant="secondary"
-          title={t("landing.role.officer.title")}
-          description={t("landing.role.officer.desc")}
-          icon={
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-              <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-              <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-              <rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-          }
-        />
-      </div>
+      <FadeIn index={1}>
+        <div className="mb-6 grid gap-4 md:grid-cols-2">
+          <RoleCard
+            href="/report"
+            variant="primary"
+            title={t("landing.role.reporter.title")}
+            description={t("landing.role.reporter.desc")}
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="3" y="7" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                <circle cx="12" cy="14" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            }
+          />
+          <RoleCard
+            href="/dashboard"
+            variant="secondary"
+            title={t("landing.role.officer.title")}
+            description={t("landing.role.officer.desc")}
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+                <rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+            }
+          />
+        </div>
+      </FadeIn>
 
       <ProblemSection />
-      <HowItWorks />
+
+      <FadeIn index={3}>
+        <HowItWorks />
+      </FadeIn>
 
       <footer className="mt-10 border-t border-slate-100 pt-6">
         <Link

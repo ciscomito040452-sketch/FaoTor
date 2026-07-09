@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { fadeUpVariants, motionTransition, useReducedMotion } from "@/lib/motion";
 
 interface ErrorBannerProps {
   message: string;
@@ -8,17 +10,38 @@ interface ErrorBannerProps {
 }
 
 export function ErrorBanner({ message, onDismiss }: ErrorBannerProps) {
+  const [visible, setVisible] = useState(true);
+  const reduced = useReducedMotion();
+
   useEffect(() => {
-    const timer = setTimeout(onDismiss, 4000);
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, 3800);
     return () => clearTimeout(timer);
-  }, [onDismiss]);
+  }, [message]);
+
+  useEffect(() => {
+    if (!visible) {
+      const timer = setTimeout(onDismiss, 220);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, onDismiss]);
 
   return (
-    <div
-      role="alert"
-      className="rounded-[12px] bg-risk-red-bg px-4 py-3 text-[15px] text-risk-red-text"
-    >
-      {message}
-    </div>
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          role="alert"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={fadeUpVariants}
+          transition={motionTransition(reduced)}
+          className="animate-shake rounded-[12px] bg-risk-red-bg px-4 py-3 text-[15px] text-risk-red-text"
+        >
+          {message}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

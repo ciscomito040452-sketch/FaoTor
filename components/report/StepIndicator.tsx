@@ -1,11 +1,15 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/motion";
+
 interface StepIndicatorProps {
   current: 1 | 2 | 3 | 4;
   labels: [string, string, string, string];
 }
 
 export function StepIndicator({ current, labels }: StepIndicatorProps) {
+  const reduced = useReducedMotion();
   const progress =
     labels.length > 1 ? ((current - 1) / (labels.length - 1)) * 100 : 0;
 
@@ -15,9 +19,11 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
         className="absolute left-[calc(12.5%)] right-[calc(12.5%)] top-4 h-[2px] overflow-hidden rounded-full bg-slate-200"
         aria-hidden
       >
-        <div
-          className="h-full rounded-full bg-brand-orange transition-all duration-300 ease-out"
-          style={{ width: `${progress}%` }}
+        <motion.div
+          className="h-full rounded-full bg-brand-orange"
+          initial={false}
+          animate={{ width: `${progress}%` }}
+          transition={reduced ? { duration: 0 } : { duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         />
       </div>
 
@@ -32,7 +38,17 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
               key={label}
               className="flex w-[25%] max-w-[5.5rem] flex-col items-center gap-2"
             >
-              <div
+              <motion.div
+                animate={
+                  active && !reduced
+                    ? { scale: [1, 1.08, 1] }
+                    : { scale: 1 }
+                }
+                transition={
+                  active && !reduced
+                    ? { duration: 0.5, ease: "easeOut" }
+                    : { duration: 0.2 }
+                }
                 className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-[13px] font-semibold ring-4 ring-white ${
                   done
                     ? "bg-brand-orange text-white"
@@ -42,13 +58,7 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
                 }`}
               >
                 {done ? (
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    aria-hidden
-                  >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                     <path
                       d="M2.5 7l3 3 6-6"
                       stroke="currentColor"
@@ -60,7 +70,7 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
                 ) : (
                   step
                 )}
-              </div>
+              </motion.div>
               <span
                 className={`text-center text-[10px] font-semibold leading-tight sm:text-[11px] ${
                   active

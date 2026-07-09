@@ -1,12 +1,14 @@
 ﻿"use client";
 
 import { forwardRef } from "react";
+import { motion } from "framer-motion";
 import type { Report } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { getStatusLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";
 import { STATUS_PILL, THUMB_RING } from "@/lib/status-colors";
 import { MetricFocusBlock } from "@/components/shared/MetricFocusBlock";
+import { springTransition, useReducedMotion } from "@/lib/motion";
 
 interface ReportCardProps {
   report: Report;
@@ -22,24 +24,33 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
     ref
   ) {
     const { locale, t } = useApp();
+    const reduced = useReducedMotion();
 
     const meta = [report.district, formatTimeAgo(report.createdAt, locale)]
       .filter(Boolean)
       .join(" · ");
 
     return (
-      <button
+      <motion.button
         ref={ref}
+        layout
         type="button"
         onClick={() => onSelect(report)}
-        className={`box-border grid min-h-[68px] w-full min-w-0 grid-cols-[96px_minmax(0,1fr)_auto] items-center gap-x-3 rounded-xl px-3 py-2.5 text-left transition ${
+        whileTap={reduced ? undefined : { scale: 0.99 }}
+        animate={
+          isSelected && !reduced
+            ? { scale: 1.01 }
+            : { scale: 1 }
+        }
+        transition={springTransition(reduced)}
+        className={`box-border grid min-h-[68px] w-full min-w-0 grid-cols-[96px_minmax(0,1fr)_auto] items-center gap-x-3 rounded-xl px-3 py-2.5 text-left ${
           isSelected
-            ? "bg-slate-50 ring-2 ring-brand-blue/40"
+            ? "bg-brand-blue-soft/40 ring-2 ring-brand-blue/50"
             : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/70 hover:bg-slate-50/80 dark:bg-[var(--color-surface)]"
         }`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <motion.img
+          layoutId={`report-thumb-${report.id}`}
           src={report.imageUrl}
           alt={report.location}
           className={`h-[56px] w-[96px] shrink-0 self-center rounded-[10px] object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
@@ -47,9 +58,13 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
 
         <div className="min-w-0 py-0.5">
           {isPriority && (
-            <span className="mb-1 inline-flex rounded-md bg-brand-orange-soft px-1.5 py-0.5 text-[10px] font-semibold text-brand-orange-dark">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="animate-pulse-once mb-1 inline-flex rounded-md bg-brand-orange-soft px-1.5 py-0.5 text-[10px] font-semibold text-brand-orange-dark"
+            >
               {t("dashboard.priority")}
-            </span>
+            </motion.span>
           )}
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
@@ -84,7 +99,7 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
           scoreLabel={t("dashboard.cardRiskLabel")}
           className="justify-self-end shrink-0"
         />
-      </button>
+      </motion.button>
     );
   }
 );

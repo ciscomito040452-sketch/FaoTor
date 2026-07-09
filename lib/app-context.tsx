@@ -20,6 +20,7 @@ const MESSAGES = { th, en } as const;
 interface ToastState {
   message: string;
   visible: boolean;
+  variant: "default" | "success" | "error";
 }
 
 interface AppContextValue {
@@ -31,7 +32,7 @@ interface AppContextValue {
   settingsOpen: boolean;
   openSettings: () => void;
   closeSettings: () => void;
-  showToast: (message: string) => void;
+  showToast: (message: string, variant?: "default" | "success" | "error") => void;
   toast: ToastState;
   dismissToast: () => void;
 }
@@ -42,7 +43,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("th");
   const [theme, setThemeState] = useState<Theme>("light");
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [toast, setToast] = useState<ToastState>({ message: "", visible: false });
+  const [toast, setToast] = useState<ToastState>({
+    message: "",
+    visible: false,
+    variant: "default",
+  });
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -75,7 +80,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const openSettings = useCallback(() => setSettingsOpen(true), []);
   const closeSettings = useCallback(() => setSettingsOpen(false), []);
   const showToast = useCallback(
-    (message: string) => setToast({ message, visible: true }),
+    (message: string, variant: "default" | "success" | "error" = "default") =>
+      setToast({ message, visible: true, variant }),
     []
   );
   const dismissToast = useCallback(

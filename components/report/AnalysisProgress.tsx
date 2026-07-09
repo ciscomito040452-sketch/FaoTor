@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { springTransition, useReducedMotion } from "@/lib/motion";
 
 interface AnalysisProgressProps {
   title: string;
@@ -10,6 +12,7 @@ interface AnalysisProgressProps {
 }
 
 export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressProps) {
+  const reduced = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -35,7 +38,7 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
   }, [steps, onComplete]);
 
   return (
-    <div className="rounded-[16px] border border-slate-100 bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
+    <div className="animate-scale-in rounded-[16px] border border-slate-100 bg-white p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface)]">
       <div className="mb-6 flex items-center justify-center gap-3">
         <LoadingSpinner />
         <span className="text-[17px] font-semibold text-slate-900">{title}</span>
@@ -43,8 +46,11 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
 
       <div className="mb-6 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-brand-blue transition-all duration-500"
-          style={{ width: `${progress}%` }}
+          className="h-full rounded-full bg-brand-blue"
+          style={{
+            width: `${progress}%`,
+            transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
         />
       </div>
 
@@ -55,16 +61,24 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
           return (
             <li
               key={step}
-              className={`flex items-center gap-3 text-[15px] ${
+              className={`flex items-center gap-3 text-[15px] transition-colors duration-300 ${
                 done || active ? "text-slate-900" : "text-slate-400"
               }`}
             >
-              <span
+              <motion.span
+                animate={
+                  done
+                    ? { scale: [0, 1.2, 1] }
+                    : active
+                      ? { scale: [1, 1.08, 1] }
+                      : { scale: 1 }
+                }
+                transition={springTransition(reduced)}
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${
                   done
                     ? "bg-brand-blue text-white"
                     : active
-                      ? "border-2 border-brand-blue text-brand-blue"
+                      ? "border-2 border-brand-blue text-brand-blue ring-2 ring-brand-blue/20"
                       : "bg-slate-100 text-slate-400"
                 }`}
               >
@@ -80,7 +94,7 @@ export function AnalysisProgress({ title, steps, onComplete }: AnalysisProgressP
                 ) : (
                   index + 1
                 )}
-              </span>
+              </motion.span>
               {step}
             </li>
           );

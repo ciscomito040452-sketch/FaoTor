@@ -16,7 +16,9 @@ function createPinIcon(color: string, selected: boolean) {
   const size = selected ? 22 : 16;
   const border = selected ? 3 : 2;
   return L.divIcon({
-    className: selected ? "faotor-map-pin--selected" : "faotor-map-pin",
+    className: selected
+      ? "faotor-map-pin--selected faotor-map-pin--selected-bounce"
+      : "faotor-map-pin",
     html: `<span style="display:block;width:${size}px;height:${size}px;border-radius:50%;background:${color};border:${border}px solid #fff;box-shadow:0 ${selected ? 3 : 1}px ${selected ? 8 : 4}px rgba(0,0,0,${selected ? 0.45 : 0.35})${selected ? ",0 0 0 3px rgba(47,111,237,0.4)" : ""}"></span>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
@@ -54,7 +56,8 @@ function MapController({
       return;
     }
     map.flyTo([report.lat, report.lng], Math.max(map.getZoom(), 14), {
-      duration: 0.45,
+      duration: 0.55,
+      easeLinearity: 0.25,
     });
   }, [selectedId, reports, map]);
 

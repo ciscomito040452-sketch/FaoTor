@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useApp } from "@/lib/app-context";
+import { motionTransition, useReducedMotion } from "@/lib/motion";
 import type th from "@/lib/locales/th.json";
 
 type LocaleKey = keyof typeof th;
@@ -123,9 +125,20 @@ function LocationBubble({ title, address }: { title: string; address: string }) 
 
 function ChatBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
+  const reduced = useReducedMotion();
+
+  const wrap = (children: React.ReactNode) => (
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={motionTransition(reduced)}
+    >
+      {children}
+    </motion.div>
+  );
 
   if (message.type === "image") {
-    return (
+    return wrap(
       <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
         <div className="max-w-[78%] overflow-hidden rounded-[14px] bg-white shadow-sm">
           <Image
@@ -141,14 +154,14 @@ function ChatBubble({ message }: { message: ChatMessage }) {
   }
 
   if (message.type === "location") {
-    return (
+    return wrap(
       <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
         <LocationBubble title={message.title} address={message.address} />
       </div>
     );
   }
 
-  return (
+  return wrap(
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
         className={`max-w-[85%] rounded-[16px] px-4 py-2.5 text-[15px] leading-[1.4] ${

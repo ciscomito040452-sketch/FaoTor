@@ -6,7 +6,16 @@ Use this checklist before recording your competition pitch video.
 
 1. Open Settings (gear icon) and tap **Reset demo data** to reload 10 seed reports.
 2. Keep language on **Thai** (or EN if your script is in English).
-3. Use **sample photos only** (do not upload camera photos) to avoid unpredictable AI results and localStorage limits.
+3. Use **sample photos only** — demo mode hides camera upload; pick a sample chip on `/report`.
+4. Notice the **Demo · Mock AI** badge in the nav — point it out if judges ask about AI.
+
+## UI motion tips for recording
+
+- Navigate between tabs slowly so the **nav pill slide** and **page fade (enter/exit ~320ms)** are visible.
+- On `/report`, the **analysis step animation** (~3s) is intentional — wait for it to finish; success toast appears when result shows.
+- On `/dashboard`, tap a KPI card (count-up + bar grow), filter list (popLayout), open report — show **sheet slide** (mobile) or **detail crossfade** (desktop).
+- On `/line`, play auto demo — chat bubbles slide up with typing indicator.
+- Reset demo data before each take so KPI count-up animations look fresh.
 
 ## Recommended recording flow (3-5 min)
 

@@ -1,3 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useCountUp } from "@/lib/use-count-up";
+
 interface ScoreRingProps {
   value: number;
   max?: number;
@@ -8,6 +13,7 @@ interface ScoreRingProps {
   compact?: boolean;
   showPercent?: boolean;
   labelClassName?: string;
+  animate?: boolean;
 }
 
 export function ScoreRing({
@@ -20,12 +26,31 @@ export function ScoreRing({
   compact = false,
   showPercent = false,
   labelClassName = "text-slate-600",
+  animate = true,
 }: ScoreRingProps) {
   const percent = Math.min(100, Math.max(0, (value / max) * 100));
   const stroke = compact ? 5 : 6;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const offset = c - (percent / 100) * c;
+  const targetOffset = c - (percent / 100) * c;
+  const [offset, setOffset] = useState(animate ? c : targetOffset);
+  const animatedValue = useCountUp(value, 600, animate);
+
+  useEffect(() => {
+    if (!animate) {
+      setOffset(targetOffset);
+      return;
+    }
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setOffset(targetOffset);
+      return;
+    }
+    const timer = requestAnimationFrame(() => setOffset(targetOffset));
+    return () => cancelAnimationFrame(timer);
+  }, [animate, targetOffset, percent]);
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -50,6 +75,7 @@ export function ScoreRing({
             strokeDashoffset={offset}
             strokeLinecap="round"
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1)" }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -57,7 +83,7 @@ export function ScoreRing({
             className="font-bold leading-none text-slate-900"
             style={{ fontSize: size * (showPercent ? 0.24 : 0.28) }}
           >
-            {value}
+            {animatedValue}
             {showPercent && (
               <span
                 className="font-semibold text-slate-500"

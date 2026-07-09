@@ -1,8 +1,13 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { MiniBarChart } from "./MiniBarChart";
 import { MiniDonut } from "./MiniDonut";
 import { MiniSparkline } from "./MiniSparkline";
 import { TrendBadge } from "./TrendBadge";
 import { Card } from "./Card";
+import { AnimatedCounter } from "./AnimatedCounter";
+import { useReducedMotion } from "@/lib/motion";
 
 type ChartType = "bar" | "donut" | "sparkline" | "none";
 
@@ -31,8 +36,21 @@ export function KpiCard({
   active,
   onClick,
 }: KpiCardProps) {
+  const reduced = useReducedMotion();
+  const parsed =
+    typeof value === "string" && value.endsWith("%")
+      ? { numeric: parseInt(value, 10) || 0, suffix: "%", isPercent: true }
+      : { numeric: typeof value === "number" ? value : 0, suffix: "", isPercent: false };
+
+  const displayValue =
+    parsed.suffix === "%" ? (
+      <AnimatedCounter value={parsed.numeric} suffix="%" />
+    ) : (
+      <AnimatedCounter value={parsed.numeric} />
+    );
+
   const content = (
-  <>
+    <>
       <p className="text-[13px] text-slate-600">{label}</p>
       {caption && (
         <p className="mt-0.5 text-[11px] text-slate-400">{caption}</p>
@@ -40,7 +58,7 @@ export function KpiCard({
       <div className="mt-2 flex items-end justify-between gap-3">
         <div>
           <p className="text-[28px] font-bold leading-none text-slate-900">
-            {value}
+            {displayValue}
           </p>
           {trend != null && (
             <div className="mt-2">
@@ -49,9 +67,9 @@ export function KpiCard({
           )}
         </div>
         {chartType === "bar" && chartData.length > 0 && (
-          <MiniBarChart values={chartData} variant={barVariant} />
+          <MiniBarChart values={chartData} variant={barVariant} animate />
         )}
-        {chartType === "donut" && <MiniDonut percent={donutPercent} />}
+        {chartType === "donut" && <MiniDonut percent={donutPercent} animate />}
         {chartType === "sparkline" && chartData.length > 0 && (
           <MiniSparkline values={chartData} />
         )}
@@ -61,17 +79,20 @@ export function KpiCard({
 
   if (onClick) {
     return (
-      <button
+      <motion.button
         type="button"
         onClick={onClick}
-        className={`bento-card w-full p-5 text-left transition hover:shadow-md ${
+        whileHover={reduced ? undefined : { y: -2, scale: 1.01 }}
+        whileTap={reduced ? undefined : { scale: 0.98 }}
+        transition={{ duration: 0.15 }}
+        className={`bento-card w-full p-5 text-left transition-shadow hover:shadow-md ${
           active
             ? "border-brand-blue shadow-[0_0_0_2px_#3b82f6]"
             : ""
         }`}
       >
         {content}
-      </button>
+      </motion.button>
     );
   }
 

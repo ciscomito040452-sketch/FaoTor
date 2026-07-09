@@ -9,6 +9,7 @@ import {
   reportsByDaySevere,
 } from "@/lib/dashboard-analytics";
 import { KpiCard } from "@/components/ui/KpiCard";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 export function LiveStatsTeaser() {
   const { t } = useApp();
@@ -29,25 +30,31 @@ export function LiveStatsTeaser() {
 
   return (
     <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <KpiCard
-        label={t("landing.stats.reports")}
-        value={stats.total}
-        chartType="bar"
-        chartData={totalBars}
-      />
-      <KpiCard
-        label={t("landing.stats.pending")}
-        value={stats.pending}
-        chartType="bar"
-        chartData={pendingBars}
-      />
-      <KpiCard
-        label={t("landing.stats.severe")}
-        value={stats.severe}
-        chartType="bar"
-        chartData={severeBars}
-        barVariant="severe"
-      />
+      <FadeIn index={0}>
+        <KpiCard
+          label={t("landing.stats.reports")}
+          value={stats.total}
+          chartType="bar"
+          chartData={totalBars}
+        />
+      </FadeIn>
+      <FadeIn index={1}>
+        <KpiCard
+          label={t("landing.stats.pending")}
+          value={stats.pending}
+          chartType="bar"
+          chartData={pendingBars}
+        />
+      </FadeIn>
+      <FadeIn index={2}>
+        <KpiCard
+          label={t("landing.stats.severe")}
+          value={stats.severe}
+          chartType="bar"
+          chartData={severeBars}
+          barVariant="severe"
+        />
+      </FadeIn>
     </div>
   );
 }

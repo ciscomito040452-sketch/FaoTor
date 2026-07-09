@@ -33,6 +33,15 @@
   --color-text-primary: #111827;
   --color-text-secondary: #6b7280;
   --color-border: #e5e7eb;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --duration-enter: 320ms;
+  --duration-exit: 200ms;
+  --ease-apple: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .dark {
@@ -103,4 +112,82 @@ body {
   background: var(--color-surface);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--color-border);
+}
+
+@keyframes faotor-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes faotor-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes faotor-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+@keyframes faotor-pulse-once {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.92; }
+}
+
+@keyframes faotor-pin-bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  70% { transform: translateY(-2px); }
+}
+
+.animate-fade-up {
+  animation: faotor-fade-up var(--duration-normal) var(--ease-out-expo) both;
+}
+
+.animate-scale-in {
+  animation: faotor-scale-in var(--duration-normal) var(--ease-out-expo) both;
+}
+
+.animate-shake {
+  animation: faotor-shake 300ms var(--ease-out-expo) both;
+}
+
+.animate-pulse-once {
+  animation: faotor-pulse-once 600ms var(--ease-out-expo) 2;
+}
+
+.faotor-map-pin--selected-bounce span {
+  animation: faotor-pin-bounce 400ms var(--ease-spring) both;
+}
+
+.stagger-1 { animation-delay: 60ms; }
+.stagger-2 { animation-delay: 120ms; }
+.stagger-3 { animation-delay: 180ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 300ms; }
+.stagger-6 { animation-delay: 360ms; }
+
+.pressable {
+  transition: transform var(--duration-fast) var(--ease-out-expo);
+}
+
+.pressable:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-scale-in,
+  .animate-shake,
+  .animate-pulse-once,
+  .faotor-map-pin--selected-bounce span {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .pressable:active {
+    transform: none;
+  }
 }

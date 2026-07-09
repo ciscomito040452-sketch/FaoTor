@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { Report, ReportStatus } from "@/lib/types";
 import {
   ReportDetailContent,
@@ -9,6 +10,7 @@ import {
 import { StatusActionBar } from "@/components/report/StatusActionBar";
 import { useApp } from "@/lib/app-context";
 import { Card } from "@/components/ui/Card";
+import { fadeUpVariants, motionTransition, useReducedMotion } from "@/lib/motion";
 
 interface ReportDetailPanelProps {
   report: Report | null;
@@ -26,6 +28,7 @@ export function ReportDetailPanel({
   onViewOnMap,
 }: ReportDetailPanelProps) {
   const { t } = useApp();
+  const reduced = useReducedMotion();
   const [status, setStatus] = useState<ReportStatus>(
     report?.status ?? "รอดำเนินการ"
   );
@@ -55,33 +58,45 @@ export function ReportDetailPanel({
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <Card padding="none" className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto px-4 py-3.5">
-          <ReportDetailContent
-            report={report}
-            labels={labels}
-            onSave={onSave}
-            onClose={onClose}
-            onViewOnMap={onViewOnMap}
-            compact
-            layout="split"
-            imageVariant="panel"
-            metricsVariant="panel"
-            showSaveButton={false}
-            showStatusSection={false}
-            status={status}
-            onStatusChange={setStatus}
-          />
-        </div>
-        <div className="shrink-0 border-t border-slate-100 bg-white px-4 py-3">
-          <StatusActionBar
-            status={status}
-            onStatusChange={setStatus}
-            onSave={() => onSave(report.id, status)}
-            changeStatusLabel={labels.changeStatus}
-            saveLabel={labels.save}
-            compact
-          />
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={report.id}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={fadeUpVariants}
+            transition={motionTransition(reduced)}
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          >
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-auto px-4 py-3.5">
+              <ReportDetailContent
+                report={report}
+                labels={labels}
+                onSave={onSave}
+                onClose={onClose}
+                onViewOnMap={onViewOnMap}
+                compact
+                layout="split"
+                imageVariant="panel"
+                metricsVariant="panel"
+                showSaveButton={false}
+                showStatusSection={false}
+                status={status}
+                onStatusChange={setStatus}
+              />
+            </div>
+            <div className="shrink-0 border-t border-slate-100 bg-white px-4 py-3">
+              <StatusActionBar
+                status={status}
+                onStatusChange={setStatus}
+                onSave={() => onSave(report.id, status)}
+                changeStatusLabel={labels.changeStatus}
+                saveLabel={labels.save}
+                compact
+              />
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </Card>
     </div>
   );

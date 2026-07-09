@@ -1,5 +1,9 @@
 ﻿"use client";
 
+import { motion } from "framer-motion";
+import { MOCK_MODE } from "@/lib/mock-data";
+import { useReducedMotion } from "@/lib/motion";
+
 type PreviewSource = "none" | "file" | "sample";
 
 interface PhotoUploadZoneProps {
@@ -13,6 +17,7 @@ interface PhotoUploadZoneProps {
   changeLabel: string;
   sampleSectionLabel: string;
   sampleBadgeLabel: string;
+  mockAiHint?: string;
   onSelect: () => void;
   onSampleSelect: (url: string) => void;
 }
@@ -28,9 +33,13 @@ export function PhotoUploadZone({
   changeLabel,
   sampleSectionLabel,
   sampleBadgeLabel,
+  mockAiHint,
   onSelect,
   onSampleSelect,
 }: PhotoUploadZoneProps) {
+  const reduced = useReducedMotion();
+  const demoOnly = MOCK_MODE;
+
   return (
     <div className="space-y-3">
       {tips && (
@@ -39,21 +48,42 @@ export function PhotoUploadZone({
         </div>
       )}
 
-      <button
+      {demoOnly && mockAiHint && (
+        <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
+          {mockAiHint}
+        </p>
+      )}
+
+      <motion.button
         type="button"
-        onClick={onSelect}
-        className="relative flex h-[220px] w-full flex-col items-center justify-center overflow-hidden rounded-[12px] border-2 border-dashed border-slate-100 bg-white dark:bg-[var(--color-surface)]"
+        onClick={demoOnly ? undefined : onSelect}
+        whileHover={demoOnly || reduced ? undefined : { scale: 1.005 }}
+        whileTap={demoOnly || reduced ? undefined : { scale: 0.995 }}
+        className={`relative flex h-[220px] w-full flex-col items-center justify-center overflow-hidden rounded-[12px] border-2 border-dashed border-slate-100 bg-white dark:bg-[var(--color-surface)] ${
+          demoOnly ? "cursor-default" : ""
+        }`}
       >
         {preview ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview} alt="" className="h-full w-full object-cover" />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-4 py-3 text-left text-white">
-              <p className="inline-flex items-center gap-2 text-[13px] font-semibold">
-                <span aria-hidden>+</span>
-                {changeLabel}
-              </p>
-            </div>
+            <motion.img
+              key={preview}
+              src={preview}
+              alt=""
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className={`h-full w-full object-cover ${
+                previewSource === "file" ? "ring-2 ring-brand-blue/40" : ""
+              }`}
+            />
+            {!demoOnly && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-4 py-3 text-left text-white">
+                <p className="inline-flex items-center gap-2 text-[13px] font-semibold">
+                  <span aria-hidden>+</span>
+                  {changeLabel}
+                </p>
+              </div>
+            )}
             {previewSource === "sample" && (
               <span className="absolute left-3 top-3 rounded-full bg-brand-orange-soft px-2.5 py-1 text-[11px] font-semibold text-brand-orange-dark">
                 {sampleBadgeLabel}
@@ -70,33 +100,48 @@ export function PhotoUploadZone({
               </svg>
             </div>
             <span className="max-w-[260px] text-center text-[15px] text-slate-600">
-              {hint}
+              {demoOnly ? sampleSectionLabel : hint}
             </span>
           </>
         )}
-      </button>
+      </motion.button>
 
-      <button
-        type="button"
-        onClick={onSelect}
-        className="w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
-      >
-        {uploadLabel}
-      </button>
+      {!demoOnly && (
+        <>
+          {previewSource === "file" && mockAiHint && (
+            <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
+              {mockAiHint}
+            </p>
+          )}
+
+          <button
+            type="button"
+            onClick={onSelect}
+            className="pressable w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+          >
+            {uploadLabel}
+          </button>
+        </>
+      )}
 
       {samples && sampleLabels && (
         <div className="space-y-2">
           <p className="text-[12px] font-medium text-slate-500">{sampleSectionLabel}</p>
           <div className="flex flex-wrap gap-2">
             {samples.map((url, i) => (
-              <button
+              <motion.button
                 key={url}
                 type="button"
                 onClick={() => onSampleSelect(url)}
-                className="rounded-[10px] border border-slate-100 px-3 py-2 text-[13px] font-semibold text-slate-600 hover:bg-slate-50"
+                whileTap={reduced ? undefined : { scale: 0.96 }}
+                className={`rounded-[10px] border px-3 py-2 text-[13px] font-semibold transition ${
+                  preview === url
+                    ? "border-brand-blue bg-brand-blue-soft text-brand-blue"
+                    : "border-slate-100 text-slate-600 hover:bg-slate-50"
+                }`}
               >
                 {sampleLabels[i]}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -104,4 +149,3 @@ export function PhotoUploadZone({
     </div>
   );
 }
-
