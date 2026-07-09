@@ -63,7 +63,7 @@ export function CalendarDayInsight({
             { dot: "bg-slate-200", pill: "bg-slate-50 text-slate-500", key: "dashboard.calendarLegend0" },
             { dot: "bg-brand-blue/40", pill: "bg-brand-blue-soft text-brand-blue", key: "dashboard.calendarLegend1" },
             { dot: "bg-brand-blue", pill: "bg-brand-blue-soft text-brand-blue", key: "dashboard.calendarLegend2" },
-            { dot: "bg-brand-orange", pill: "bg-brand-orange-soft text-brand-orange", key: "dashboard.calendarLegend3" },
+            { dot: "bg-rose-600", pill: "bg-rose-50 text-rose-700", key: "dashboard.calendarLegend3" },
           ] as const
         ).map(({ dot, pill, key }) => (
           <span
@@ -108,8 +108,8 @@ export function CalendarDayInsight({
                     {t("dashboard.filterPending")}
                   </p>
                 </div>
-                <div className="rounded-[12px] bg-brand-orange-soft px-2 py-3 text-center">
-                  <p className="text-[20px] font-bold text-brand-orange">
+                <div className="rounded-[12px] bg-rose-50 px-2 py-3 text-center">
+                  <p className="text-[20px] font-bold text-rose-700">
                     <AnimatedCounter value={severe} />
                   </p>
                   <p className="text-[10px] text-slate-600">

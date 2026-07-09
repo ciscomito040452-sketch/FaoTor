@@ -9,9 +9,10 @@ import { springTransition, useReducedMotion } from "@/lib/motion";
 interface StatusSegmentedProps {
   value: ReportStatus;
   onChange: (status: ReportStatus) => void;
+  compact?: boolean;
 }
 
-export function StatusSegmented({ value, onChange }: StatusSegmentedProps) {
+export function StatusSegmented({ value, onChange, compact = false }: StatusSegmentedProps) {
   const { locale } = useApp();
   const reduced = useReducedMotion();
 
@@ -24,9 +25,11 @@ export function StatusSegmented({ value, onChange }: StatusSegmentedProps) {
             key={option}
             type="button"
             onClick={() => onChange(option)}
-            className={`relative min-h-[40px] flex-1 whitespace-nowrap rounded-[10px] px-1.5 text-[12px] font-semibold leading-none xl:min-h-[44px] xl:px-2 xl:text-[13px] ${
-              selected ? "text-brand-blue" : "text-slate-600"
-            }`}
+            className={`relative flex-1 whitespace-nowrap rounded-[10px] px-1.5 font-semibold leading-none ${
+              compact
+                ? "min-h-[36px] text-[11px] xl:text-[12px]"
+                : "min-h-[40px] text-[12px] xl:min-h-[44px] xl:px-2 xl:text-[13px]"
+            } ${selected ? "text-brand-blue" : "text-slate-600"}`}
           >
             {selected && !reduced && (
               <motion.span

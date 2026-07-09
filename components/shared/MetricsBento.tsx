@@ -19,6 +19,9 @@ import {
   METRIC_CELL_URGENCY,
   METRIC_STRIP,
   RISK_BADGE,
+  riskBarFillClass,
+  riskBarTrackClass,
+  riskMetricValueClass,
 } from "@/lib/risk-colors";
 import { RainMetricIcon, RiskMetricIcon, UrgencyIcon } from "@/components/shared/MetricIcons";
 
@@ -139,7 +142,7 @@ function PanelSupportCard({
     >
       <div className="flex items-center gap-1.5">
         {icon}
-        <p className="truncate text-[13px] font-semibold leading-tight text-slate-600">
+        <p className="truncate whitespace-nowrap text-[13px] font-semibold leading-tight text-slate-600">
           {label}
         </p>
       </div>
@@ -196,7 +199,7 @@ export function MetricsBento({
         : "text-slate-500";
 
   if (variant === "panel") {
-    const riskValueClass = riskLevelClass;
+    const riskValueClass = riskMetricValueClass(riskLevel);
     const rainValueClass =
       rain === "สูง" ? "text-sky-800" : rain === "ปานกลาง" ? "text-sky-700" : "text-sky-600";
 
@@ -205,23 +208,17 @@ export function MetricsBento({
         className={`grid grid-cols-1 gap-2 rounded-xl bg-transparent p-2 md:grid-cols-12 md:grid-rows-2 md:items-stretch ${className}`}
       >
         <div
-          className={`flex h-full min-h-0 flex-col rounded-lg px-3.5 py-3 ring-1 ring-inset ring-orange-200/70 shadow-[0_6px_16px_rgba(234,88,12,0.06)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
+          className={`flex h-full min-h-0 flex-col rounded-lg px-3.5 py-3 ring-1 ring-inset ring-slate-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
         >
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <UrgencyIcon className="text-brand-orange" />
-              <p className="text-[13px] font-semibold text-slate-700">
+            <div className="flex items-center gap-1">
+              <UrgencyIcon />
+              <p className="text-[16px] font-semibold text-slate-600">
                 {t("dashboard.cardUrgencyLabel")}
               </p>
             </div>
             <span
-              className={`inline-flex max-w-full shrink-0 items-center justify-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${
-                urgencyTier === "high"
-                  ? "ring-[#EA580C]/25"
-                  : urgencyTier === "medium"
-                    ? "ring-[#F97316]/20"
-                    : ""
-              } ${urgencyTierClass}`}
+              className={`inline-flex max-w-full shrink-0 items-center justify-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${urgencyTierClass}`}
             >
               {urgencyTierLabel}
             </span>
@@ -257,7 +254,7 @@ export function MetricsBento({
             <MetricScoreBar
               value={urgency}
               fillClass={urgencyBarColor(urgency)}
-              trackClass="bg-orange-200/55"
+              trackClass="bg-slate-200/70"
               markers={[40, 70]}
             />
           </div>
@@ -277,13 +274,8 @@ export function MetricsBento({
                 {riskLevelLabel}
               </span>
             }
-            barFillClass={
-              riskLevel === "อุดตันหนัก"
-                ? "bg-brand-orange-dark"
-                : riskLevel === "เริ่มอุดตัน"
-                  ? "bg-brand-orange"
-                  : "bg-slate-400"
-            }
+            barFillClass={riskBarFillClass(riskLevel)}
+            barTrackClass={riskBarTrackClass()}
           />
         </div>
 
@@ -332,7 +324,7 @@ export function MetricsBento({
     <div className={`${stripClass} ${className}`}>
       <div className={`${METRIC_CELL_URGENCY} ${sizes.cell} min-w-0`}>
         <div className="flex items-center gap-1">
-          <UrgencyIcon className="text-brand-orange" />
+          <UrgencyIcon />
           <p className={`${sizes.label} font-semibold text-slate-500`}>
             {t("dashboard.cardUrgencyLabel")}
           </p>
@@ -360,7 +352,7 @@ export function MetricsBento({
             {scoreLabel}
           </p>
         </div>
-        <p className={`${sizes.score} mt-1 font-bold leading-none tabular-nums text-slate-900`}>
+        <p className={`${sizes.score} mt-1 font-bold leading-none tabular-nums ${riskMetricValueClass(riskLevel)}`}>
           {riskScore}
           <span className="text-[0.62em] font-semibold text-slate-500">%</span>
         </p>
@@ -374,7 +366,7 @@ export function MetricsBento({
       <div className={`${METRIC_CELL_RAIN} ${sizes.cell} min-w-0`}>
         <div className="flex items-center gap-1">
           <RainMetricIcon level={rain} />
-          <p className={`${sizes.label} font-semibold text-slate-500`}>
+          <p className={`${sizes.label} truncate whitespace-nowrap font-semibold text-slate-500`}>
             {t("weather.rainChance")}
           </p>
         </div>

@@ -14,7 +14,7 @@ export function MetricPercentValue({
 }: MetricPercentValueProps) {
   const numClass = size === "lg" ? "text-[24px]" : "text-[15px]";
   const pctClass = size === "lg" ? "text-[13px]" : "text-[10px]";
-  const widthClass = size === "lg" ? "w-full" : "w-[3.25rem]";
+  const widthClass = size === "lg" ? "w-full" : "w-[2.75rem]";
   const justifyClass =
     align === "left"
       ? "justify-start"

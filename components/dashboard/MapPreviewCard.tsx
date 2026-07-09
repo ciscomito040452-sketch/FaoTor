@@ -1,7 +1,8 @@
 ﻿"use client";
 
 import dynamic from "next/dynamic";
-import type { Report } from "@/lib/types";
+import type { Report, RiskLevel } from "@/lib/types";
+import { MAP_PIN_COLORS } from "@/lib/risk-colors";
 import { useApp } from "@/lib/app-context";
 
 const LeafletMap = dynamic(
@@ -16,7 +17,7 @@ const LeafletMap = dynamic(
   }
 );
 
-const LEGEND_COLORS = ["#4E5768", "#8A5A00", "#B3261E"] as const;
+const LEGEND_LEVELS: RiskLevel[] = ["ปกติ", "เริ่มอุดตัน", "อุดตันหนัก"];
 
 interface MapPreviewCardProps {
   title: string;
@@ -93,7 +94,7 @@ export function MapPreviewCard({
           <span key={label} className="flex items-center gap-2 text-[13px] text-slate-600">
             <span
               className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: LEGEND_COLORS[idx] }}
+              style={{ backgroundColor: MAP_PIN_COLORS[LEGEND_LEVELS[idx]] }}
             />
             {label}
           </span>

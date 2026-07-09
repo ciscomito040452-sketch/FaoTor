@@ -66,7 +66,7 @@ export function ReportCalendar({
               : count === 1
                 ? "bg-brand-blue-soft text-brand-blue"
                 : count >= 3
-                  ? "bg-brand-orange text-white"
+                  ? "bg-rose-600 text-white"
                   : "bg-brand-blue text-white";
           return (
             <motion.button
@@ -80,7 +80,7 @@ export function ReportCalendar({
                 isSelected
                   ? "border-brand-blue shadow-[inset_0_0_0_1px_#3B82F6]"
                   : isToday
-                    ? "border-brand-orange/40"
+                    ? "border-brand-blue/40"
                     : "hover:opacity-80"
               }`}
             >

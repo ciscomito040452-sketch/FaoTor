@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useApp } from "@/lib/app-context";
 import { motionTransition, useReducedMotion } from "@/lib/motion";
+import { SAMPLE_IMAGES_BY_RISK } from "@/lib/sample-images";
 import type th from "@/lib/locales/th.json";
 
 type LocaleKey = keyof typeof th;
@@ -44,7 +45,7 @@ const DEMO_STEPS: DemoStep[] = [
   {
     kind: "image",
     role: "user",
-    src: "/samples/drain-severe.svg",
+    src: SAMPLE_IMAGES_BY_RISK["อุดตันหนัก"],
     altKey: "line.userPhotoCaption",
     delay: 2000,
   },

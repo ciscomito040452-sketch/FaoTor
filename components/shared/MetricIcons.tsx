@@ -1,6 +1,6 @@
 import type { RainForecast } from "@/lib/types";
 
-export function UrgencyIcon({ className = "text-brand-orange" }: { className?: string }) {
+export function UrgencyIcon({ className = "text-slate-500" }: { className?: string }) {
   return (
     <svg
       width="12"
@@ -46,25 +46,18 @@ export function RiskMetricIcon({ className = "text-slate-500" }: { className?: s
 
 export function RainMetricIcon({
   level,
-  className,
+  className = "text-slate-500",
 }: {
   level: RainForecast;
   className?: string;
 }) {
-  const iconClass =
-    className ??
-    (level === "สูง"
-      ? "text-sky-600"
-      : level === "ปานกลาง"
-        ? "text-slate-500"
-        : "text-slate-400");
   return (
     <svg
       width="12"
       height="12"
       viewBox="0 0 24 24"
       fill="none"
-      className={iconClass}
+      className={className}
       aria-hidden
     >
       <path

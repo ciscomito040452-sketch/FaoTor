@@ -15,7 +15,7 @@ import { SEED_REPORTS } from "./mock-data";
 import { coordsFromLegacyMapXY, randomBangkokCoords } from "./map-utils";
 import type { Report, ReportStatus } from "./types";
 
-export const STORAGE_KEY = "faotor-mock-reports-v7";
+export const STORAGE_KEY = "faotor-mock-reports-v9";
 
 interface ReportsContextValue {
   reports: Report[];

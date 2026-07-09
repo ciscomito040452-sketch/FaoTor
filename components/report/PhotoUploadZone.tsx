@@ -10,30 +10,60 @@ interface PhotoUploadZoneProps {
   preview: string | null;
   previewSource?: PreviewSource;
   hint: string;
-  tips?: string;
+  tipItems?: readonly string[];
   sampleLabels?: [string, string, string];
   samples?: readonly [string, string, string];
   uploadLabel: string;
   changeLabel: string;
   sampleSectionLabel: string;
   sampleBadgeLabel: string;
-  mockAiHint?: string;
   onSelect: () => void;
   onSampleSelect: (url: string) => void;
+}
+
+function PhotoTipChips({ items }: { items: readonly string[] }) {
+  return (
+    <div className="flex flex-wrap gap-1.5" role="list" aria-label="Photo tips">
+      {items.map((tip) => (
+        <span
+          key={tip}
+          role="listitem"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1 text-[12px] font-medium text-slate-600 ring-1 ring-slate-200/70"
+        >
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            className="shrink-0 text-slate-400"
+            aria-hidden
+          >
+            <path
+              d="M2.5 6.2 4.8 8.5 9.5 3.5"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {tip}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export function PhotoUploadZone({
   preview,
   previewSource = "none",
   hint,
-  tips,
+  tipItems,
   sampleLabels,
   samples,
   uploadLabel,
   changeLabel,
   sampleSectionLabel,
   sampleBadgeLabel,
-  mockAiHint,
   onSelect,
   onSampleSelect,
 }: PhotoUploadZoneProps) {
@@ -42,17 +72,7 @@ export function PhotoUploadZone({
 
   return (
     <div className="space-y-3">
-      {tips && (
-        <div className="rounded-[12px] border border-brand-blue/20 bg-brand-blue-soft/50 px-4 py-3 text-[13px] text-slate-600 dark:border-blue-900/30 dark:bg-blue-900/10">
-          {tips}
-        </div>
-      )}
-
-      {demoOnly && mockAiHint && (
-        <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
-          {mockAiHint}
-        </p>
-      )}
+      {tipItems && tipItems.length > 0 && <PhotoTipChips items={tipItems} />}
 
       <motion.button
         type="button"
@@ -85,7 +105,7 @@ export function PhotoUploadZone({
               </div>
             )}
             {previewSource === "sample" && (
-              <span className="absolute left-3 top-3 rounded-full bg-brand-orange-soft px-2.5 py-1 text-[11px] font-semibold text-brand-orange-dark">
+              <span className="absolute left-3 top-3 rounded-md bg-slate-900/70 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
                 {sampleBadgeLabel}
               </span>
             )}
@@ -107,21 +127,13 @@ export function PhotoUploadZone({
       </motion.button>
 
       {!demoOnly && (
-        <>
-          {previewSource === "file" && mockAiHint && (
-            <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
-              {mockAiHint}
-            </p>
-          )}
-
-          <button
-            type="button"
-            onClick={onSelect}
-            className="pressable w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
-          >
-            {uploadLabel}
-          </button>
-        </>
+        <button
+          type="button"
+          onClick={onSelect}
+          className="pressable w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+        >
+          {uploadLabel}
+        </button>
       )}
 
       {samples && sampleLabels && (

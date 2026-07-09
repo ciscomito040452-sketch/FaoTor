@@ -1,4 +1,4 @@
-import { sampleImageForRisk } from "./sample-images";
+import { mockListImageForLocation, placeholderImageForRisk } from "./sample-images";
 import type { Report } from "./types";
 
 function daysAgo(days: number, hour = 10): string {
@@ -15,7 +15,10 @@ function seed(
 ): Report {
   return {
     ...partial,
-    imageUrl: partial.imageUrl ?? sampleImageForRisk(partial.riskLevel),
+    imageUrl:
+      partial.imageUrl ??
+      mockListImageForLocation(partial.location) ??
+      placeholderImageForRisk(partial.riskLevel),
   };
 }
 
@@ -37,7 +40,7 @@ export const SEED_REPORTS: Report[] = [
     urgencyScore: 82,
     rainForecast: "สูง",
     rainChancePercent: 74,
-    reason: "ตะแกรงท่อถูกปิดบังด้วยขยะอินทรีย์และคราบตะกอน ระบายน้ำได้ช้ามาก",
+    reason: "พบขยะสะสมหนาแน่นบนตะแกรงท่อ ถุงพลาสติกและซองอาหารปิดช่องระบายน้ำเกือบทั้งหมด น้ำขังบนถนนเมื่อฝนตก",
     status: "กำลังแก้ไข",
     createdAt: daysAgo(13),
   }),
@@ -67,7 +70,7 @@ export const SEED_REPORTS: Report[] = [
     urgencyScore: 87,
     rainForecast: "สูง",
     rainChancePercent: 82,
-    reason: "ขยะพลาสติกและถุงอุดตันท่อหลัก น้ำขังเป็นประจำทุกฤดูฝน",
+    reason: "ตะแกรงท่อบนทางเท้าถูกถุงพลาสติก โฟม และใบไม้อุดตัน น้ำฝนขังเป็นสระรอบท่อ ไม่สามารถระบายได้ตามปกติ",
     status: "รอดำเนินการ",
     createdAt: daysAgo(10),
   }),
@@ -113,7 +116,7 @@ export const SEED_REPORTS: Report[] = [
     urgencyScore: 89,
     rainForecast: "สูง",
     rainChancePercent: 79,
-    reason: "ขยะจากตลาดสะสมบริเวณท่อระบายน้ำหลัก มีความเสี่ยงน้ำท่วมขังเมื่อฝนตกหนัก",
+    reason: "ท่อระบายริมทางเต็มไปด้วยขยะจากตลาด ถุงพลาสติก ซองขนม และใบไม้แห้งปิดกั้นช่องรับน้ำ พื้นเปียกจากฝน มีความเสี่ยงน้ำท่วมขังสูง",
     status: "รอดำเนินการ",
     createdAt: daysAgo(5),
   }),
@@ -173,7 +176,7 @@ export const SEED_REPORTS: Report[] = [
     urgencyScore: 93,
     rainForecast: "สูง",
     rainChancePercent: 88,
-    reason: "พบขยะสะสมหนาแน่นบริเวณตะแกรงรับน้ำ มีใบไม้และถุงพลาสติกอุดตัน ควรลอกท่อโดยเร็ว",
+    reason: "พบตะแกรงท่อถูกเลื่อนออก มีตะกอนโคลนและขยะพลาสติกอุดตันเต็มปากท่อ น้ำขังรอบบริเวณ ต้องลอกท่อและเก็บขยะโดยเร็ว",
     status: "รอดำเนินการ",
     createdAt: daysAgo(1),
   }),
@@ -181,8 +184,4 @@ export const SEED_REPORTS: Report[] = [
 
 export const MOCK_MODE = true;
 
-export const SAMPLE_IMAGES = [
-  "/samples/drain-severe.svg",
-  "/samples/drain-partial.svg",
-  "/samples/drain-normal.svg",
-] as const;
+export { SAMPLE_IMAGES } from "./sample-images";

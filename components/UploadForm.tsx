@@ -253,8 +253,11 @@ export function UploadForm() {
                 preview={preview}
                 previewSource={previewSource}
                 hint={t("report.photoHint")}
-                tips={t("report.photoTips")}
-                mockAiHint={t("report.mockAiHint")}
+                tipItems={[
+                  t("report.photoTipClear"),
+                  t("report.photoTipLight"),
+                  t("report.photoTipSharp"),
+                ]}
                 samples={SAMPLE_IMAGES}
                 sampleLabels={sampleLabels}
                 uploadLabel={t("report.uploadPhoto")}

@@ -3,14 +3,9 @@
 import { useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
-import type { Report, RiskLevel } from "@/lib/types";
+import type { Report } from "@/lib/types";
 import { BANGKOK_CENTER, DEFAULT_MAP_ZOOM } from "@/lib/map-utils";
-
-const PIN_COLORS: Record<RiskLevel, string> = {
-  ปกติ: "#4E5768",
-  เริ่มอุดตัน: "#8A5A00",
-  อุดตันหนัก: "#B3261E",
-};
+import { MAP_PIN_COLORS } from "@/lib/risk-colors";
 
 function createPinIcon(color: string, selected: boolean) {
   const size = selected ? 22 : 16;
@@ -108,7 +103,7 @@ export function LeafletMap({
             key={report.id}
             position={[report.lat!, report.lng!]}
             zIndexOffset={selected ? 1000 : 0}
-            icon={createPinIcon(PIN_COLORS[report.riskLevel], selected)}
+            icon={createPinIcon(MAP_PIN_COLORS[report.riskLevel], selected)}
             eventHandlers={{
               click: (e) => {
                 L.DomEvent.stopPropagation(e);

@@ -52,9 +52,13 @@ for (const path of routes) {
 }
 
 const samples = [
-  "public/samples/drain-severe.svg",
-  "public/samples/drain-partial.svg",
-  "public/samples/drain-normal.svg",
+  "public/samples/samples/Example/อุดตันหนัก.jpg",
+  "public/samples/samples/Example/เริ่มอุดตัน.jpg",
+  "public/samples/samples/Example/ปกติ.jpg",
+  "public/samples/samples/Mock List 1-4/ซอยลาดพร้าว 42.jpg",
+  "public/samples/samples/Mock List 1-4/ตลาดนัดจตุจักร โซน B.jpg",
+  "public/samples/samples/Mock List 1-4/ชุมชนคลองเตย ซอย 12.jpg",
+  "public/samples/samples/Mock List 1-4/หมู่บ้านสุขใจ ซอย 3.jpg",
 ];
 for (const sample of samples) {
   assert(`${sample} exists`, readFileSync(join(root, sample)).length > 0);

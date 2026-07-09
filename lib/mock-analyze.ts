@@ -1,5 +1,6 @@
 import type { AnalyzeResult, RiskLevel } from "./types";
 import { computeUrgencyScore, getRainChancePercent, getRainForecast } from "./mock-weather";
+import { SAMPLE_IMAGES_BY_RISK } from "./sample-images";
 
 const ANALYSIS_POOL: Record<
   RiskLevel,
@@ -22,21 +23,30 @@ const ANALYSIS_POOL: Record<
   },
 };
 
-const SAMPLE_LEVEL: Record<string, RiskLevel> = {
+const LEGACY_SAMPLE_LEVEL: Record<string, RiskLevel> = {
   "drain-severe": "อุดตันหนัก",
   "drain-partial": "เริ่มอุดตัน",
   "drain-normal": "ปกติ",
 };
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function sampleRiskLevel(imageDataUrl: string): RiskLevel | null {
-  for (const [key, level] of Object.entries(SAMPLE_LEVEL)) {
+  for (const [level, url] of Object.entries(SAMPLE_IMAGES_BY_RISK) as [
+    RiskLevel,
+    string,
+  ][]) {
+    const decoded = decodeURIComponent(url);
+    if (imageDataUrl.includes(url) || imageDataUrl.includes(decoded)) {
+      return level;
+    }
+  }
+  for (const [key, level] of Object.entries(LEGACY_SAMPLE_LEVEL)) {
     if (imageDataUrl.includes(key)) return level;
   }
   return null;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /** Heuristic จากขนาด base64 (รูปจากกล้อง) */

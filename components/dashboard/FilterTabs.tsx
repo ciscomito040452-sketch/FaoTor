@@ -53,7 +53,7 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
               <motion.span
                 layoutId="filter-pill"
                 className={`absolute inset-0 rounded-full ${
-                  severeActive ? "bg-brand-orange" : "bg-brand-blue"
+                  severeActive ? "bg-rose-600" : "bg-brand-blue"
                 }`}
                 transition={{ type: "spring", stiffness: 420, damping: 32 }}
               />
@@ -61,7 +61,7 @@ export function FilterTabs({ value, onChange, labels, counts }: FilterTabsProps)
             {active && reduced && (
               <span
                 className={`absolute inset-0 rounded-full ${
-                  severeActive ? "bg-brand-orange" : "bg-brand-blue"
+                  severeActive ? "bg-rose-600" : "bg-brand-blue"
                 }`}
               />
             )}

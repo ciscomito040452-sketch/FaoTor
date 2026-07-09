@@ -6,9 +6,9 @@ import type { Report } from "@/lib/types";
 import { formatTimeAgo } from "@/lib/reports-store";
 import { getStatusLabel } from "@/lib/labels";
 import { useApp } from "@/lib/app-context";
-import { STATUS_PILL, THUMB_RING } from "@/lib/status-colors";
+import { STATUS_PILL, THUMB_RING_CLASS } from "@/lib/status-colors";
 import { MetricFocusBlock } from "@/components/shared/MetricFocusBlock";
-import { springTransition, useReducedMotion } from "@/lib/motion";
+import { useReducedMotion } from "@/lib/motion";
 
 interface ReportCardProps {
   report: Report;
@@ -33,27 +33,20 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
     return (
       <motion.button
         ref={ref}
-        layout
         type="button"
         onClick={() => onSelect(report)}
         whileTap={reduced ? undefined : { scale: 0.99 }}
-        animate={
-          isSelected && !reduced
-            ? { scale: 1.01 }
-            : { scale: 1 }
-        }
-        transition={springTransition(reduced)}
-        className={`box-border grid min-h-[68px] w-full min-w-0 grid-cols-[96px_minmax(0,1fr)_auto] items-center gap-x-3 rounded-xl px-3 py-2.5 text-left ${
+        className={`box-border grid min-h-[72px] w-full min-w-0 grid-cols-[96px_minmax(0,1fr)_minmax(0,252px)] items-center gap-x-3 overflow-hidden rounded-xl px-3 py-2.5 text-left ${
           isSelected
             ? "bg-brand-blue-soft/40 ring-2 ring-brand-blue/50"
             : "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/70 hover:bg-slate-50/80 dark:bg-[var(--color-surface)]"
         }`}
       >
-        <motion.img
-          layoutId={`report-thumb-${report.id}`}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={report.imageUrl}
           alt={report.location}
-          className={`h-[56px] w-[96px] shrink-0 self-center rounded-[10px] object-cover ring-2 ${THUMB_RING[report.riskLevel]}`}
+          className={`h-[56px] w-[96px] shrink-0 self-center rounded-[10px] object-cover ${THUMB_RING_CLASS}`}
         />
 
         <div className="min-w-0 py-0.5">
@@ -91,13 +84,14 @@ export const ReportCard = forwardRef<HTMLButtonElement, ReportCardProps>(
         </div>
 
         <MetricFocusBlock
+          variant="list"
           riskScore={report.riskScore}
           riskLevel={report.riskLevel}
           urgencyScore={report.urgencyScore}
           rainForecast={report.rainForecast}
           rainChancePercent={report.rainChancePercent}
           scoreLabel={t("dashboard.cardRiskLabel")}
-          className="justify-self-end shrink-0"
+          className="min-w-0 justify-self-end"
         />
       </motion.button>
     );

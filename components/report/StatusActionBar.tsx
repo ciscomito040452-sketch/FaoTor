@@ -24,22 +24,22 @@ export function StatusActionBar({
   compact = false,
 }: StatusActionBarProps) {
   return (
-    <div className={compact ? "space-y-2" : "space-y-3"}>
+    <div className={compact ? "space-y-1.5" : "space-y-3"}>
       {showStatus && (
         <>
           <p
             className={`font-semibold text-slate-700 ${
-              compact ? "text-[12px]" : "text-[13px]"
+              compact ? "text-[11px]" : "text-[13px]"
             }`}
           >
             {changeStatusLabel}
           </p>
-          <StatusSegmented value={status} onChange={onStatusChange} />
+          <StatusSegmented value={status} onChange={onStatusChange} compact={compact} />
         </>
       )}
       <Button
         variant="primary"
-        className={compact ? "h-10 w-full text-[15px]" : "w-full"}
+        className={compact ? "h-9 w-full text-[14px]" : "w-full"}
         onClick={onSave}
       >
         {saveLabel}

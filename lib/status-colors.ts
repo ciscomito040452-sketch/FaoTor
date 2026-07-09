@@ -6,8 +6,11 @@ export const STATUS_PILL: Record<ReportStatus, string> = {
   แก้ไขแล้ว: "bg-emerald-50 text-emerald-700 ring-emerald-200/80",
 };
 
+export const THUMB_RING_CLASS = "ring-1 ring-slate-200/80";
+
+/** @deprecated use THUMB_RING_CLASS — uniform neutral ring for all risk levels */
 export const THUMB_RING: Record<RiskLevel, string> = {
-  ปกติ: "ring-slate-200",
-  เริ่มอุดตัน: "ring-brand-orange/40",
-  อุดตันหนัก: "ring-brand-orange/60",
+  ปกติ: THUMB_RING_CLASS,
+  เริ่มอุดตัน: THUMB_RING_CLASS,
+  อุดตันหนัก: THUMB_RING_CLASS,
 };
