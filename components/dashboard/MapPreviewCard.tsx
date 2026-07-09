@@ -43,7 +43,7 @@ export function MapPreviewCard({
   return (
     <div
       id="dashboard-map"
-      className="flex w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]"
+      className="flex h-full w-full flex-col overflow-hidden rounded-[20px] border border-slate-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[var(--color-surface)]"
     >
       <div className="border-b border-slate-100 px-5 py-4">
         <div className="flex items-start justify-between gap-3">
@@ -72,7 +72,7 @@ export function MapPreviewCard({
           )}
         </div>
       </div>
-      <div className="relative isolate z-0 aspect-video w-full overflow-hidden">
+      <div className="relative isolate z-0 min-h-[280px] w-full flex-1 overflow-hidden lg:min-h-[360px]">
         <LeafletMap
           reports={reports}
           selectedId={selectedId}

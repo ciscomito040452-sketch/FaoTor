@@ -1,15 +1,55 @@
-import { IBM_Plex_Sans_Thai, Inter } from "next/font/google";
+import localFont from "next/font/local";
 
-export const ibmPlexSansThai = IBM_Plex_Sans_Thai({
-  subsets: ["latin", "thai"],
-  weight: ["400", "600", "700"],
+export const ibmPlexSansThai = localFont({
+  src: [
+    {
+      path: "../public/fonts/IBMPlexSansThai-latin-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/IBMPlexSansThai-thai-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/IBMPlexSansThai-latin-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/IBMPlexSansThai-thai-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/IBMPlexSansThai-latin-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/IBMPlexSansThai-thai-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-ibm-plex-sans-thai",
   display: "swap",
 });
 
-export const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "600"],
+export const inter = localFont({
+  src: [
+    {
+      path: "../public/fonts/Inter-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Inter-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
   variable: "--font-inter",
   display: "swap",
 });

@@ -15,6 +15,7 @@ import {
   DashboardToolbar,
   type SortOption,
 } from "@/components/dashboard/DashboardToolbar";
+import { ListWorkspaceHeader } from "@/components/dashboard/ListWorkspaceHeader";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { Card } from "@/components/ui/Card";
 import { useApp } from "@/lib/app-context";
@@ -211,6 +212,44 @@ export default function DashboardPage() {
     close: t("common.close"),
   };
 
+  const toolbarLabels = {
+    search: t("dashboard.search"),
+    searchPlaceholder: t("dashboard.searchPlaceholder"),
+    showing: t("dashboard.showing"),
+    sortLabel: t("dashboard.sortLabel"),
+    sortRisk: t("dashboard.sortRisk"),
+    sortNewest: t("dashboard.sortNewest"),
+    sortUrgency: t("dashboard.sortUrgency"),
+    filterLabel: t("dashboard.filterLabel"),
+    filterAll: t("dashboard.filterAll"),
+    filterPending: t("dashboard.filterPending"),
+    filterInProgress: t("dashboard.filterInProgress"),
+    filterSevere: t("dashboard.filterSevere"),
+  };
+
+  const listWorkspaceHeader = (
+    <ListWorkspaceHeader
+      title={t("dashboard.listTitle")}
+      subtitle={t("dashboard.listSubtitle")}
+      resultCount={filtered.length}
+      showingLabel={t("dashboard.showing")}
+      controls={
+        <DashboardToolbar
+          search={search}
+          onSearchChange={setSearch}
+          sort={sort}
+          onSortChange={setSort}
+          filter={filter}
+          onFilterChange={setFilter}
+          resultCount={filtered.length}
+          filterCounts={filterCounts}
+          labels={toolbarLabels}
+          showResultCount={false}
+        />
+      }
+    />
+  );
+
   if (!isReady) {
     return (
       <AppShell title={t("dashboard.title")} largeTitle>
@@ -284,7 +323,7 @@ export default function DashboardPage() {
             onSelectReport={handleDayInsightSelect}
           />
         </div>
-        <div className="lg:col-span-1 lg:self-start">
+        <div className="flex h-full min-h-0 flex-col lg:col-span-1">
           <QueueTimeline
             reports={todayQueue}
             selectedId={selected?.id ?? null}
@@ -292,7 +331,7 @@ export default function DashboardPage() {
             onViewAll={handleQueueViewAll}
           />
         </div>
-        <div className="w-full lg:col-span-1 lg:self-start">
+        <div className="flex h-full min-h-0 flex-col lg:col-span-1">
           <MapPreviewCard
             title={t("dashboard.mapTitle")}
             caption={t("dashboard.mapCaption")}
@@ -309,37 +348,7 @@ export default function DashboardPage() {
         <Card padding="lg" className="hidden overflow-hidden xl:block">
           <div className="grid max-h-[min(72vh,calc(100vh-14rem))] grid-cols-1 gap-6 overflow-hidden xl:grid-cols-[minmax(0,1fr)_minmax(520px,600px)] xl:grid-rows-[minmax(0,1fr)] xl:items-stretch">
             <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
-              <h2 className="text-[20px] font-semibold text-slate-900">
-                {t("dashboard.listTitle")}
-              </h2>
-              <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
-
-              <div className="mt-3 shrink-0">
-                <DashboardToolbar
-                  search={search}
-                  onSearchChange={setSearch}
-                  sort={sort}
-                  onSortChange={setSort}
-                  filter={filter}
-                  onFilterChange={setFilter}
-                  resultCount={filtered.length}
-                  filterCounts={filterCounts}
-                  labels={{
-                    search: t("dashboard.search"),
-                    searchPlaceholder: t("dashboard.searchPlaceholder"),
-                    showing: t("dashboard.showing"),
-                    sortLabel: t("dashboard.sortLabel"),
-                    sortRisk: t("dashboard.sortRisk"),
-                    sortNewest: t("dashboard.sortNewest"),
-                    sortUrgency: t("dashboard.sortUrgency"),
-                    filterLabel: t("dashboard.filterLabel"),
-                    filterAll: t("dashboard.filterAll"),
-                    filterPending: t("dashboard.filterPending"),
-                    filterInProgress: t("dashboard.filterInProgress"),
-                    filterSevere: t("dashboard.filterSevere"),
-                  }}
-                />
-              </div>
+              {listWorkspaceHeader}
 
               {reports.length === 0 ? (
                 <EmptyState />
@@ -388,37 +397,7 @@ export default function DashboardPage() {
         </Card>
 
         <Card padding="lg" className="xl:hidden">
-          <h2 className="text-[20px] font-semibold text-slate-900">
-            {t("dashboard.listTitle")}
-          </h2>
-          <p className="mt-1 text-[13px] text-slate-600">{t("dashboard.listSubtitle")}</p>
-
-          <div className="mt-3 shrink-0">
-            <DashboardToolbar
-              search={search}
-              onSearchChange={setSearch}
-              sort={sort}
-              onSortChange={setSort}
-              filter={filter}
-              onFilterChange={setFilter}
-              resultCount={filtered.length}
-              filterCounts={filterCounts}
-              labels={{
-                search: t("dashboard.search"),
-                searchPlaceholder: t("dashboard.searchPlaceholder"),
-                showing: t("dashboard.showing"),
-                sortLabel: t("dashboard.sortLabel"),
-                sortRisk: t("dashboard.sortRisk"),
-                sortNewest: t("dashboard.sortNewest"),
-                sortUrgency: t("dashboard.sortUrgency"),
-                filterLabel: t("dashboard.filterLabel"),
-                filterAll: t("dashboard.filterAll"),
-                filterPending: t("dashboard.filterPending"),
-                filterInProgress: t("dashboard.filterInProgress"),
-                filterSevere: t("dashboard.filterSevere"),
-              }}
-            />
-          </div>
+          {listWorkspaceHeader}
 
           {reports.length === 0 ? (
             <EmptyState />

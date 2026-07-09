@@ -135,7 +135,7 @@ function PanelSupportCard({
 }) {
   return (
     <div
-      className={`flex min-h-[92px] flex-col rounded-lg px-4 py-3 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
+      className={`flex h-full flex-col rounded-lg px-3.5 py-2.5 ring-1 ring-inset ring-slate-200/70 ${bgClass}`}
     >
       <div className="flex items-center gap-1.5">
         {icon}
@@ -144,26 +144,25 @@ function PanelSupportCard({
         </p>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-1.5 flex flex-1 flex-col">
         <div className="flex items-end gap-1">
           <span
-            className={`text-[30px] font-bold leading-none tabular-nums ${
+            className={`text-[26px] font-bold leading-none tabular-nums ${
               valueClassName ?? "text-slate-900"
             }`}
           >
             {value}
           </span>
-          <span className="pb-1 text-[14px] font-semibold text-slate-500">%</span>
+          <span className="pb-0.5 text-[13px] font-semibold text-slate-500">%</span>
         </div>
-        {chip && <div className="mt-1.5">{chip}</div>}
-      </div>
-
-      <div className="mt-auto pt-2">
-        <MetricScoreBar
-          value={value}
-          fillClass={barFillClass}
-          trackClass={barTrackClass}
-        />
+        {chip && <div className="mt-1">{chip}</div>}
+        <div className="mt-auto pt-2">
+          <MetricScoreBar
+            value={value}
+            fillClass={barFillClass}
+            trackClass={barTrackClass}
+          />
+        </div>
       </div>
     </div>
   );
@@ -203,12 +202,12 @@ export function MetricsBento({
 
     return (
       <div
-        className={`grid grid-cols-1 gap-2 rounded-xl bg-transparent p-2 md:grid-cols-12 md:grid-rows-2 ${className}`}
+        className={`grid grid-cols-1 gap-2 rounded-xl bg-transparent p-2 md:grid-cols-12 md:grid-rows-2 md:items-stretch ${className}`}
       >
         <div
-          className={`flex min-h-[154px] flex-col rounded-lg px-4 py-3 ring-1 ring-inset ring-orange-200/70 shadow-[0_6px_16px_rgba(234,88,12,0.06)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
+          className={`flex h-full min-h-0 flex-col rounded-lg px-3.5 py-3 ring-1 ring-inset ring-orange-200/70 shadow-[0_6px_16px_rgba(234,88,12,0.06)] ${METRIC_CELL_URGENCY} md:col-span-7 md:row-span-2`}
         >
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
               <UrgencyIcon className="text-brand-orange" />
               <p className="text-[13px] font-semibold text-slate-700">
@@ -216,7 +215,7 @@ export function MetricsBento({
               </p>
             </div>
             <span
-              className={`inline-flex max-w-full items-center justify-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${
+              className={`inline-flex max-w-full shrink-0 items-center justify-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold ring-1 ring-slate-200/80 ${
                 urgencyTier === "high"
                   ? "ring-[#EA580C]/25"
                   : urgencyTier === "medium"
@@ -228,35 +227,33 @@ export function MetricsBento({
             </span>
           </div>
 
-          <div className="mt-3 flex items-center gap-3">
+          <div className="flex flex-1 items-center gap-3 py-1">
             <ScoreRing
               value={urgency}
-              size={70}
+              size={68}
               compact
               showPercent
               strokeColor={urgencyRingStroke(urgency)}
             />
-            <div className="min-w-0">
-              <div className={`flex items-end gap-1 ${urgencyAccent(urgency)}`}>
-                <span className="text-[36px] font-bold leading-none tabular-nums">
+            <div className="min-w-0 flex-1">
+              <div className={`flex items-end gap-0.5 ${urgencyAccent(urgency)}`}>
+                <span className="text-[34px] font-bold leading-none tabular-nums">
                   {urgency}
                 </span>
-                <span className="pb-1 text-[16px] font-semibold text-slate-500">%</span>
+                <span className="pb-1 text-[15px] font-semibold text-slate-500">%</span>
               </div>
-              <p className="mt-1 text-[11px] font-medium text-slate-500">
+              <p className="mt-1 text-[11px] font-medium leading-tight text-slate-500">
                 {t("detail.urgencyFormula")}
               </p>
               {rainBonus > 0 ? (
-                <div className="mt-1.5">
-                  <span className="inline-flex max-w-full items-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-brand-orange ring-1 ring-slate-200/80">
-                    {t("weather.rainBonus").replace("{n}", String(rainBonus))}
-                  </span>
-                </div>
+                <span className="mt-1.5 inline-flex max-w-full items-center rounded-md bg-white/85 px-2 py-0.5 text-[10px] font-semibold text-brand-orange ring-1 ring-slate-200/80">
+                  {t("weather.rainBonus").replace("{n}", String(rainBonus))}
+                </span>
               ) : null}
             </div>
           </div>
 
-          <div className="mt-auto pt-3">
+          <div className="pt-1">
             <MetricScoreBar
               value={urgency}
               fillClass={urgencyBarColor(urgency)}
@@ -266,7 +263,7 @@ export function MetricsBento({
           </div>
         </div>
 
-        <div className="md:col-span-5 md:row-span-1">
+        <div className="h-full md:col-span-5 md:row-span-1">
           <PanelSupportCard
             bgClass={METRIC_CELL_RISK}
             icon={<RiskMetricIcon />}
@@ -290,7 +287,7 @@ export function MetricsBento({
           />
         </div>
 
-        <div className="md:col-span-5 md:row-span-1">
+        <div className="h-full md:col-span-5 md:row-span-1">
           <PanelSupportCard
             bgClass={METRIC_CELL_RAIN}
             icon={<RainMetricIcon level={rain} />}

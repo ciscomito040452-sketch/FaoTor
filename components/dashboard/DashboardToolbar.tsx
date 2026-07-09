@@ -32,6 +32,7 @@ interface DashboardToolbarProps {
     inProgress: number;
     severe: number;
   };
+  showResultCount?: boolean;
 }
 
 const fieldClass =
@@ -47,6 +48,7 @@ export function DashboardToolbar({
   resultCount,
   labels,
   filterCounts,
+  showResultCount = true,
 }: DashboardToolbarProps) {
   const filterOptions: { key: Filter; label: string; count: number }[] = [
     { key: "all", label: labels.filterAll, count: filterCounts.all },
@@ -110,9 +112,11 @@ export function DashboardToolbar({
           </div>
         </div>
       </div>
-      <p className="text-[12px] text-slate-500">
-        {labels.showing.replace("{count}", String(resultCount))}
-      </p>
+      {showResultCount && (
+        <p className="text-[12px] text-slate-500">
+          {labels.showing.replace("{count}", String(resultCount))}
+        </p>
+      )}
     </div>
   );
 }

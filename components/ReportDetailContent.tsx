@@ -76,7 +76,7 @@ export function ReportDetailContent({
     report.urgencyScore ?? computeUrgencyScore(report.riskScore, rainForecast);
   const bentoVariant: MetricsBentoVariant =
     metricsVariant ??
-    (layout === "split" ? "panel" : compact ? "compact" : "panel");
+    (layout === "split" ? "panel" : compact ? "stacked" : "panel");
   const resolvedImage: DetailImageVariant =
     imageVariant ?? (compact ? "compact" : "panel");
   const imageClass =

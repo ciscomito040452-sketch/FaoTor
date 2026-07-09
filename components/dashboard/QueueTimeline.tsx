@@ -32,7 +32,7 @@ export function QueueTimeline({
   }
 
   return (
-    <Card className="w-full max-h-[min(72vh,640px)] overflow-y-auto">
+    <Card className="flex h-full w-full max-h-[min(72vh,640px)] flex-col overflow-y-auto">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-[15px] font-semibold text-slate-900">
