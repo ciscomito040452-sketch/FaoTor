@@ -6,7 +6,7 @@ Use this checklist before recording your competition pitch video.
 
 1. Open Settings (gear icon) and tap **Reset demo data** to reload 10 seed reports.
 2. Keep language on **Thai** (or EN if your script is in English).
-3. Use **sample photos only** — demo mode hides camera upload; pick a sample chip on `/report`.
+3. Use **sample photos** for predictable demo results — or take a real photo (mock AI shows a warning). Set `DEMO_STRICT_SAMPLES = true` in `lib/mock-data.ts` to lock samples-only while recording.
 4. Notice the **Demo · Mock AI** badge in the nav — point it out if judges ask about AI.
 
 ## UI motion tips for recording

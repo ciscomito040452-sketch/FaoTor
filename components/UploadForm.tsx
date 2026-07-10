@@ -43,6 +43,7 @@ export function UploadForm() {
   const reduced = useReducedMotion();
   const { addReport } = useReports();
   const fileRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
   const reportSavedRef = useRef(false);
   const [locationNote, setLocationNote] = useState("");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -104,6 +105,14 @@ export function UploadForm() {
     setPreview(url);
     setPreviewSource("sample");
     if (fileRef.current) fileRef.current.value = "";
+    if (galleryRef.current) galleryRef.current.value = "";
+  }
+
+  function clearPreview() {
+    setPreview(null);
+    setPreviewSource("none");
+    if (fileRef.current) fileRef.current.value = "";
+    if (galleryRef.current) galleryRef.current.value = "";
   }
 
   useEffect(() => {
@@ -184,6 +193,7 @@ export function UploadForm() {
     setMapKey((k) => k + 1);
     setAnalyzing(false);
     if (fileRef.current) fileRef.current.value = "";
+    if (galleryRef.current) galleryRef.current.value = "";
   }
 
   const stepVariants =
@@ -249,6 +259,13 @@ export function UploadForm() {
                 className="hidden"
                 onChange={handleFileChange}
               />
+              <input
+                ref={galleryRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
               <PhotoUploadZone
                 preview={preview}
                 previewSource={previewSource}
@@ -260,11 +277,16 @@ export function UploadForm() {
                 ]}
                 samples={SAMPLE_IMAGES}
                 sampleLabels={sampleLabels}
-                uploadLabel={t("report.uploadPhoto")}
+                takePhotoLabel={t("report.takePhoto")}
+                choosePhotoLabel={t("report.chooseFromLibrary")}
                 changeLabel={t("report.changePhoto")}
+                clearLabel={t("report.clearPhoto")}
                 sampleSectionLabel={t("report.sampleSection")}
                 sampleBadgeLabel={t("report.sampleBadge")}
-                onSelect={() => fileRef.current?.click()}
+                mockAiHint={t("report.mockAiHint")}
+                onTakePhoto={() => fileRef.current?.click()}
+                onChooseFromLibrary={() => galleryRef.current?.click()}
+                onClear={clearPreview}
                 onSampleSelect={handleSampleSelect}
               />
 

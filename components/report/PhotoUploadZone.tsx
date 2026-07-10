@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { MOCK_MODE } from "@/lib/mock-data";
+import { DEMO_STRICT_SAMPLES, MOCK_MODE } from "@/lib/mock-data";
 import { useReducedMotion } from "@/lib/motion";
 
 type PreviewSource = "none" | "file" | "sample";
@@ -13,11 +13,16 @@ interface PhotoUploadZoneProps {
   tipItems?: readonly string[];
   sampleLabels?: [string, string, string];
   samples?: readonly [string, string, string];
-  uploadLabel: string;
+  takePhotoLabel: string;
+  choosePhotoLabel: string;
   changeLabel: string;
+  clearLabel: string;
   sampleSectionLabel: string;
   sampleBadgeLabel: string;
-  onSelect: () => void;
+  mockAiHint?: string;
+  onTakePhoto: () => void;
+  onChooseFromLibrary: () => void;
+  onClear: () => void;
   onSampleSelect: (url: string) => void;
 }
 
@@ -60,15 +65,26 @@ export function PhotoUploadZone({
   tipItems,
   sampleLabels,
   samples,
-  uploadLabel,
+  takePhotoLabel,
+  choosePhotoLabel,
   changeLabel,
+  clearLabel,
   sampleSectionLabel,
   sampleBadgeLabel,
-  onSelect,
+  mockAiHint,
+  onTakePhoto,
+  onChooseFromLibrary,
+  onClear,
   onSampleSelect,
 }: PhotoUploadZoneProps) {
   const reduced = useReducedMotion();
-  const demoOnly = MOCK_MODE;
+  const strictSamplesOnly = DEMO_STRICT_SAMPLES;
+  const canUseCamera = !strictSamplesOnly;
+
+  function handlePreviewTap() {
+    if (!preview || !canUseCamera) return;
+    onTakePhoto();
+  }
 
   return (
     <div className="space-y-3">
@@ -76,12 +92,13 @@ export function PhotoUploadZone({
 
       <motion.button
         type="button"
-        onClick={demoOnly ? undefined : onSelect}
-        whileHover={demoOnly || reduced ? undefined : { scale: 1.005 }}
-        whileTap={demoOnly || reduced ? undefined : { scale: 0.995 }}
+        onClick={handlePreviewTap}
+        whileHover={canUseCamera && !preview && !reduced ? { scale: 1.005 } : undefined}
+        whileTap={canUseCamera && !reduced ? { scale: 0.995 } : undefined}
         className={`relative flex h-[220px] w-full flex-col items-center justify-center overflow-hidden rounded-[12px] border-2 border-dashed border-slate-100 bg-white dark:bg-[var(--color-surface)] ${
-          demoOnly ? "cursor-default" : ""
+          preview && canUseCamera ? "cursor-pointer" : preview ? "cursor-default" : canUseCamera ? "cursor-pointer" : "cursor-default"
         }`}
+        aria-label={preview && canUseCamera ? changeLabel : undefined}
       >
         {preview ? (
           <>
@@ -96,10 +113,10 @@ export function PhotoUploadZone({
                 previewSource === "file" ? "ring-2 ring-brand-blue/40" : ""
               }`}
             />
-            {!demoOnly && (
+            {canUseCamera && (
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-4 py-3 text-left text-white">
                 <p className="inline-flex items-center gap-2 text-[13px] font-semibold">
-                  <span aria-hidden>+</span>
+                  <span aria-hidden>↻</span>
                   {changeLabel}
                 </p>
               </div>
@@ -120,20 +137,56 @@ export function PhotoUploadZone({
               </svg>
             </div>
             <span className="max-w-[260px] text-center text-[15px] text-slate-600">
-              {demoOnly ? sampleSectionLabel : hint}
+              {strictSamplesOnly ? sampleSectionLabel : hint}
             </span>
           </>
         )}
       </motion.button>
 
-      {!demoOnly && (
-        <button
-          type="button"
-          onClick={onSelect}
-          className="pressable w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
-        >
-          {uploadLabel}
-        </button>
+      {preview && (
+        <div className="flex gap-2">
+          {canUseCamera && (
+            <button
+              type="button"
+              onClick={onTakePhoto}
+              className="pressable min-h-[48px] flex-1 rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-3 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+            >
+              {changeLabel}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onClear}
+            className="pressable min-h-[48px] flex-1 rounded-[12px] border border-slate-200 bg-white px-3 py-2.5 text-[14px] font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            {clearLabel}
+          </button>
+        </div>
+      )}
+
+      {previewSource === "file" && MOCK_MODE && mockAiHint && (
+        <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
+          {mockAiHint}
+        </p>
+      )}
+
+      {canUseCamera && !preview && (
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={onTakePhoto}
+            className="pressable min-h-[48px] w-full rounded-[12px] bg-brand-blue px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-brand-blue-dark"
+          >
+            {takePhotoLabel}
+          </button>
+          <button
+            type="button"
+            onClick={onChooseFromLibrary}
+            className="pressable min-h-[48px] w-full rounded-[12px] border border-brand-blue/30 bg-brand-blue-soft px-4 py-2.5 text-[14px] font-semibold text-brand-blue hover:bg-brand-blue-soft/70"
+          >
+            {choosePhotoLabel}
+          </button>
+        </div>
       )}
 
       {samples && sampleLabels && (
@@ -146,7 +199,7 @@ export function PhotoUploadZone({
                 type="button"
                 onClick={() => onSampleSelect(url)}
                 whileTap={reduced ? undefined : { scale: 0.96 }}
-                className={`rounded-[10px] border px-3 py-2 text-[13px] font-semibold transition ${
+                className={`min-h-[44px] rounded-[10px] border px-3 py-2 text-[13px] font-semibold transition ${
                   preview === url
                     ? "border-brand-blue bg-brand-blue-soft text-brand-blue"
                     : "border-slate-100 text-slate-600 hover:bg-slate-50"

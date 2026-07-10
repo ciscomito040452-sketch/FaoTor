@@ -184,4 +184,7 @@ export const SEED_REPORTS: Report[] = [
 
 export const MOCK_MODE = true;
 
+/** When true, report flow only allows sample photos (for pitch recording). */
+export const DEMO_STRICT_SAMPLES = false;
+
 export { SAMPLE_IMAGES } from "./sample-images";
