@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import { DEMO_STRICT_SAMPLES, MOCK_MODE } from "@/lib/mock-data";
+import { DEMO_STRICT_SAMPLES } from "@/lib/mock-data";
 import { useReducedMotion } from "@/lib/motion";
 
 type PreviewSource = "none" | "file" | "sample";
@@ -19,7 +19,6 @@ interface PhotoUploadZoneProps {
   clearLabel: string;
   sampleSectionLabel: string;
   sampleBadgeLabel: string;
-  mockAiHint?: string;
   onTakePhoto: () => void;
   onChooseFromLibrary: () => void;
   onClear: () => void;
@@ -71,7 +70,6 @@ export function PhotoUploadZone({
   clearLabel,
   sampleSectionLabel,
   sampleBadgeLabel,
-  mockAiHint,
   onTakePhoto,
   onChooseFromLibrary,
   onClear,
@@ -162,12 +160,6 @@ export function PhotoUploadZone({
             {clearLabel}
           </button>
         </div>
-      )}
-
-      {previewSource === "file" && MOCK_MODE && mockAiHint && (
-        <p className="rounded-[10px] border border-brand-orange/20 bg-brand-orange-soft/60 px-3 py-2 text-[12px] text-brand-orange-dark">
-          {mockAiHint}
-        </p>
       )}
 
       {canUseCamera && !preview && (

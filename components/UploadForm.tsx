@@ -283,7 +283,6 @@ export function UploadForm() {
                 clearLabel={t("report.clearPhoto")}
                 sampleSectionLabel={t("report.sampleSection")}
                 sampleBadgeLabel={t("report.sampleBadge")}
-                mockAiHint={t("report.mockAiHint")}
                 onTakePhoto={() => fileRef.current?.click()}
                 onChooseFromLibrary={() => galleryRef.current?.click()}
                 onClear={clearPreview}
